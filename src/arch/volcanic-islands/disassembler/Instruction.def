@@ -1,6 +1,4 @@
-/*
- * SOP2
- */
+// SOP2
 
 
 DEFINST(S_ADD_I32,
@@ -101,4 +99,244 @@ DEFINST(S_BFE_I64,
 	0
 )
 
+DEFINST(S_BFE_U64
+	"s_bfe_u64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	39,
+	4,
+	0
+)
 
+DEFINST(S_BFM_B32
+	"s_bfm_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	34,
+	4,
+	0
+)
+
+DEFINST(S_BFM_B64
+	"s_bfm_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	35,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_G_FORK
+	"s_cbranch_g_fork	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	41,
+	4,
+	0
+)
+
+DEFINST(S_CSELECT_B32
+	"s_cselect_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	10,
+	4,
+	0
+)
+
+DEFINST(S_CSELECT_B64
+	"s_cselect_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	11,
+	4,
+	0
+)
+
+DEFINST(S_LSHL_B32
+	"s_lshl_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	28,
+	4,
+	0
+)
+
+DEFINST(S_LSHL_B64
+	"s_lshl_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	29,
+	4,
+	0
+)
+
+DEFINST(S_LSHR_B32
+	"s_lshr_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	30,
+	4,
+	0
+)
+
+DEFINST(S_LSHR_B64
+	"s_lshr_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	31,
+	4,
+	0
+)
+
+DEFINST(S_MAX_I32
+	"s_max_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	8,
+	4,
+	0
+)
+
+DEFINST(S_MAX_U32
+	"s_max_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	9,
+	4,
+	0
+)
+
+DEFINST(S_MIN_I32
+	"s_min_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	6,
+	4,
+	0
+)
+
+DEFINST(S_MIN_U32
+	"s_min_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	7,
+	4,
+	0
+)
+
+DEFINST(S_MUL_I32
+	"s_mul_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	36,
+	4,
+	0
+)
+
+DEFINST(S_NAND_B32
+	"s_nand_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	22,
+	4,
+	0
+)
+
+DEFINST(S_NAND_B64
+	"s_nand_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	23,
+	4,
+	0
+)
+
+DEFINST(S_NOR_B32
+	"s_nor_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	24,
+	4,
+	0
+)
+
+DEFINST(S_NOR_B64
+	"s_nor_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	25,
+	4,
+	0
+)
+
+DEFINST(S_OR_B32
+	"s_or_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	14,
+	4,
+	0
+)
+
+DEFINST(S_NOR_B64
+	"s_nor_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	15,
+	4,
+	0
+)
+
+DEFINST(S_ORN2_B32
+	"s_orn2_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	20,
+	4,
+	0
+)
+
+DEFINST(S_ORN2_B64
+	"s_orn2_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	21,
+	4,
+	0
+)
+
+DEFINST(S_SUB_I32
+	"s_sub_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	3,
+	4,
+	0
+)
+
+DEFINST(S_SUB_U32
+	"s_SUB_U32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	1,
+	4,
+	0
+)
+
+DEFINST(S_SUBB_U32
+	"s_subb_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	5,
+	4,
+	0
+)
+
+DEFINST(S_xnor_b32
+	"s_xnor_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	26,
+	4,
+	0
+)
+
+DEFINST(S_xnor_b64
+	"s_xnor_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	27,
+	4,
+	0
+)
+
+DEFINST(S_XOR_B32
+	"s_xor_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	16,
+	4,
+	0
+)
+
+DEFINST(S_XOR_B64
+	"s_xor_b64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	17,
+	4,
+	0
+)
+
+// SOPK
