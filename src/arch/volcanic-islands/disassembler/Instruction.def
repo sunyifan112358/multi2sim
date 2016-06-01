@@ -99,6 +99,14 @@ DEFINST(S_BFE_I64,
 	0
 )
 
+DEFINST(S_BFE_U32
+	"s_bfe_u32	%SDST, %SSRCS0, %SSRC1",
+	SOP2,
+	37
+	4,
+	0
+)
+
 DEFINST(S_BFE_U64
 	"s_bfe_u64	%SDST, %SSRC0, %SSRC1",
 	SOP2,

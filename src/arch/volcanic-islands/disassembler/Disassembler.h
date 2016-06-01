@@ -41,12 +41,25 @@ class Disassembler : public comm::Disassembler
 	static const int dec_table_sopk_count = 20; // no Opcode 19
 	static const int dec_table_sop2_count = 43;
 	static const int dec_table_smem_count = 25;
+	
 
+	static const int dec_table_vop3_count = 10;
+	static const int dec_table_vopc_count = 10;
+	static const int dec_table_vop1_count = 10;
+	static const int dec_table_vop2_count = 10;
+	static const int dec_table_vop_sdwa_count = 10;
+	static const int dec_table_vop_dpp_count = 10;
+	static const int dec_table_vintrp_count = 10;
+	static const int dec_table_ds_count = 10;
+	static const int dec_table_mubuf_count = 10;
+	static const int dec_table_mtbuf_count = 10;
+	static const int dec_table_mimg_count = 10;
+	static const int dec_table_exp_count = 10;
+	static const int dec_table_flat_count = 10;
 
 	Instruction::Info inst_info[Instruction::OpcodeCount];
 
 	// Pointers to elements in 'inst_info'
-	// FIXME names
 	Instruction::Info *dec_table_sopp[dec_table_sopp_count];
 	Instruction::Info *dec_table_sopc[dec_table_sopc_count];
 	Instruction::Info *dec_table_sop1[dec_table_sop1_count];
@@ -57,21 +70,25 @@ class Disassembler : public comm::Disassembler
 	Instruction::Info *dec_table_vopc[dec_table_vopc_count];
 	Instruction::Info *dec_table_vop1[dec_table_vop1_count];
 	Instruction::Info *dec_table_vop2[dec_table_vop2_count];
+	Instruction::Info *dec_table_vop_sdwa[dec_table_vop_sdwa_count];
+	Instruction::Info *dec_table_vop_dpp[dec_table_vop_dpp_count];
 	Instruction::Info *dec_table_vintrp[dec_table_vintrp_count];
 	Instruction::Info *dec_table_ds[dec_table_ds_count];
 	Instruction::Info *dec_table_mtbuf[dec_table_mtbuf_count];
 	Instruction::Info *dec_table_mubuf[dec_table_mubuf_count];
 	Instruction::Info *dec_table_mimg[dec_table_mimg_count];
 	Instruction::Info *dec_table_exp[dec_table_exp_count];
+	Instruction::Info *dec_table_flat[dec_table_flat_count];
 
 	void DisassembleBuffer(std::ostream& os, const char *buffer, int size);	
 		
 	// Path to binary file
 	static std::string binary_file;
 
+	Disassembler();
 public:
 
-	Disassembler() : comm::Disassembler("vi") {}
+//	Disassembler() : comm::Disassembler("vi") {}
    
 	/// Disassemble binary file
 	void DisassembleBinary(const std::string &path);

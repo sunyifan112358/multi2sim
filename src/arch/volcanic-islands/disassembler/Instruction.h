@@ -442,7 +442,7 @@ public:
 	enum Flag
 	{
 		
-	}
+	};
 
 	struct Info
 	{
@@ -480,7 +480,7 @@ private:
 	// instruction bytes
 	Bytes bytes;
 
-	// size in bites
+	// size in bites. includes literal constant
 	int size;
 
 	int address;

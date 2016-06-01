@@ -38,6 +38,169 @@ std::string Disassembler::binary_file;
 
 std::unique_ptr<Disassembler> Disassembler::instance;
 
+Disassembler::Disassembler() : comm::Disassembler("vi")
+{
+	Instruction::Info *info;
+
+	
+
+#define DEFINST(_name, _fmtstr, _fmt, _op, _size, _flsgs) \
+	info = &inst_info[Instruction::Opcode_##_name]; \
+	info->opcode = Instruction::Opcode_##_name; \
+	info->name = #_name; \
+	info->fmt_str = _fmtstrl \
+	info->fmt = Instruction:: Format##_fmt; \
+	info->op = _op; \
+	info->size = _size; \
+	info->flags = (Instruction::Flag) _flags;
+
+#include <Instruction.def>
+#undef DEFINST
+
+	for (int i = 1; i < Instruction::OpcodeCount; i++)
+	{
+		info = &inst_info[i];
+		
+
+		if (info->fmt == Instruction::FormatSOPP)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_sopp_count - 1));
+			dec_table_sopp[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatSOPC)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_sopc_count - 1));
+			dec_table_sopc[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatSOP1)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_sop1_count - 1));
+			dec_table_sop1[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatSOPK)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_sopk_count - 1));
+			dec_table_sopk[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatSOP2)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_sop2_count - 1));
+			dec_table_sop2[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatSMEM) 
+		{
+			assert(misc::inRange(info->op, 0, dec_table_smem_count - 1));
+			dec_table_smrd[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatVOP3a || info->fmt == Instruction::FormatVOP3b)
+		{
+			int i;
+
+			assert(misc::inRange(info->op, 0, dec_table_vop3_count - 1));
+			dec_table_vop3[info->op] = info;
+			if (info->flags & Instruction::FlagOp8)
+			{
+				for (i = 1; i < 8; i++)
+				{
+					dec_table_vop3[info->op + i] = 
+						info;
+				}
+			}
+			if (info->flags & Instruction::FlagOp16)
+			{
+				for (i = 1; i < 16; i++)
+				{
+					dec_table_vop3[info->op + i] = 
+						info;
+				}
+			}
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatVOPC)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_vopc_count - 1));
+			dec_table_vopc[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatVOP1)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_vop1_count - 1));
+			dec_table_vop1[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatVOP2)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_vop2_count - 1));
+			dec_table_vop2[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatVOP_SDWA)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_vop_sdwa_count -1));
+			dec_table_vop_sdwa[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatVOP_DPP)
+		{
+			assert(mis::inRange(info->op, 0, dec_table_vop_dpp_count -1));
+			dec_table_vop_dpp[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatVINTRP)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_vintrp_count - 1));
+			dec_table_vintrp[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatDS)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_ds_count - 1));
+			dec_table_ds[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatMTBUF)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_mtbuf_count - 1));
+			dec_table_mtbuf[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatMUBUF)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_mubuf_count - 1));
+			dec_table_mubuf[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatMIMG)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_mimg_count - 1));
+			dec_table_mimg[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatEXP)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_exp_count - 1));
+			dec_table_exp[info->op] = info;
+			continue;
+		}
+		else if (info->fmt == Instruction::FormatFLAT)
+		{
+			assert(misc::inRange(info->op, 0, dec_table_flat_count - 1));
+			dec_table_flat[info->op] = info;
+			continue;
+		}
+		else 
+		{
+			std::cerr << "warning: '" << info->name
+					<< "' not indexed\n";
+		}
+	}	
+}
 
 Disassembler *Disassembler::getInstance() 
 {
@@ -47,6 +210,7 @@ Disassembler *Disassembler::getInstance()
 	instance = misc::new_unique<Disassembler>();
 	return instance.get();
 }
+
 
 
 void Disassembler::DisassembleBinary(const std::string &path) 
@@ -92,7 +256,7 @@ void Disassembler::DisassembleBinary(const std::string &path)
 			// Create internal ELF
 			Binary binary(buffer.get(), symbol->getSize(), kernel_name);
 			
-			// Get section with VOlcanic Islands ISA
+			// Get section with Volcanic Islands ISA
 			BinaryDictEntry *vi_dict_entry = binary.GetSIDictEntry();
 			ElfReader::Section *section = vi_dict_entry->text_section;
 
