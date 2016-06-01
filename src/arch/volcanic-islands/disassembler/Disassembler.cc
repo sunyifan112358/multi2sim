@@ -48,7 +48,7 @@ Disassembler::Disassembler() : comm::Disassembler("vi")
 	info = &inst_info[Instruction::Opcode_##_name]; \
 	info->opcode = Instruction::Opcode_##_name; \
 	info->name = #_name; \
-	info->fmt_str = _fmtstrl \
+	info->fmt_str = _fmtstr \
 	info->fmt = Instruction:: Format##_fmt; \
 	info->op = _op; \
 	info->size = _size; \
