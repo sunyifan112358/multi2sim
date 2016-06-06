@@ -108,12 +108,121 @@ public:
 	/// Process command-line options
 	static void ProcessOptions();
 	
+	// DecTable getters
+
 	Instruction::Info *getDecTableSop2(int index)
 	{
-		assert(index>= 0 && index < dec_table_sop2_count);
+		assert(index >= 0 && index < dec_table_sop2_count);
 		return dec_table_sop2[index];	
 	}
-	// ...
+
+	Instruction::Info *getDecTableSopk(int index)
+	{
+		assert(index >= 0 && index < dec_table_sopk_count);
+		return dec_table_sopk[index];
+	}
+
+	Instruction::Info *getDecTableSop1(int index)
+	{
+		assert(index >= 0 && index < dec_table_sop1_count);
+		return dec_table_sop1[index];
+	}
+
+	Instruction::Info *getDecTableSopc(int index)
+	{
+		assert(index >= 0 && index < dec_table_sopc_count);
+		return dec_table_sopc[index];
+	}
+
+	Instruction::Info *getDecTableSopp(int index)
+	{
+		assert(index >= 0 && index < dec_table_sopp_count);
+		return dec_table_sopp[index];
+	}
+
+	Instruction::Info *getDecTableSmem(int index)
+	{
+		assert(index >= 0 && index < dec_table_smem_count);
+		return dec_table_smem[index];
+	}
+
+	Instruction::Info *getDecTableVop2(int index)
+	{
+		assert(index >= 0 && index < dec_table_vop2_count);
+		return dec_table_vop2[index];
+	}
+
+	Instruction::Info *getDecTableVop1(int index)
+	{
+		assert(index >= 0 && index < dec_table_vop1_count);
+		return dec_table_vop1[index];
+	}
+
+	Instruction::Info *getDecTableVopc(int index)
+	{
+		assert(index >= 0 && index < dec_table_vopc_count);
+		return dec_table_vopc[index];
+	}
+	
+	Instruction::Info *getDecTableVopSdwa(int index)
+	{
+		assert(index >= 0 && index < dec_table_vop_sdwa_count);
+		return dec_table_vop_sdwa[index];
+	}
+
+	Instruction::Info *getDecTableVopDpp(int index)
+	{
+		assert(index >= 0 && index < dec_table_vop_dpp_count);
+		return dec_table_vop_dpp[index];
+	}
+
+	Instruction::Info *getDecTableVop3(int index)
+	{
+		assert(index >= 0 && index < dec_table_vop3_count);
+		return dec_table_vop3[index];
+	}
+
+	Instruction::Info *getDecTableVintrp(int index)
+	{
+		assert(index >= 0 && index < dec_table_vintrp_count);
+		return dec_table_vintrp[index];
+	}
+
+	Instruction::Info *getDecTableDs(int index)
+	{
+		assert(index >= 0 && index < dec_table_ds_count);
+		return dec_table_ds[index];
+	}
+
+	Instruction::Info *getDecTableMubuf(int index)
+	{
+		assert(index >= 0 && index < dec_table_mubuf_count);
+		return dec_table_mubuf[index];
+	}
+
+	Instruction::Info *getDecTableMtbuf(int index)
+	{
+		assert(index >= 0 && index < dec_table_mtbuf_count);
+		return dec_table_mtbuf[index];
+	}
+	
+	Instruction::Info *getDecTableMimg(int index)
+	{
+		assert(index >= 0 && index < dec_table_mimg_count);
+		return dec_table_mimg[index];
+	}
+	
+	Instruction::Info *getDecTableExp(int index)
+	{
+		assert(index >= 0 && index < dec_table_exp_count);
+		return dec_table_exp[index];
+	}
+
+	Instruction::Info *getDecTableFlat(int index)
+	{
+		assert(index >= 0 && index < dec_table_flat_count);
+		return dec_table_flat[index];
+	}
 };
 
 }
