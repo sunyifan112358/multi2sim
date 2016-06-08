@@ -211,7 +211,10 @@ Disassembler *Disassembler::getInstance()
 	return instance.get();
 }
 
-
+void DisassembleBuffer(std::ostream& os, const char *buffer, int size)
+{
+	// TODO
+}
 
 void Disassembler::DisassembleBinary(const std::string &path) 
 {

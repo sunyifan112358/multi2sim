@@ -20,9 +20,11 @@
 #ifndef ARCH_SOUTHERN_ISLANDS_DISASSEMBLER_INSTRUCTION_H
 #define ARCH_SOUTHERN_ISLANDS_DISASSEMBLER_INSTRUCTION_H
 
+#include <lib/cpp/String.h>
+
 namespace VI
 {
-//Forward declarations
+
 class Disassembler;
 
 
@@ -128,6 +130,61 @@ public:
 	};
 	
 
+	enum SpecialReg
+	{
+		SpecialRegInvalid = 0,
+		SpecialRegVcc,
+		SpecialRegM0,
+		SpecialRegExec,
+		SpecialRegScc,
+		SpecialRegTma
+	};
+
+
+	static const misc::StringMap special_reg_map;
+
+	enum BufDataFormat
+	{
+		BufDataFormatInvalid = 0,
+		BufDataFormat8 = 1,
+		BufDataFormat16 = 2,
+		BufDataFormat8_8 = 3,
+		BufDataFormat32 = 4,
+		BufDataFormat16_16 = 5,
+		BufDataFormat10_11_11 = 6,
+		BufDataFormat11_11_10 = 7,
+		BufDataFormat10_10_10_12 = 8,
+		BufDataFormat2_10_10_10 = 9,
+		BufDataFormat8_8_8_8 = 10,
+		BufDataFormat32_32 = 11,
+		BufDataFormat16_16_16_16 = 12,
+		BufDataFormat32_32_32 = 13,
+		BufDataFormat32_32_32_32 = 14,
+		BufDataFormatReserved = 15
+	};
+
+	static const misc::StringMap buf_data_format_map;	
+
+	enum BufNumFormat
+	{
+		BufNumFormatUnorm = 0,
+		BufNumFormatSnorm = 1,
+		BufNumFormatUscaled = 2,
+		BufNumFormatSscaled = 3,
+		BufNumFormatUint = 4,
+		BufNumFormatSint = 5,
+		BufNumFormatFloat = 7,
+		BufNumFormatSrgb = 9
+	};
+	
+	static const misc::StringMap buf_num_format_map;
+
+	enum Flag
+	{
+		FlagNone = 0x0000,
+		FlagOp8 = 0x0001,
+		FlagOp16 = 0x0002
+	};
 	
 	
 	enum Opcode
@@ -432,17 +489,6 @@ public:
 		BytesFLAT flat;
 	};
 	
-	enum SpecialRegister
-	{
-		SpecialRegisterInvalid = 0
-		
-	};
-
-
-	enum Flag
-	{
-		
-	};
 
 	struct Info
 	{
@@ -485,13 +531,43 @@ private:
 
 	int address;
 
+	static const misc::StringMap ssrc_map;
+	static const misc::StringMap sdst_map;
 
+	static const misc::StringMap op8_map;
+	static const misc::StringMap op16_map;
 
+	// Dump Functions
+
+	static void DumpOperand(std::ostream& os, int operand);
+	static void DumpOperandSeries(std::ostream& os, int start, int end);
 
 public:
 
 	Instruction();
+
+	static const unsigned RegisterFlAT_SCRATCH = 102;
+	static const unsigned RegisterVCC = 106;	
+	static const unsigned RegisterM0 = 124;
+	static const unsigned RegisterEXEC = 126;
+	static const unsigned RegisterVCCZ = 251;
+	static const unsigned RegisterEXECZ = 252;
+	static const unsigned RegisterSCC = 253;
 	
+	
+	void Decode(const char *buffer, unsigned int offset);
+
+	void Dump(std::ostream &os = std::cout) const;	
+
+	void DumpAddress(std::ostream &os = std::cout) const;
+
+
+	friend std::ostream &operator<<(std::ostream& os, const Instruction &ins)
+	{
+		ins.Dump(os);
+		return os;
+	}
+
 	// reset content
 	void Clear();
 

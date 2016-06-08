@@ -89,6 +89,19 @@ class Disassembler : public comm::Disassembler
 public:
 
 //	Disassembler() : comm::Disassembler("vi") {}
+
+
+	
+	class Error : public misc::Error
+	{
+	public:
+		
+		Error(const std::string &message) : misc::Error(message)
+		{
+			AppendPrefix("Volcanic Islands Disassembler");
+		}
+
+	};
    
 	/// Disassemble binary file
 	void DisassembleBinary(const std::string &path);
