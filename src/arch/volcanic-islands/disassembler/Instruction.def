@@ -267,8 +267,8 @@ DEFINST(S_OR_B32,
 	0
 )
 
-DEFINST(S_NOR_B64,
-	"s_nor_b64	%SDST, %SSRC0, %SSRC1",
+DEFINST(S_OR_B64,
+	"s_or_b64	%SDST, %SSRC0, %SSRC1",
 	SOP2,
 	15,
 	4,

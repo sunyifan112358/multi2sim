@@ -7,6 +7,7 @@ libdisassembler_a_SOURCES = \
 	\
 	Instruction.h \
 	Instruction.cc \
+	Instruction.def\
 	\
 	Binary.h \
 	Binary.cc 

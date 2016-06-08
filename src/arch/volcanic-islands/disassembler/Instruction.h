@@ -264,7 +264,7 @@ public:
 		unsigned int vdst	: 8; // [24:17]
 		unsigned int op		: 7; // [30:25]
 		unsigned int enc	: 1; // 31
-		unsigned int lit_cnst	: 32 // [63:32]
+		unsigned int lit_cnst	: 32; // [63:32]
 	};
 	
 	struct BytesVOP1

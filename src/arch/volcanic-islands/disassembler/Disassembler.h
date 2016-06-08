@@ -65,7 +65,7 @@ class Disassembler : public comm::Disassembler
 	Instruction::Info *dec_table_sop1[dec_table_sop1_count];
 	Instruction::Info *dec_table_sopk[dec_table_sopk_count];
 	Instruction::Info *dec_table_sop2[dec_table_sop2_count];
-	Instruction::Info *dec_table_smem[dec_table_smrd_count];
+	Instruction::Info *dec_table_smem[dec_table_smem_count];
 	Instruction::Info *dec_table_vop3[dec_table_vop3_count];
 	Instruction::Info *dec_table_vopc[dec_table_vopc_count];
 	Instruction::Info *dec_table_vop1[dec_table_vop1_count];
@@ -85,12 +85,11 @@ class Disassembler : public comm::Disassembler
 	// Path to binary file
 	static std::string binary_file;
 
-	Disassembler();
 public:
 
 //	Disassembler() : comm::Disassembler("vi") {}
 
-
+	Disassembler();
 	
 	class Error : public misc::Error
 	{
