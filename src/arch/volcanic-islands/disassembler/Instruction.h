@@ -546,7 +546,7 @@ public:
 
 	Instruction();
 
-	static const unsigned RegisterFlAT_SCRATCH = 102;
+	static const unsigned RegisterFLAT_SCR = 102;
 	static const unsigned RegisterVCC = 106;	
 	static const unsigned RegisterM0 = 124;
 	static const unsigned RegisterEXEC = 126;

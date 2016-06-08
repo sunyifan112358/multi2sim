@@ -604,6 +604,9 @@ AC_CONFIG_FILES([
 		src/arch/southern-islands/emulator/Makefile
 		src/arch/southern-islands/timing/Makefile
 
+		src/arch/volcanic-islands/disassembler/Makefile
+		src/arch/volcanic-islands/Makefile
+
 		src/arch/x86/Makefile
 		src/arch/x86/disassembler/Makefile
 		src/arch/x86/emulator/Makefile

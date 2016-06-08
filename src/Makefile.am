@@ -41,6 +41,8 @@ LDADD = \
 	$(top_builddir)/src/arch/southern-islands/emulator/libemulator.a \
 	$(top_builddir)/src/arch/southern-islands/disassembler/libdisassembler.a \
 	\
+	$(top_builddir)/src/arch/volcanic-islands/disassembler/libdisassembler.a \
+	\
 	$(top_builddir)/src/arch/common/libcommon.a \
 	\
 	$(top_builddir)/src/dram/libdram.a \
