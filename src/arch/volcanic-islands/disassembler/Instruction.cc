@@ -30,7 +30,7 @@
 namespace VI
 {
 
-const misc:StringMap Instruction::format_map =
+const misc::StringMap Instruction::format_map =
 {
 	{"<invalid>", FormatInvalid},
 	{"sop2", FormatSOP2},
@@ -51,9 +51,9 @@ const misc:StringMap Instruction::format_map =
 	{"mubuf", FormatMUBUF},
 	{"mtbuf", FormatMTBUF},
 	{"mimg", FormatMIMG},
-	{"exp", FormatEX},
+	{"exp", FormatEXP},
 	{"flat", FormatFLAT}
-}
+};
 
 const misc::StringMap Instruction::sdst_map =
 {
@@ -92,7 +92,7 @@ const misc::StringMap Instruction::ssrc_map =
 	{"1.0", 2},
 	{"-1.0", 3},
 	{"2.0", 4},
-	{"-2.0, 5},
+	{"-2.0", 5},
 	{"4.0", 6},
 	{"-4.0", 7},
 	{"1/(2*PI)", 8},
@@ -223,7 +223,7 @@ void Instruction::DumpOperand(std::ostream& os, int operand)
 	{
 		os << ssrc_map.MapValue(operand - 240);
 	}
-	else if(operand <=511
+	else if(operand <=511)
 	{
 		// VGPR 0-255	
 		os << "v" << operand - 256;
@@ -264,7 +264,7 @@ void Instruction::Clear()
 	info = NULL;
 }
 
-Instruction::Decode()
+void Instruction::Decode(const char *buffer, unsigned int offset)
 {
 	// TODO	
 }

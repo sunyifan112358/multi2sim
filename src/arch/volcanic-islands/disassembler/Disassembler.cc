@@ -21,6 +21,7 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <cassert>
 
 #include <lib/cpp/CommandLine.h>
 #include <lib/cpp/Misc.h>
@@ -38,7 +39,7 @@ std::string Disassembler::binary_file;
 
 std::unique_ptr<Disassembler> Disassembler::instance;
 
-Disassembler::Disassembler() : comm::Disassembler("vi")
+Disassembler::Disassembler() : comm::Disassembler("Volcanic Islands")
 {
 	Instruction::Info *info;
 
@@ -352,8 +353,8 @@ void Disassembler::DisassembleBinary(const std::string &path)
 			Binary binary(buffer.get(), symbol->getSize(), kernel_name);
 			
 			// Get section with Volcanic Islands ISA
-			BinaryDictEntry *vi_dict_entry = binary.GetSIDictEntry();
-			ElfReader::Section *section = vi_dict_entry->text_section;
+			BinaryDictEntry *vi_dict_entry = binary.GetVIDictEntry();
+			ELFReader::Section *section = vi_dict_entry->text_section;
 
 			DisassembleBuffer(std::cout, section->getBuffer(), section->getSize());
 
