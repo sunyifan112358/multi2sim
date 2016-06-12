@@ -132,7 +132,7 @@ DEFINST(S_BFM_B64,
 )
 
 DEFINST(S_CBRANCH_G_FORK,
-	"s_cbranch_g_fork	%SDST, %SSRC0, %SSRC1",
+	"s_cbranch_g_fork	%SDST, %SSRC0, %64_SSRC1",
 	SOP2,
 	41,
 	4,
