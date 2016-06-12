@@ -39,7 +39,7 @@ std::string Disassembler::binary_file;
 
 std::unique_ptr<Disassembler> Disassembler::instance;
 
-Disassembler::Disassembler() : comm::Disassembler("Volcanic Islands")
+Disassembler::Disassembler() : comm::Disassembler("VolcanicIslands")
 {
 	Instruction::Info *info;
 
@@ -212,7 +212,7 @@ Disassembler *Disassembler::getInstance()
 	return instance.get();
 }
 
-void DisassembleBuffer(std::ostream& os, const char *buffer, int size)
+void Disassembler::DisassembleBuffer(std::ostream& os, const char *buffer, int size)
 {
 	std::stringstream ss;
 
@@ -237,7 +237,7 @@ void DisassembleBuffer(std::ostream& os, const char *buffer, int size)
 		format = inst.getFormat();
 		bytes = inst.getBytes();
 
-		// If s_endpgm
+		// s_endpgm
 		if(format == Instruction::FormatSOPP && bytes->sopp.op == 1)
 			break;
 
@@ -286,7 +286,8 @@ void DisassembleBuffer(std::ostream& os, const char *buffer, int size)
 			os << misc::fmt("label_%04X:\n", rel_addr / 4);
 			next_label++;
 		}
-
+		
+		// dump instruction
 		ss.str("");
 		ss << ' ';
 		inst.Dump(ss);
@@ -294,6 +295,7 @@ void DisassembleBuffer(std::ostream& os, const char *buffer, int size)
 		// spacing
 		if(ss.str().length() < 59)
 			ss << std::string(59 - ss.str().length(), ' ');
+		
 
 		os << ss.str();
 		os << misc::fmt(" // %08X: %08X", rel_addr, bytes->word[0]);
@@ -315,10 +317,8 @@ void Disassembler::DisassembleBinary(const std::string &path)
 
 	ELFReader::File file(path);
 
-	// Decode ELF
 	for (int i = 0; i < file.getNumSymbols(); i++)
 	{
-		// Symbol
 		ELFReader::Symbol *symbol = file.getSymbol(i);
 		std::string symbol_name = symbol->getName();
 
@@ -327,13 +327,11 @@ void Disassembler::DisassembleBinary(const std::string &path)
 		if (misc::StringPrefix(symbol_name, "__OpenCL_") &&
 			misc::StringSuffix(symbol_name, "_kernel"))
 		{
-			// Content at *symbol must be valid
 			if (!symbol->getBuffer())
 				throw Error(misc::fmt(
 					"%s: symbol '%s' invalid content",
 					path.c_str(), symbol_name.c_str()));
 
-			// Get kernel name
 			std::string kernel_name = symbol_name.substr(9, 
 					symbol_name.length() -16);
 			std::cout << "**\n** Disassembly for '__kernel " <<
@@ -349,10 +347,8 @@ void Disassembler::DisassembleBinary(const std::string &path)
 			symbol_stream.read(buffer.get(),
 					(unsigned) symbol->getSize());
 			
-			// Create internal ELF
 			Binary binary(buffer.get(), symbol->getSize(), kernel_name);
 			
-			// Get section with Volcanic Islands ISA
 			BinaryDictEntry *vi_dict_entry = binary.GetVIDictEntry();
 			ELFReader::Section *section = vi_dict_entry->text_section;
 

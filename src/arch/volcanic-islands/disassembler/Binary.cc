@@ -50,6 +50,7 @@ struct BinaryNoteHeader
 	char name[8];  // Note header string. Must be "ATI CAL"
 };
 
+
 misc::StringMap binary_user_data_map =
 {
 	{ "IMM_RESOURCE",                      BinaryUserDataResource },
@@ -84,31 +85,6 @@ misc::StringMap binary_user_data_map =
 	{ "PTR_INDIRECT_INTERNAL_RESOURCE",    BinaryUserDataInternalResource },
 	{ "PTR_INDIRECT_UAV",                  BinaryUserDataPtrIndirectUAV },
 	{ "E_SC_USER_DATA_CLASS_LAST",         BinaryUserDataLast }
-};
-
-// FIXME
-misc::StringMap binary_machine_map =
-{
-	{ "R600",	0 },
-	{ "RV610",	1 },
-	{ "RV630",	2 },
-	{ "RV670",	3 },
-	{ "R700",	4 },
-	{ "RV770",	5 },
-	{ "RV710",	6 },
-	{ "RV730",	7 },
-	{ "Cypress",	8 },
-	{ "Juniper",	9 },
-	{ "Redwood",	10 },
-	{ "Cedar",	11 },
-	{ "Sumo",	12 },
-	{ "Supersumo",	13 },
-	{ "Wrestler",	14 },
-	{ "Cayman",	15 },
-	{ "Kauai",	16 },
-	{ "Barts",	17 },
-	{ "Turks",	18 },
-	{ "Caicos",	19 }
 };
 
 
@@ -777,7 +753,6 @@ void Binary::ReadDictionary()
 	ph->getStream(ss);
 	for (int i = 0; i < num_dict_entries; i++)
 	{
-		// Create entry and insert into dictionary
 		dict_entry = new BinaryDictEntry();
 		dict.push_back(dict_entry);
 
@@ -786,46 +761,15 @@ void Binary::ReadDictionary()
 		ss.seekg(sizeof(BinaryDictHeader), std::ios_base::cur);
 		
 		// FIXME
-		/* Store encoding dictionary entry for Southern Islands.
-		 * Apparently the valid code changes by driver version */
-		if (dict_entry->header->d_machine == 9) //FIXME
+		// Store encoding dictionary entry
+		if (dict_entry->header->d_machine == 0)
 		{
-			// Driver XXX
 			debug << "machine = " << dict_entry->header->d_machine
-					<< " (tahiti or pitcairn)\n";
+					<< " (always 0?)\n";
 			vi_dict_entry = dict_entry;
 		}
-		else if (dict_entry->header->d_machine == 25) //FIXME
-		{
-			/* This entry is always present but doesn't seem
-			 * useful information.  We should probably figure
-			 * out what is stored here. */
-			debug << "machine = 25 (skip this entry)\n";
-		}
-		else if (dict_entry->header->d_machine == 26) // FIXME
-		{
-			// Driver XXX
-			debug << "machine = " << dict_entry->header->d_machine
-					<< " (tahiti or pitcairn)\n";
-			vi_dict_entry = dict_entry;
-		}
-		else if (dict_entry->header->d_machine == 27) //FIXME
-		{
-			// Driver 12.4
-			debug << "machine = " << dict_entry->header->d_machine
-					<< " (tahiti or pitcairn)\n";
-			vi_dict_entry = dict_entry;
-		}
-		else if (dict_entry->header->d_machine == 28) //FIXME
-		{
-			debug << "machine = 28 (capeverde)\n";
-			vi_dict_entry = dict_entry;
-		}
-		else
-	 	{
-			throw Disassembler::Error(misc::fmt("Unknown machine number "
-					"(%d)", dict_entry->header->d_machine));
-		}
+		vi_dict_entry = dict_entry;
+		
 	}
 
 	// Debug
@@ -836,7 +780,6 @@ void Binary::ReadDictionary()
 		BinaryDictHeader *header = entry->header;
 		debug << "[" << i << "] "
 				<< "machine = " << header->d_machine
-				<< " (" << binary_machine_map.MapValue(header->d_machine) << "), "
 				<< "type = " << header->d_type << ", "
 				<< "offset = " << std::hex << header->d_offset
 				<< std::dec << ", "
@@ -920,7 +863,6 @@ void Binary::ReadSections()
 		assert(load_segment);
 		assert(note_segment);
 
-		// Traverse sections
 		for (int i = 0; i < getNumSections(); i++)
 		{
 			// Get section. If not in PT_LOAD segment, skip.
@@ -987,37 +929,32 @@ void Binary::ReadSections()
 Binary::Binary(const char *buffer, unsigned int size, std::string name)
 		: ELFReader::File(buffer, size)
 {
-	// Initialize
 	this->name = name;
 
 	/* Read encoding dictionary.
-	 * Check that a Southern Islands dictionary entry is present */
+	 * Check that a VI dictionary entry is present */
 	vi_dict_entry = NULL;
 	ReadDictionary();
 	if (!vi_dict_entry)
 		throw Disassembler::Error(name +
 	": No encoding dictionary entry for Volcanic Islands.\n\n"
 	"\tThe OpenCL kernel binary that your application is trying to load "
-	"does not contain Southern Islands assembly code. Please make " 
+	"does not contain Volcanic Islands assembly code. Please make " 
 	"sure that a Tonga device is selected when compiling the OpenCL "
 	"kernel source. In some cases, even a proper selection of this "
 	"architecture causes Volcanic Islands assembly not to be included "
 	"if the APP SDK is not correctly installed when compiling your "
 	"own kernel sources.");
 	
-	// Read segments and sections
 	ReadSegments();
 	ReadSections();
 
-	/* Read notes in PT_NOTE segment for Southern Islands 
-	 * dictionary entry */
 	ReadNotes(vi_dict_entry);
 }
 
 
 Binary::~Binary()
 {
-	// Free encoding dictionary
 	for (auto &dict_entry : dict)
 		delete dict_entry;
 }

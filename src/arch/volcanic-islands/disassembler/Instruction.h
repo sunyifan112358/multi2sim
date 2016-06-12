@@ -17,8 +17,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef ARCH_SOUTHERN_ISLANDS_DISASSEMBLER_INSTRUCTION_H
-#define ARCH_SOUTHERN_ISLANDS_DISASSEMBLER_INSTRUCTION_H
+#ifndef ARCH_VOLCANIC_ISLANDS_DISASSEMBLER_INSTRUCTION_H
+#define ARCH_VOLCANIC_ISLANDS_DISASSEMBLER_INSTRUCTION_H
 
 #include <lib/cpp/String.h>
 
@@ -178,6 +178,18 @@ public:
 	};
 	
 	static const misc::StringMap buf_num_format_map;
+
+	enum ExpTgt
+	{
+		ExpTgtExp_Mrt = 0,
+		ExpTgtExp_Mrtz = 8,
+		ExpTgtExp_Null = 9,
+		ExpTgtExp_Pos = 12,
+		ExpTgtExp_Param = 32
+
+	};
+
+	static const misc::StringMap exp_tgt_map;
 
 	enum Flag
 	{
@@ -482,7 +494,7 @@ public:
 		BytesVOP_DPP vop_dpp;
 		BytesVINTRP vintrp;
 		BytesDS ds;
-		BytesMUBUF mufbuf;
+		BytesMUBUF mubuf;
 		BytesMTBUF mtbuf;
 		BytesMIMG mimg;
 		BytesEXP exp;
@@ -514,7 +526,7 @@ public:
 	};
 
 	
-
+	static const misc::StringMap dpp_cntl_map;
 
 private:
 
@@ -542,6 +554,7 @@ private:
 	static void DumpOperand(std::ostream& os, int operand);
 	static void DumpOperandSeries(std::ostream& os, int start, int end);
 
+
 public:
 
 	Instruction();
@@ -555,7 +568,7 @@ public:
 	static const unsigned RegisterSCC = 253;
 	
 	
-	void Decode(const char *buffer, unsigned int offset);
+	void Decode(const char *buf, unsigned int address);
 
 	void Dump(std::ostream &os = std::cout) const;	
 

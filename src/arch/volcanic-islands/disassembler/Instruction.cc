@@ -30,6 +30,13 @@
 namespace VI
 {
 
+
+
+const misc::StringMap Instruction::dpp_cntl_map =
+{
+	{"", 0} // TODO
+};
+
 const misc::StringMap Instruction::format_map =
 {
 	{"<invalid>", FormatInvalid},
@@ -83,6 +90,11 @@ const misc::StringMap Instruction::sdst_map =
 	{"reserved", 23},
 	{"exec_hi", 24},
 	{"exec_lo", 25}
+};
+
+const misc::StringMap Instruction::exp_tgt_map =
+{
+	{"", 0} // TODO
 };
 
 const misc::StringMap Instruction::ssrc_map =
@@ -232,7 +244,7 @@ void Instruction::DumpOperand(std::ostream& os, int operand)
 
 void Instruction::DumpOperandSeries(std::ostream& os, int start, int end)
 {
-	
+	// TODO	
 }
 
 void Instruction::Dump(std::ostream &os) const
@@ -264,9 +276,304 @@ void Instruction::Clear()
 	info = NULL;
 }
 
-void Instruction::Decode(const char *buffer, unsigned int offset)
+void Instruction::Decode(const char *buf, unsigned int address)
 {
-	// TODO	
+	info = NULL;
+	size = 4;
+	bytes.word[0] = *(unsigned int*) buf;
+	bytes.word[1] = 0;
+	this->address = address;
+
+	if(bytes.sop2.enc == 0x2)
+	{
+		if(!disassembler->getDecTableSop2(bytes.sop2.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: SOP2: %d "
+					"// %08X: %08X\n", bytes.sop2.op, address, *(unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableSop2(bytes.sop2.op);
+
+
+		// only one src field may use a literal constant, indicated by 255
+		assert(!(bytes.sop2.ssrc0 == 0xFF && bytes.sop2.ssrc1 == 0xFF));
+		if(bytes.sop2.ssrc0 == 0xFF || bytes.sop2.ssrc1 == 0xFF)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
+	}
+	else if(bytes.sopk.enc == 0xB)
+	{
+		if(!disassembler->getDecTableSopk(bytes.sopk.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: SOPK:%d  "
+					"// %08X: %08X\n", bytes.sopk.op, address, *(unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableSopk(bytes.sopk.op);
+	}
+	else if(bytes.sop1.enc == 0x17D)
+	{
+		if(!disassembler->getDecTableSop1(bytes.sop1.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: SOP1:%d  "
+					"// %08X: %08X\n", bytes.sop1.op, address, *(unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableSop1(bytes.sop1.op);
+
+		// literal constant
+		if(bytes.sop1.ssrc0 == 0xFF)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
+	}
+	else if(bytes.sopc.enc == 0x17E)
+	{
+		if(!disassembler->getDecTableSopc(bytes.sopc.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: SOPC:%d  "
+					"// %08X: %08X\n", bytes.sopc.op, address, *(unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableSopc(bytes.sopc.op);
+
+		// only one src field may use a literal constant, indicated by 255
+		assert(!(bytes.sopc.ssrc0 == 0xFF && bytes.sopc.ssrc1 == 0xFF));
+		if(bytes.sopc.ssrc0 == 0xFF || bytes.sopc.ssrc1 == 0xFF)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
+	}
+	else if(bytes.sopp.enc == 0x17F)
+	{
+		if(!disassembler->getDecTableSopp(bytes.sopp.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: SOPP:%d  "
+					"// %08X: %08X\n", bytes.sopp.op, address, *(unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableSopp(bytes.sopp.op);
+	}
+	else if(bytes.smem.enc == 0x30)
+	{
+		// 64-bit instruction
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if(!disassembler->getDecTableSmem(bytes.smem.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: SMEM:%d  "
+					"// %08X: %08X %08X\n", bytes.smem.op, address, 
+					*(unsigned int *) buf, 
+					*(unsigned int *) (buf +4)));
+		}
+
+		info = disassembler->getDecTableSmem(bytes.smem.op);
+	}
+	else if(bytes.vop2.enc == 0x0) // FIXME dpp/sdwa
+	{
+		if (!disassembler->getDecTableVop2(bytes.vop2.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: VOP2:%d  "
+					"// %08X: %08X\n", bytes.vop2.op, address, * (unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableVop2(bytes.vop2.op);
+
+		if (bytes.vop2.src0 == 0xFF)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
+
+		// some opcodes define a 32- or 16-bit inline constant. opcodes 36 and 37 define a 16-bit inline constant
+		// stored in the following dword
+		if (bytes.vop2.op == 23 || bytes.vop2.op == 24 || bytes.vop2.op == 36 || bytes.vop2.op == 37)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
+	}
+	else if(bytes.vop1.enc == 0x3F) // FIXME dpp/sdwa
+	{
+		if(!disassembler->getDecTableVop1(bytes.vop1.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: VOP1:%d  "
+					"// %08X: %08X\n", bytes.vop1.op, address, *(unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableVop1(bytes.vop1.op);
+
+		if(bytes.vop1.src0 == 0xFF)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
+	}
+	else if(bytes.vopc.enc == 0x3E) // FIXME dpp/sdwa
+	{
+		if(!disassembler->getDecTableVopc(bytes.vopc.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: VOPC:%d  "
+					"// %08X: %08X\n", bytes.vopc.op, address, *(unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableVopc(bytes.vopc.op);
+
+		if(bytes.vopc.src0 == 0xFF)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
+	}
+	else if(bytes.vop3a.enc == 0x34)
+	{
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if (!disassembler->getDecTableVop3(bytes.vop3a.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: VOP3:%d  "
+					"// %08X: %08X %08X\n", bytes.vop3a.op, address,
+					*(unsigned int *) buf,
+					*(unsigned int *) (buf + 4)));
+		}
+
+		info = disassembler->getDecTableVop3(bytes.vop3a.op);
+	}
+	else if(bytes.vintrp.enc == 0x32)
+	{
+		if(!disassembler->getDecTableVintrp(bytes.vintrp.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: VINTRP:%d  "
+					"// %08X: %08X\n", bytes.vintrp.op, address, *(unsigned int *) buf));
+		}
+		
+		info = disassembler->getDecTableVintrp(bytes.vintrp.op);
+	}
+	else if(bytes.ds.enc == 0x36)
+	{
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if (!disassembler->getDecTableDs(bytes.ds.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: DS:%d  "
+					"// %08X: %08X %08X\n", bytes.ds.op, address,
+					*(unsigned int *) buf,
+					*(unsigned int *) (buf + 4)));
+		}
+
+		info = disassembler->getDecTableDs(bytes.ds.op);
+
+	}
+	else if(bytes.mubuf.enc == 0x38)
+	{
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if (!disassembler->getDecTableMubuf(bytes.mubuf.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: MUBUF:%d  "
+					"// %08X: %08X %08X\n", bytes.mubuf.op, address,
+					*(unsigned int *) buf,
+					*(unsigned int *) (buf + 4)));
+		}
+
+		info = disassembler->getDecTableMubuf(bytes.mubuf.op);
+
+	}
+	else if(bytes.mtbuf.enc == 0x3A)
+	{
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if (!disassembler->getDecTableMtbuf(bytes.mtbuf.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: MTBUF:%d  "
+					"// %08X: %08X %08X\n", bytes.mtbuf.op, address,
+					*(unsigned int *) buf,
+					*(unsigned int *) (buf + 4)));
+		}
+
+		info = disassembler->getDecTableMtbuf(bytes.mtbuf.op);
+
+	}
+	else if(bytes.mimg.enc == 0x3C)
+	{
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if (!disassembler->getDecTableMimg(bytes.mimg.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: MIMG:%d  "
+					"// %08X: %08X %08X\n", bytes.mimg.op, address,
+					*(unsigned int *) buf,
+					*(unsigned int *) (buf + 4)));
+		}
+
+		info = disassembler->getDecTableMimg(bytes.mimg.op);
+
+	}
+/*	else if(bytes.exp.enc == 0x31)
+	{
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if (!disassembler->getDecTableExp(bytes.exp.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: EXP:%d  "
+					"// %08X: %08X %08X\n", bytes.exp.op, address,
+					*(unsigned int *) buf,
+					*(unsigned int *) (buf + 4)));
+		}
+
+		info = disassembler->getDecTableExp(bytes.exp.op);
+
+	} */
+	else if(bytes.flat.enc == 0x37)
+	{
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if(!disassembler->getDecTableFlat(bytes.flat.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction:: FLAT:%d  "
+					"// %08X: %08X %08X\n", bytes.flat.op, address,
+					*(unsigned int *) buf,
+					*(unsigned int *) (buf + 4)));
+		}
+		
+		info = disassembler->getDecTableFlat(bytes.flat.op);
+	}
+	else
+	{
+		throw misc::Panic(misc::fmt(
+				"Unimplemented format. Instruction is:  "
+				"// %08x: %08x\n", address, ((unsigned int*) buf)[0]));
+	}
+	// FIXME dpp/sdwa format?
 }
 
 } // namespace VI

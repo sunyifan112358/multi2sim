@@ -23,7 +23,9 @@
 #include <memory>
 
 #include <arch/common/Disassembler.h>
+#include <lib/cpp/CommandLine.h>
 #include <lib/cpp/Error.h>
+
 #include "Instruction.h"
 
 namespace VI 

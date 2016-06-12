@@ -43,7 +43,7 @@ DEFINST(S_AND_B32,
 )
 
 DEFINST(S_AND_B64,
-	"s_and_b64	%SDST, %SSRC0, %SSRC1",
+	"s_and_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	19,
 	4,
@@ -59,7 +59,7 @@ DEFINST(S_ANDN2_B32,
 )
 
 DEFINST(S_ANDN2_B64,
-	"s_andn2_b64	%SDST, %SSRC0, %SSRC1",
+	"s_andn2_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	19,
 	4,
@@ -108,7 +108,7 @@ DEFINST(S_BFE_U32,
 )
 
 DEFINST(S_BFE_U64,
-	"s_bfe_u64	%SDST, %SSRC0, %SSRC1",
+	"s_bfe_u64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	39,
 	4,
@@ -124,7 +124,7 @@ DEFINST(S_BFM_B32,
 )
 
 DEFINST(S_BFM_B64,
-	"s_bfm_b64	%SDST, %SSRC0, %SSRC1",
+	"s_bfm_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	35,
 	4,
@@ -148,7 +148,7 @@ DEFINST(S_CSELECT_B32,
 )
 
 DEFINST(S_CSELECT_B64,
-	"s_cselect_b64	%SDST, %SSRC0, %SSRC1",
+	"s_cselect_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	11,
 	4,
@@ -164,7 +164,7 @@ DEFINST(S_LSHL_B32,
 )
 
 DEFINST(S_LSHL_B64,
-	"s_lshl_b64	%SDST, %SSRC0, %SSRC1",
+	"s_lshl_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	29,
 	4,
@@ -180,7 +180,7 @@ DEFINST(S_LSHR_B32,
 )
 
 DEFINST(S_LSHR_B64,
-	"s_lshr_b64	%SDST, %SSRC0, %SSRC1",
+	"s_lshr_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	31,
 	4,
@@ -236,7 +236,7 @@ DEFINST(S_NAND_B32,
 )
 
 DEFINST(S_NAND_B64,
-	"s_nand_b64	%SDST, %SSRC0, %SSRC1",
+	"s_nand_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	23,
 	4,
@@ -252,7 +252,7 @@ DEFINST(S_NOR_B32,
 )
 
 DEFINST(S_NOR_B64,
-	"s_nor_b64	%SDST, %SSRC0, %SSRC1",
+	"s_nor_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	25,
 	4,
@@ -268,7 +268,7 @@ DEFINST(S_OR_B32,
 )
 
 DEFINST(S_OR_B64,
-	"s_or_b64	%SDST, %SSRC0, %SSRC1",
+	"s_or_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	15,
 	4,
@@ -284,7 +284,7 @@ DEFINST(S_ORN2_B32,
 )
 
 DEFINST(S_ORN2_B64,
-	"s_orn2_b64	%SDST, %SSRC0, %SSRC1",
+	"s_orn2_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	21,
 	4,
@@ -324,7 +324,7 @@ DEFINST(S_xnor_b32,
 )
 
 DEFINST(S_xnor_b64,
-	"s_xnor_b64	%SDST, %SSRC0, %SSRC1",
+	"s_xnor_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	27,
 	4,
@@ -340,13 +340,12 @@ DEFINST(S_XOR_B32,
 )
 
 DEFINST(S_XOR_B64,
-	"s_xor_b64	%SDST, %SSRC0, %SSRC1",
+	"s_xor_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
 	SOP2,
 	17,
 	4,
 	0
 )
 
-// SOPK
 
 

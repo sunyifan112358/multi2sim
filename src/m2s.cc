@@ -43,6 +43,7 @@
 #include <arch/southern-islands/timing/Timing.h>
 #include <arch/arm/disassembler/Disassembler.h>
 #include <arch/arm/emulator/Emulator.h>
+#include <arch/volcanic-islands/disassembler/Disassembler.h>
 #include <dram/System.h>
 #include <memory/Mmu.h>
 #include <memory/Manager.h>
@@ -608,6 +609,7 @@ int MainProgram(int argc, char **argv)
 	net::System::RegisterOptions();
 	ARM::Disassembler::RegisterOptions();
 	ARM::Emulator::RegisterOptions();
+	VI::Disassembler::RegisterOptions();
 
 	// Process command line. Return to C version of Multi2Sim if a
 	// command-line option was not recognized.
@@ -638,6 +640,7 @@ int MainProgram(int argc, char **argv)
 	net::System::ProcessOptions();
 	ARM::Disassembler::ProcessOptions();
 	ARM::Emulator::ProcessOptions();
+	VI::Disassembler::ProcessOptions();
 
 	// Initialize memory system, only if there is at least one timing
 	// simulation active. Check this in the architecture pool after all
