@@ -348,4 +348,16 @@ DEFINST(S_XOR_B64,
 )
 
 
+// FLAT Instructions
 
+
+
+// EXP Instructions
+
+DEFINST(EXPORT,
+	" export	%TGT, %EXP_VSRCs",
+	EXP,
+	0,
+	8,
+	0
+)

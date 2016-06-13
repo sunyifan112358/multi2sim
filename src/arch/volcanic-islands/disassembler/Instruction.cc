@@ -92,10 +92,6 @@ const misc::StringMap Instruction::sdst_map =
 	{"exec_lo", 25}
 };
 
-const misc::StringMap Instruction::exp_tgt_map =
-{
-	{"", 0} // TODO
-};
 
 const misc::StringMap Instruction::ssrc_map =
 {
@@ -199,11 +195,46 @@ const misc::StringMap Instruction::special_reg_map =
 	{"tma", SpecialRegTma}
 };
 
-
 Instruction::Instruction()
 {
 	this->disassembler = Disassembler::getInstance();
 	Clear();
+}
+
+void Instruction::DumpOperandExp(std::ostream& os, int operand)
+{
+	assert(operand >= 0 && operand <= 63);
+	if(operand <=7)
+	{
+		os << "exp_mrt_" << operand;
+	}
+	else if(operand == 8)
+	{
+		os << "exp_mrtz";
+
+	}
+	else if(operand == 9)
+	{
+		os << "exp_null";
+	}
+	else if(operand < 12)
+	{
+		throw Disassembler::Error(misc::fmt("Operand code [%d] unused.",
+					operand));
+	}
+	else if(operand <= 15)
+	{
+		os<< "exp_pos_" << operand - 12;
+	}
+	else if(operand < 32)
+	{
+		throw Disassembler::Error(misc::fmt("Operand code [%d] unused.",
+					operand));	
+	}
+	else if(operand <= 63)
+	{
+		os << exp_prm_ << operand - 32;
+	}
 }
 
 
@@ -244,13 +275,149 @@ void Instruction::DumpOperand(std::ostream& os, int operand)
 
 void Instruction::DumpOperandSeries(std::ostream& os, int start, int end)
 {
-	// TODO	
+	assert(start <= end);
+	if(start == end)
+	{
+		DumpOperand(os, start);
+		return;
+	}
+
+	if(start <= 101)
+	{
+		os << "s[" << start << ':' << end << ']';
+	}
+	else if(start <= 245)
+	{
+		if(start >= 112 && start <= 123)
+		{
+			os << "ttmp[" << start - 112 << ':' << end - 112 << ']';
+		}
+		else
+		{
+			assert(end == start + 1);
+			switch(start)
+			{
+			case 102:
+				os << "flat_scr";
+				break;
+			case 104:
+				os << "xnack_mask";
+				break;
+			case 106:
+				os << "vcc";
+				break;
+			case 108:
+				os << "tba";
+				break;
+			case 110:
+				os << "tma"
+				brek;
+			case 126:
+				os << "exec";
+				break;
+			case 128:
+				os << "0";
+				break;
+			case 240:
+				os << "0.5";
+				break;
+			case 242:
+				os << "1.0";
+				break;
+			case 243:
+				os << "-1.0";
+				break;
+			case 244:
+				os << "2.0";
+				break;
+			case 245:
+				os << "-2.0";
+				break;
+			default:
+				throw Disassembler::Error(misc::fmt(
+							"Unimplemented series: "
+							"[%d:%d]", start, end));
+			}
+		}
+	}
+	else if(start <= 255
+	{
+		throw Disassembler::Error(misc::fmt("Illegal operand series: [%d:%d]",
+						start, end));
+	}
+	else if(start <=511)
+	{
+		os << "v[" << start - 256 << ':' << end - 256 << ']';
+	}
+}
+
+void Instruction::DumpVector(std::ostream& os, int operand)
+{
+	DumpOperand(os, operand + 256);
 }
 
 void Instruction::Dump(std::ostream &os) const
 {
-	// TODO
+	int token_len;
+	const char *fmt_str;
 
+	fmt_str = info ? info->fmt_str : "";
+	while(*fmt_str)
+	{
+		if(*fmt_str != '%')
+		{
+			os << *fmt_str;
+			fmt_str++;
+			continue
+		}
+
+		fmt_str++; // '%'
+		// TODO add token handlers here
+		if (comm::Disassembler::isToken(fmt_str, "LABEL", token_len))
+		{		
+			const BytesSOPP *sopp = &bytes.sopp;
+	
+			short simm16 = sopp->simm16;
+			int se_simm = simm16;
+
+			os << misc::fmt("label_%04X",
+					(address + (se_simm * 4) + 4) / 4);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "TGT", token_len))
+		{
+			DumpOperandExp(os, bytes.exp.tgt);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "EXP_VSRCs", token_len))
+		{
+			if(bytes.exp.compr == 0 && (bytes.exp.en && 0x0) == 0x0)
+			{
+				os << '[';
+				DumpVector(os, bytes.exp.vsrc0);
+				os << ' ';
+				DumpVector(os, bytes.exp.vsrc1);
+				os << ' ';
+				DumpVector(os, bytes.exp.vsrc2);
+				os << ' ';
+				DumpVector(os, bytes.exp.vsrc3);
+				os << ']';
+			}
+			else if(bytes.exp.compr == 1 && (bytes.exp.en && 0x0) == 0x0)
+			{
+				os << '[';
+				DumpVector(os, bytes.exp.vsrc0);
+				os << ' ';
+				Dumpvector(os, bytes.exp.vsrc1);
+				os << ']';
+			}
+		}
+		else
+		{
+			throw misc::Panic(misc::fmt("%s: token not recognized.",
+						fmt_str));
+		}
+
+		fmt_str += token_len;
+	}
 }
 
 
