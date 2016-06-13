@@ -555,6 +555,9 @@ private:
 	static void DumpOperandSeries(std::ostream& os, int start, int end);
 	static void DumpVector(std::ostream& os, int operand);
 	static void DumpOperandExp(std::ostream& os, int operand);
+	static void DumpScalar(std::ostream& os, int operand);
+	static void DumpScalarSeries(std::ostream& os, int start, int end);
+
 public:
 
 	Instruction();

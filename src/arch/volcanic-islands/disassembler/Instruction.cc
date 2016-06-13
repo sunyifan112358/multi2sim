@@ -356,6 +356,16 @@ void Instruction::DumpVector(std::ostream& os, int operand)
 	DumpOperand(os, operand + 256);
 }
 
+void Instruction::DumpScalar(std::ostream& os, int operand)
+{
+	DumpOperand(os, operand);
+}
+
+void Instruction::DumpScalarSeries(std::ostream& os, int start, int end)
+{
+	DumpOperandSeries(os, start, end);
+}
+
 void Instruction::Dump(std::ostream &os) const
 {
 	int token_len;
@@ -382,6 +392,128 @@ void Instruction::Dump(std::ostream &os) const
 
 			os << misc::fmt("label_%04X",
 					(address + (se_simm * 4) + 4) / 4);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "WAIT_CNT", token_len))
+		{
+			const BytesSOPP *bytessopp = &bytes.sopp;
+
+			unsigned more = 0;
+			int vm_cnt = (bytessopp->simm16 & 0xF); // [3:0]
+
+			if(vm_cnt != 0xF)
+			{
+				os << "vmcnt(" << vm_cnt << ")";
+			}
+			
+			int lgkm_cnt = (bytessopp->simm16 & 0x1f00) >> 8; // [12:8]
+			if(lgkm_cnt != 0x1f)
+			{
+				if(more)
+					os << " & ";
+				os << "lgkmcnt(" << lgkm_cnt << ")";
+				more = 1;
+			}
+
+			int exp_cnt = (bytessopp->simm16 & 0x70) >> 4; // [6:4]
+			if(exp_cnt != 0x7)
+			{
+				if(more)
+					os << " & ";
+				os << "expcnt(" << exp_cnt << ")";
+				more = 1;
+			}
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "SDATA", token_len))
+		{
+			DumpScalar(os, bytes.smem.sdata);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "SERIES_SDATA", token_len))
+		{
+			// sbase field has implied LSB 0
+			int sdata = bytes.smem.sdata;
+			int sdata_end;
+			int op = bytes.smem.op;
+
+			if(misc::inRange(op, 0, 4))
+			{
+				switch(op)
+				{
+				case 0:
+					break;
+				case 1:
+					sdata_end = sdata + 1;
+					break;
+				case 2:
+					sdata_end = sdata + 3;
+					break;
+				case 3:
+					sdata_end = sdata + 7;
+					break;
+				case 4:
+					sdata_end = sdata + 15;
+					break;
+				default:
+					throw Disassembler::Error("Invalid SMEM Opcode");
+				}
+			}
+			else if(misc::inRange(op, 8, 12))
+			{
+				switch(op)
+				{
+				case 8:
+					break;
+				case 9:
+					sdata_end = sdata + 1;
+					break;
+				case 10:
+					sdata_end = sdata + 3;
+					break;
+				case 11:
+					sdata_end = sdata + 7;
+					break;
+				case 12:
+					sdata_end = sdata + 15;
+					break;
+				default:
+					throw Disassembler::Error("Invalid SMEM Opcode");
+				}
+			}
+			else
+			{
+				throw Disassembler::Error("Invalid SMEM Opcode"); // Opcode support not here^
+			}
+
+			DumpScalarSeries(os, sdata, sdata_end);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "SERIES_SBASE", token_len))
+		{
+			// sbase field has implied LSB 0
+			int sbase = bytes.smem.sbase * 2;
+			int sbase_end;
+			int op = bytes.smem.op;
+
+			if(misc::inRange(op, 0, 4)) // s_load_dword{"", x2, x4, x16}
+			{
+				sbase_end = sbase + 1;
+			}
+			else if(misc::inRange(op, 8, 12)) // s_buffer_load_dword
+			{
+				sbase_end = sbase + 3;
+			}
+			// TODO
+			else
+			{
+				throw Disassembler::Error("Invalid SMEM opcode"); // opcode support not here ^
+			}
+
+			DumpScalarSeries(os, sbase, sbase_end);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "OFFSET", token_len))
+		{
+			if(bytes.smem.imm)
+				os << misc::fmt("0x%d", bytes.smem.offset);
+			else
+				DumpScalar(os, bytes.smem.offset);
 		}
 		else if(comm::Disassembler::isToken(fmt_str, "TGT", token_len))
 		{
