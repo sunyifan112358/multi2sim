@@ -233,7 +233,7 @@ void Instruction::DumpOperandExp(std::ostream& os, int operand)
 	}
 	else if(operand <= 63)
 	{
-		os << exp_prm_ << operand - 32;
+		os << "exp_prm_" << operand - 32;
 	}
 }
 
@@ -310,8 +310,8 @@ void Instruction::DumpOperandSeries(std::ostream& os, int start, int end)
 				os << "tba";
 				break;
 			case 110:
-				os << "tma"
-				brek;
+				os << "tma";
+				break;
 			case 126:
 				os << "exec";
 				break;
@@ -340,7 +340,7 @@ void Instruction::DumpOperandSeries(std::ostream& os, int start, int end)
 			}
 		}
 	}
-	else if(start <= 255
+	else if(start <= 255)
 	{
 		throw Disassembler::Error(misc::fmt("Illegal operand series: [%d:%d]",
 						start, end));
@@ -368,7 +368,7 @@ void Instruction::Dump(std::ostream &os) const
 		{
 			os << *fmt_str;
 			fmt_str++;
-			continue
+			continue;
 		}
 
 		fmt_str++; // '%'
@@ -406,7 +406,7 @@ void Instruction::Dump(std::ostream &os) const
 				os << '[';
 				DumpVector(os, bytes.exp.vsrc0);
 				os << ' ';
-				Dumpvector(os, bytes.exp.vsrc1);
+				DumpVector(os, bytes.exp.vsrc1);
 				os << ']';
 			}
 		}

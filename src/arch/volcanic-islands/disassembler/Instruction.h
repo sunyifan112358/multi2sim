@@ -553,8 +553,8 @@ private:
 
 	static void DumpOperand(std::ostream& os, int operand);
 	static void DumpOperandSeries(std::ostream& os, int start, int end);
-
-
+	static void DumpVector(std::ostream& os, int operand);
+	static void DumpOperandExp(std::ostream& os, int operand);
 public:
 
 	Instruction();
