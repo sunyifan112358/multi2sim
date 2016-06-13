@@ -140,19 +140,7 @@ Disassembler::Disassembler() : comm::Disassembler("VolcanicIslands")
 			assert(misc::inRange(info->op, 0, dec_table_vop2_count - 1));
 			dec_table_vop2[info->op] = info;
 			continue;
-		}
-		else if (info->fmt == Instruction::FormatVOP_SDWA)
-		{
-			assert(misc::inRange(info->op, 0, dec_table_vop_sdwa_count -1));
-			dec_table_vop_sdwa[info->op] = info;
-			continue;
-		}
-		else if (info->fmt == Instruction::FormatVOP_DPP)
-		{
-			assert(misc::inRange(info->op, 0, dec_table_vop_dpp_count -1));
-			dec_table_vop_dpp[info->op] = info;
-			continue;
-		}
+		}	
 		else if (info->fmt == Instruction::FormatVINTRP)
 		{
 			assert(misc::inRange(info->op, 0, dec_table_vintrp_count - 1));

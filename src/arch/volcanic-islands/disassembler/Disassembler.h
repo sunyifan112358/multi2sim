@@ -49,14 +49,12 @@ class Disassembler : public comm::Disassembler
 	static const int dec_table_vopc_count = 10;
 	static const int dec_table_vop1_count = 10;
 	static const int dec_table_vop2_count = 10;
-	static const int dec_table_vop_sdwa_count = 10;
-	static const int dec_table_vop_dpp_count = 10;
 	static const int dec_table_vintrp_count = 10;
 	static const int dec_table_ds_count = 10;
 	static const int dec_table_mubuf_count = 10;
 	static const int dec_table_mtbuf_count = 10;
 	static const int dec_table_mimg_count = 10;
-	static const int dec_table_exp_count = 10;
+	static const int dec_table_exp_count = 1; //EXPORT
 	static const int dec_table_flat_count = 10;
 
 	Instruction::Info inst_info[Instruction::OpcodeCount];
@@ -72,8 +70,6 @@ class Disassembler : public comm::Disassembler
 	Instruction::Info *dec_table_vopc[dec_table_vopc_count];
 	Instruction::Info *dec_table_vop1[dec_table_vop1_count];
 	Instruction::Info *dec_table_vop2[dec_table_vop2_count];
-	Instruction::Info *dec_table_vop_sdwa[dec_table_vop_sdwa_count];
-	Instruction::Info *dec_table_vop_dpp[dec_table_vop_dpp_count];
 	Instruction::Info *dec_table_vintrp[dec_table_vintrp_count];
 	Instruction::Info *dec_table_ds[dec_table_ds_count];
 	Instruction::Info *dec_table_mtbuf[dec_table_mtbuf_count];
@@ -178,18 +174,6 @@ public:
 		return dec_table_vopc[index];
 	}
 	
-	Instruction::Info *getDecTableVopSdwa(int index)
-	{
-		assert(index >= 0 && index < dec_table_vop_sdwa_count);
-		return dec_table_vop_sdwa[index];
-	}
-
-	Instruction::Info *getDecTableVopDpp(int index)
-	{
-		assert(index >= 0 && index < dec_table_vop_dpp_count);
-		return dec_table_vop_dpp[index];
-	}
-
 	Instruction::Info *getDecTableVop3(int index)
 	{
 		assert(index >= 0 && index < dec_table_vop3_count);
