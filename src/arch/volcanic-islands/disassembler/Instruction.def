@@ -456,6 +456,78 @@ DEFINST(S_WAITCNT,
 	0
 )
 
+DEFNIST(S_ENDPGM,
+	" s_endpgm",
+	SOPP,
+	1,
+	4,
+	0
+)
+
+DEFINST(S_BRANCH,
+	" s_branch	%LABEL",
+	SOPP,
+	2,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_SCC0,
+	" s_cbranch_scc0	%LABEL",
+	SOPP,
+	4,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_SCC1,
+	" s_cbranch_scc1	%LABEL",
+	SOPP,
+	5,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_VCCZ,
+	" s_cbranch_vccz	%LABEL",
+	SOPP,
+	6,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_VCCNZ,
+	" s_cbranch_vccnz	%LABEL",
+	SOPP,
+	7,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_EXECZ,
+	" s_cbranch_execz	%LABEL",
+	SOPP,
+	8,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_EXECNZ,
+	" s_cbranch_execnz	%LABEL",
+	SOPP,
+	9,
+	4,
+	0
+)
+
+DEFINST(S_BARRIER,
+	" s_barrier",
+	SOPP,
+	10,
+	4,
+	0
+)
+
 // SMEM Instructions
 
 DEFINST(S_BUFFER_LOAD_DWORD,
