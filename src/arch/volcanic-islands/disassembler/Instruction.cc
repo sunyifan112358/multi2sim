@@ -356,6 +356,11 @@ void Instruction::DumpVector(std::ostream& os, int operand)
 	DumpOperand(os, operand + 256);
 }
 
+void Instruction::DumpVectorSeries(std::ostream& os, int start, int end)
+{
+	DumpOperandSeries(os, start + 256, end + 256);
+}
+
 void Instruction::DumpScalar(std::ostream& os, int operand)
 {
 	DumpOperand(os, operand);
@@ -374,6 +379,67 @@ void Instruction::DumpSsrc(std::ostream& os, unsigned int ssrc) const
 		DumpScalar(os, ssrc);
 }
 
+void Instruction::DumpVop364Src(std::ostream& os, unsigned int src, int neg) const
+{
+	std::stringstream ss;
+
+	DumpOperandSeries(ss, src, src + 1);
+	// Vop3b operations have no abs field
+	if(!misc::inRange(bytes.vop3a.op, 480, 481) &&
+		!misc::inRange(bytes.vop3a.op, 281, 286))
+	{
+		if((bytes.vop3a.neg & neg) &&
+			(bytes.vop3a.abs & neg))
+			os << "-abs(" << ss.str() << ")";
+		else if((bytes.vop3a.neg & neg) &&
+			!(bytes.vop3a.abs & neg))
+			os << '-' << ss.str();
+		else if(!(bytes.vop3a.neg & neg) &&
+			!(bytes.vop3a.abs & neg))
+			os << ss.str();
+		else if(!(bytes.vop3a.neg & neg) &&
+			(bytes.vop3a.abs & neg))
+			os << "abs(" << ss.str() << ")";
+	}
+	else
+	{
+		if(bytes.vop3a.neg & neg)
+			os << '-' << ss.str();
+		else if(!(bytes.vop3a.neg & neg))
+			os << ss.str();
+	}
+}
+
+void Instruction::DumpVop3Src(std::ostream& os, unsigned int src, int neg) const
+{
+	std::stringstream ss;
+
+	DumpOperand(ss, src);
+	// Vop3b operations have no abs field
+	if(!misc::inRange(bytes.vop3a.op, 480, 481) &&
+		!misc::inRange(bytes.vop3a.op, 281, 286))
+	{
+		if((bytes.vop3a.neg & neg) &&
+			(bytes.vop3a.abs & neg))
+			os << "-abs(" << ss.str() << ")";
+		else if((bytes.vop3a.neg & neg) &&
+			!(bytes.vop3a.abs & neg))
+			os << '-' << ss.str();
+		else if(!(bytes.vop3a.neg & neg) &&
+			!(bytes.vop3a.abs & neg))
+			os << ss.str();
+		else if(!(bytes.vop3a.neg & neg) &&
+			(bytes.vop3a.abs & neg))
+			os << "abs(" << ss.str() << ")";
+	}
+	else
+	{
+		if(bytes.vop3a.neg & neg)
+			os << '-' << ss.str();
+		else if(!(bytes.vop3a.neg & neg))
+			os << ss.str();
+	}
+}
 
 void Instruction::Dump(std::ostream &os) const
 {
@@ -562,6 +628,45 @@ void Instruction::Dump(std::ostream &os) const
 		else if(comm::Disassembler::isToken(fmt_str, "SSRC1", token_len))
 		{
 			DumpSsrc(os, bytes.sop2.ssrc1);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VDST", token_len))
+		{
+			DumpVector(os, bytes.vop1.vdst);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "SRC0", token_len))
+		{
+			if(bytes.vopc.src0 == 0xFF)
+				os << misc::fmt("0x%08x", bytes.vopc.lit_cnst);
+			else
+				DumpOperand(os, bytes.vopc.src0);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VSRC1", token_len))
+		{
+			DumpVector(os, bytes.vopc.vsrc1);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_VDST", token_len))
+		{
+			DumpVector(os, bytes.vop3a.vdst);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_SRC0", token_len))
+		{
+			DumpVop3Src(os, bytes.vop3a.src0, 1);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_SRC1", token_len))
+		{
+			DumpVop3Src(os, bytes.vop3a.src1, 2);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_64_SRC2", token_len))
+		{
+			DumpVop364Src(os, bytes.vop3a.src2, 4);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_64_SRC1", token_len))
+		{
+			DumpVop364Src(os, bytes.vop3a.src1, 2);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_64_SRC0", token_len))
+		{
+			DumpVop364Src(os, bytes.vop3a.src0, 1);
 		}
 		else
 		{

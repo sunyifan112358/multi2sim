@@ -612,6 +612,27 @@ DEFINST(S_LOAD_DWORDX16,
 	0
 )
 
+// VOP2
+
+DEFINST(V_ADD_U32,
+	" v_add_u32	%VDST, %SRC0, %VSRC1",
+	VOP2,
+	25,
+	4,
+	0
+)
+
+// VOP3a
+
+DEFINST(V_ADD_U32_VOP3a,
+	" v_add_u32	%VOP3_VDST, %VOP3_SRC0, %VOP3_SRC1, %VOP3_64_SRC2",
+	VOP3a,
+	281,
+	8,
+	0
+)
+
+
 // FLAT Instructions
 
 

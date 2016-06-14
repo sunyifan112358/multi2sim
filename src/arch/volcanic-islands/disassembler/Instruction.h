@@ -554,11 +554,13 @@ private:
 	static void DumpOperand(std::ostream& os, int operand);
 	static void DumpOperandSeries(std::ostream& os, int start, int end);
 	static void DumpVector(std::ostream& os, int operand);
+	static void DumpVectorSeries(std::ostream& os, int start, int end);
 	static void DumpOperandExp(std::ostream& os, int operand);
 	static void DumpScalar(std::ostream& os, int operand);
 	static void DumpScalarSeries(std::ostream& os, int start, int end);
 	void DumpSsrc(std::ostream& os, unsigned int ssrc) const;
-	 
+	void DumpVop364Src(std::ostream& os, unsigned int src, int neg) const;
+	void DumpVop3Src(std::ostream& os, unsigned int src, int neg) const; 
 
 public:
 
