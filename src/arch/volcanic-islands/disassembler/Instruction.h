@@ -557,6 +557,8 @@ private:
 	static void DumpOperandExp(std::ostream& os, int operand);
 	static void DumpScalar(std::ostream& os, int operand);
 	static void DumpScalarSeries(std::ostream& os, int start, int end);
+	void DumpSsrc(std::ostream& os, unsigned int ssrc) const;
+	 
 
 public:
 

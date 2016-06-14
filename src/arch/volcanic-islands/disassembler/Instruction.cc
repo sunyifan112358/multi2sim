@@ -366,6 +366,15 @@ void Instruction::DumpScalarSeries(std::ostream& os, int start, int end)
 	DumpOperandSeries(os, start, end);
 }
 
+void Instruction::DumpSsrc(std::ostream& os, unsigned int ssrc) const
+{
+	if(ssrc == 0xff)
+		os << misc::fmt("0x%08x", bytes.sop2.lit_cnst);
+	else
+		DumpScalar(os, ssrc);
+}
+
+
 void Instruction::Dump(std::ostream &os) const
 {
 	int token_len;
@@ -541,6 +550,18 @@ void Instruction::Dump(std::ostream &os) const
 				DumpVector(os, bytes.exp.vsrc1);
 				os << ']';
 			}
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "SDST", token_len))
+		{
+			DumpScalar(os, bytes.sop2.sdst);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "SSRC0", token_len))
+		{
+			DumpSsrc(os, bytes.sop2.ssrc0);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "SSRC1", token_len))
+		{
+			DumpSsrc(os, bytes.sop2.ssrc1);
 		}
 		else
 		{
