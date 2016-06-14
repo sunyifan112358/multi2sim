@@ -456,7 +456,7 @@ DEFINST(S_WAITCNT,
 	0
 )
 
-DEFNIST(S_ENDPGM,
+DEFINST(S_ENDPGM,
 	" s_endpgm",
 	SOPP,
 	1,
