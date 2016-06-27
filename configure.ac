@@ -96,13 +96,13 @@ AC_MSG_RESULT(yes)
 
 # Get GCC version
 AC_MSG_CHECKING([for GCC version])
-cxx_version=`$CXX --version`
+cxx_version=`$CXX -dumpversion`
 AC_MSG_RESULT($cxx_version)
 
 # Check version
 cxx_major_version=`echo $cxx_version | cut -d. -f1`
 cxx_minor_version=`echo $cxx_version | cut -d. -f2`
-if test \( $cxx_major_version -lt 3 \) -o \( $cxx_major_version -eq 4 -a $cxx_minor_version -lt 4 \)
+if test \( $cxx_major_version -lt 4 \) -o \( $cxx_major_version -eq 4 -a $cxx_minor_version -lt 8 \)
 then
 	AC_MSG_ERROR([
 
