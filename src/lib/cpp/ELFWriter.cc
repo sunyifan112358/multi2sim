@@ -323,7 +323,10 @@ void File::Generate(std::ostream& os)
 	info.e_ident[4] = ELFCLASS32;
 	info.e_ident[5] = ELFDATA2LSB;
 	info.e_ident[6] = EV_CURRENT;
-	info.e_ident[16] = EI_NIDENT;
+
+	// The following line is removed by Yifan, e_ident only have 16
+	// elements. Accessing the 16th is out of boundrary.
+	// info.e_ident[16] = EI_NIDENT;
 	info.e_type = ET_EXEC;
 	
 	// Set ELF Header Properties for sections. Use elf.h structs for

@@ -18,7 +18,7 @@
  */
 
 #include <lib/cpp/CommandLine.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
 #include <lib/cpp/String.h>
 
 #include "Disassembler.h"
@@ -323,7 +323,7 @@ Disassembler::~Disassembler()
 
 void Disassembler::DisassembleBinary(const std::string &path)
 {
-	ELFReader::File file(path);
+	elf::File32 file(path);
 	Instruction inst;
 
 	unsigned int curr_sym;
@@ -333,7 +333,7 @@ void Disassembler::DisassembleBinary(const std::string &path)
 	for (int i = 0; i < file.getNumSections(); i++)
 	{
 		// Skip if section does not contain code
-		ELFReader::Section *section = file.getSection(i);
+		elf::Section32 *section = file.getSection(i);
 		if (!(section->getFlags() & SHF_EXECINSTR))
 			continue;
 
@@ -342,7 +342,7 @@ void Disassembler::DisassembleBinary(const std::string &path)
 
 		/* Symbol */
 		curr_sym = 0;
-		ELFReader::Symbol *symbol = file.getSymbol(0);
+		elf::Symbol32 *symbol = file.getSymbol(0);
 
 		/* Decode and dump instructions */
 		for (pos = 0; pos < section->getSize(); pos += 4)
@@ -368,7 +368,7 @@ void Disassembler::DisassembleBinary(const std::string &path)
 			/* Symbol name */
 			if (inst.getTarget())
 			{
-				ELFReader::Symbol *print_symbol;
+				elf::Symbol32 *print_symbol;
 				print_symbol = file.getSymbolByAddress(inst.getTarget());
 				if (print_symbol)
 				{

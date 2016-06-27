@@ -33,8 +33,8 @@ class ReturnAddressStack
         class ReturnAddressStackEntry
         {
 
-        		// Counter, used for debug
-        		unsigned counter;
+        	// Counter, used for debug
+        	unsigned counter;
 
                 // Return Address
                 unsigned return_address;
@@ -58,7 +58,7 @@ class ReturnAddressStack
 
                 ReturnAddressStackEntry(ReturnAddressStackEntry &entry)
                 {
-                	this->active_mask = active_mask;
+                	// this->active_mask = active_mask;
                 	this->counter = entry.getCounter();
                 	this->return_address = entry.getReturnAddress();
                 	this->sync_stack = std::move(*(entry.getSyncStack()));

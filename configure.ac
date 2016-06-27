@@ -96,13 +96,13 @@ AC_MSG_RESULT(yes)
 
 # Get GCC version
 AC_MSG_CHECKING([for GCC version])
-cxx_version=`$CXX -dumpversion`
+cxx_version=`$CXX --version`
 AC_MSG_RESULT($cxx_version)
 
 # Check version
 cxx_major_version=`echo $cxx_version | cut -d. -f1`
 cxx_minor_version=`echo $cxx_version | cut -d. -f2`
-if test \( $cxx_major_version -lt 4 \) -o \( $cxx_major_version -eq 4 -a $cxx_minor_version -lt 8 \)
+if test \( $cxx_major_version -lt 3 \) -o \( $cxx_major_version -eq 4 -a $cxx_minor_version -lt 4 \)
 then
 	AC_MSG_ERROR([
 
@@ -131,7 +131,7 @@ AC_ARG_ENABLE(debug,
 		
 		# Add flag '-Wno-error=deprecated-declarations' only if it is supported.
 		# This flag prevents warnings caused by newer GTK versions that would cause with -Werror
-		CXXFLAGS="-msse2 -std=gnu++0x -Wall -Werror -g -O0"
+    CXXFLAGS="-msse2 -std=gnu++0x -Wall -Werror -g -O0"
 		saved_flags="-msse2 -Wall -Werror -DMHANDLE -g -O0 -std=gnu99"
 		CFLAGS="-Wno-error=deprecated-declarations"
 		AC_MSG_CHECKING([whether CC supports -Wno-error=deprecated-declarations])
@@ -610,6 +610,7 @@ AC_CONFIG_FILES([
 		src/arch/x86/timing/Makefile
 
 		src/lib/cpp/Makefile
+		src/lib/elf/Makefile
 		src/lib/esim/Makefile
 		src/lib/gtest/Makefile
 		src/lib/mhandle/Makefile

@@ -1105,7 +1105,7 @@ int Context::ExecuteSyscall_readlink()
 	int file_name_ptr = regs.getGPR(4);
 	unsigned int buf_ptr = regs.getGPR(5);
 	unsigned count = regs.getGPR(6);
-	int ret;
+	int ret = 0;
 
 	char *buf = new char[count]();
 	emulator->syscall_debug << misc::fmt("  file_name_ptr=0x%x, "

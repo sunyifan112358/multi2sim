@@ -310,11 +310,11 @@ void Context::ExecuteInst_TEQS_reg()
 
 void Context::ExecuteInst_CMPS_reg()
 {
-	int rn_val;
-	int operand2;
-	int result;
-	int op2;
-	int rd_val;
+	int rn_val = 0;
+	int operand2 = 0;
+	int result = 0;
+	int op2 = 0;
+	int rd_val = 0;
 	unsigned long flags = 0;
 	if(IsaCheckCond())
 	{
@@ -557,12 +557,16 @@ void Context::ExecuteInst_MVNS_reg()
 			regs.getCPSR().C = 0;
 			regs.getCPSR().v = 0;
 		}
-		if(result < 0)
-		{
-			regs.getCPSR().n = 1;
-			regs.getCPSR().C = 0;
-			regs.getCPSR().v = 0;
-		}
+
+		// Commented by Yifan. result is unsigned, how can it smaller
+		// than 0.
+//		if(result < 0)
+//		{
+//			regs.getCPSR().n = 1;
+//			regs.getCPSR().C = 0;
+//			regs.getCPSR().v = 0;
+//		}
+
 		if(IsaOp2Carry(inst.getBytes()->dpr.op2, ContextOp2CatecoryReg))
 		{
 			regs.getCPSR().C = 1;
@@ -882,11 +886,11 @@ void Context::ExecuteInst_TEQS_imm()
 
 void Context::ExecuteInst_CMPS_imm()
 {
-	int rn_val;
-	int operand2;
-	int result;
-	int op2;
-	int rd_val;
+	int rn_val = 0;
+	int operand2 = 0;
+	int result = 0;
+	int op2 = 0;
+	int rd_val = 0;
 	unsigned long flags = 0;
 
 	if(IsaCheckCond())
@@ -950,11 +954,11 @@ void Context::ExecuteInst_CMPS_imm()
 
 void Context::ExecuteInst_CMNS_imm()
 {
-	int rn_val;
-	int operand2;
-	int result;
-	int op2;
-	int rd_val;
+	int rn_val = 0;
+	int operand2 = 0;
+	int result = 0;
+	int op2 = 0;
+	int rd_val = 0;
 	unsigned long flags = 0;
 
 	if(IsaCheckCond())
@@ -1122,7 +1126,7 @@ void Context::ExecuteInst_QDSUB()
 
 void Context::ExecuteInst_MRS_reg()
 {
-	unsigned int rd_val;
+	unsigned int rd_val = 0;
 	if (IsaCheckCond())
 	{
 		if(!(inst.getBytes()->psr.psr_loc))

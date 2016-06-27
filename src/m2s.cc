@@ -156,7 +156,7 @@ void LoadProgram(const std::vector<std::string> &arguments,
 	
 	// Choose emulator based on ELF header
 	std::string exe = misc::getFullPath(arguments[0], current_directory);
-	ELFReader::File elf_file(exe, false);
+	elf::File32 elf_file(exe, false);
 	comm::Emulator *emulator;
 	switch (elf_file.getMachine())
 	{

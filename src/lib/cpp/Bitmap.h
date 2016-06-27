@@ -85,15 +85,15 @@ public:
 
 	bool operator[](size_t at) const { return Test(at); }
 	bool operator==(const Bitmap &b) const;
-	Bitmap &operator<<=(size_t n);
-	Bitmap &operator>>=(size_t n);
+	Bitmap &operator<<=(long long n);
+	Bitmap &operator>>=(long long n);
 	Bitmap &operator&=(const Bitmap &b);
 	Bitmap &operator|=(const Bitmap &b);
 	Bitmap &operator^=(const Bitmap &b);
 	Bitmap &operator-=(const Bitmap &b);
 
-	Bitmap operator<<(size_t n) const;
-	Bitmap operator>>(size_t n) const;
+	Bitmap operator<<(long long n) const;
+	Bitmap operator>>(long long n) const;
 	Bitmap operator&(const Bitmap &b) const;
 	Bitmap operator|(const Bitmap &b) const;
 	Bitmap operator^(const Bitmap &b) const;

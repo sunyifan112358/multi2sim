@@ -77,7 +77,7 @@ void Program::InitializeConstantBuffers()
 		symbol_name << "__OpenCL_" << i << "_global";
 
 		// Check to see if symbol exists
-		ELFReader::Symbol *symbol = getSymbol(symbol_name.str());
+		elf::Symbol32 *symbol = getSymbol(symbol_name.str());
 		if (!symbol)                                                     
 			break;                                                   
 
@@ -122,7 +122,7 @@ void Program::InitializeConstantBuffers()
 void Program::setBinary(const char *buf, unsigned int size)
 {
 	// Create a new ELF file based on the passed buffer
-	elf_file = misc::new_unique<ELFReader::File>(buf, size);
+	elf_file = misc::new_unique<elf::File32>(buf, size);
 
 	// Initialize constant buffers based on global symbols
 	InitializeConstantBuffers();

@@ -415,7 +415,7 @@ void Context::Execute()
 	// Debug
 	if (emulator->isa_debug)
 	{
-		ELFReader::Symbol *symbol = (loader->binary)->getSymbolByAddress(regs.getPC());
+		elf::Symbol32 *symbol = (loader->binary)->getSymbolByAddress(regs.getPC());
 		std::string symbol_string = symbol->getName();
 		if ((regs.getPC() - previous_ip) != 4)
 			emulator->isa_debug << misc::fmt("\nIN %s\n", symbol_string.c_str());

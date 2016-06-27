@@ -21,7 +21,8 @@
 #include <cstring>
 #include <sstream>
 
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
+#include <lib/elf/Section32.h>
 #include <lib/cpp/String.h>
 
 #include "Driver.h"
@@ -38,11 +39,11 @@ Function::Function(int id, Module *module, const std::string &name) :
 		name(name)
 {
 	// Obtain cubin binary from associated module
-	ELFReader::File *elf_file = module->getELFFile();
+	elf::File32 *elf_file = module->getELFFile();
 
 	// Get section named ".text.<name>" from the ELF file
 	std::string text_section_name = ".text." + name;
-	ELFReader::Section *text_section = elf_file->getSection(
+	elf::Section32 *text_section = elf_file->getSection(
 			text_section_name);
 	if (text_section == nullptr)
 		throw Driver::Error(misc::fmt("Cannot find section '%s' in "
@@ -54,7 +55,7 @@ Function::Function(int id, Module *module, const std::string &name) :
 
 	// Get section named ".nv.info.<name>" from the ELF file
 	std::string info_section_name = ".nv.info." + name;
-	ELFReader::Section *info_section = elf_file->getSection(
+	elf::Section32 *info_section = elf_file->getSection(
 			info_section_name);
 	if (info_section == nullptr)
 		throw Driver::Error(misc::fmt("Cannot find section '%s' in "

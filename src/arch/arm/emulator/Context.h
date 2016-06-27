@@ -27,7 +27,7 @@
 #include <arch/common/CallStack.h>
 #include <arch/arm/disassembler/Instruction.h>
 #include <arch/arm/disassembler/Disassembler.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File.h>
 #include <memory/Memory.h>
 #include <memory/SpecMem.h>
 #include <arch/common/FileTable.h>
@@ -192,7 +192,7 @@ class Context
 	ContextInstType getInstType() { return inst_type; }
 
 	// symbol list used for getting the ARM operating mode
-	std::vector<ELFReader::Symbol *> thumb_symbol_list;
+	std::vector<elf::Symbol32 *> thumb_symbol_list;
 
 	// Fault Management
 	unsigned int fault_addr;
@@ -272,7 +272,7 @@ class Context
 	struct Loader
 	{
 		// Program executable
-		std::unique_ptr<ELFReader::File> binary;
+		std::unique_ptr<elf::File32> binary;
 
 		// Command-line arguments
 		std::vector<std::string> args;
@@ -326,7 +326,7 @@ class Context
 	std::shared_ptr<Loader> loader;
 
 	// Load ELF sections from binary
-	void LoadELFSections(ELFReader::File *binary);
+	void LoadELFSections(elf::File32 *binary);
 
 	// Load program headers
 	void LoadProgramHeaders();
