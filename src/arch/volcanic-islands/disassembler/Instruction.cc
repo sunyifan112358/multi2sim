@@ -502,6 +502,9 @@ void Instruction::Dump(std::ostream &os) const
 		{
 			DumpScalar(os, bytes.smem.sdata);
 		}
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_DATA", token_len)){
+			// TODO	
+		}
 		else if(comm::Disassembler::isToken(fmt_str, "SERIES_SDATA", token_len))
 		{
 			// sbase field has implied LSB 0
@@ -655,6 +658,10 @@ void Instruction::Dump(std::ostream &os) const
 		else if(comm::Disassembler::isToken(fmt_str, "VOP3_SRC1", token_len))
 		{
 			DumpVop3Src(os, bytes.vop3a.src1, 2);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_64_VDST", token_len))
+		{
+			DumpVectorSeries(os, bytes.vop3a.vdst, bytes.vop3a.vdst + 1);
 		}
 		else if(comm::Disassembler::isToken(fmt_str, "VOP3_64_SRC2", token_len))
 		{
