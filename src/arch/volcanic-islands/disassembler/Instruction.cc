@@ -502,8 +502,9 @@ void Instruction::Dump(std::ostream &os) const
 		{
 			DumpScalar(os, bytes.smem.sdata);
 		}
-		else if(comm::Disassembler::isToken(fmt_str, "FLAT_DATA", token_len)){
-			// TODO	
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_DATA", token_len))
+		{
+				
 		}
 		else if(comm::Disassembler::isToken(fmt_str, "SERIES_SDATA", token_len))
 		{
