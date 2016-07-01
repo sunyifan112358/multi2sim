@@ -19,6 +19,7 @@
 
 #include "CallStack.h"
 
+#include <lib/elf/Error.h>
 #include <lib/cpp/String.h>
 #include <lib/esim/Engine.h>
 
@@ -29,7 +30,7 @@ namespace comm
 misc::Debug CallStack::debug;
 
 
-ELFReader::File *CallStack::getELFFile(const std::string &path)
+elf::File32 *CallStack::getELFFile(const std::string &path)
 {
 	// Check if file was already parsed
 	auto it = elf_file_map.find(path);
@@ -37,13 +38,13 @@ ELFReader::File *CallStack::getELFFile(const std::string &path)
 		return it->second;
 	
 	// Parse file
-	ELFReader::File *elf_file;
+	elf::File32 *elf_file;
 	try
 	{
 		// Load file
-		elf_file = new ELFReader::File(path);
+		elf_file = new elf::File32(path);
 	}
-	catch (ELFReader::Error &e)
+	catch (elf::Error &e)
 	{
 		// Error loading file
 		debug << e;
@@ -81,14 +82,14 @@ std::string CallStack::getSymbolName(unsigned address)
 		return address_str;
 
 	// Get ELF file
-	ELFReader::File *elf_file = getELFFile(map->getPath());
+	elf::File32 *elf_file = getELFFile(map->getPath());
 	address_str = misc::fmt("<0x%x> @%s", address, map->getPath().c_str());
 	if (!elf_file)
 		return address_str;
 
 	// Get symbol
 	unsigned offset;
-	ELFReader::Symbol *elf_symbol = elf_file->getSymbolByAddress(
+	elf::Symbol32 *elf_symbol = elf_file->getSymbolByAddress(
 			address - map->getAddress() + map->getOffset(),
 			offset);
 	if (!elf_symbol)

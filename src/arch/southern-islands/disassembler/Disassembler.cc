@@ -351,13 +351,13 @@ void Disassembler::DisassembleBuffer(std::ostream& os, const char *buffer, int s
 void Disassembler::DisassembleBinary(const std::string &path)
 {
 	// Load ELF file
-	ELFReader::File file(path);
+	elf::File32 file(path);
 
 	// Decode external ELF
 	for (int i = 0; i < file.getNumSymbols(); i++)
 	{
 		// Get symbol
-		ELFReader::Symbol *symbol = file.getSymbol(i);
+		elf::Symbol32 *symbol = file.getSymbol(i);
 		std::string symbol_name = symbol->getName();
 
 		/* If symbol is '__OpenCL_XXX_kernel', it points 
@@ -393,7 +393,7 @@ void Disassembler::DisassembleBinary(const std::string &path)
 
 			// Get section with Southern Islands ISA
 			BinaryDictEntry *si_dict_entry = binary.GetSIDictEntry();
-			ELFReader::Section *section = si_dict_entry->text_section;
+			elf::Section32 *section = si_dict_entry->text_section;
 
 			// Disassemble
 			DisassembleBuffer(std::cout, section->getBuffer(), section->getSize());

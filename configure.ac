@@ -131,7 +131,7 @@ AC_ARG_ENABLE(debug,
 		
 		# Add flag '-Wno-error=deprecated-declarations' only if it is supported.
 		# This flag prevents warnings caused by newer GTK versions that would cause with -Werror
-		CXXFLAGS="-msse2 -std=gnu++0x -Wall -Werror -g -O0"
+    CXXFLAGS="-msse2 -std=gnu++0x -Wall -Werror -g -O0"
 		saved_flags="-msse2 -Wall -Werror -DMHANDLE -g -O0 -std=gnu99"
 		CFLAGS="-Wno-error=deprecated-declarations"
 		AC_MSG_CHECKING([whether CC supports -Wno-error=deprecated-declarations])
@@ -613,6 +613,7 @@ AC_CONFIG_FILES([
 		src/arch/x86/timing/Makefile
 
 		src/lib/cpp/Makefile
+		src/lib/elf/Makefile
 		src/lib/esim/Makefile
 		src/lib/gtest/Makefile
 		src/lib/mhandle/Makefile

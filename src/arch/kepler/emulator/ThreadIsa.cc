@@ -129,7 +129,7 @@ void Thread::ExecuteInst_IMUL_A(Instruction *inst)
 
     // Operands
 	unsigned dst_id, src1_id;
-	unsigned long long temp, src1, src2;
+	unsigned long long temp = 0, src1 = 0, src2 = 0;
 	unsigned dst;
 
 	// Determine whether the warp reaches reconvergence pc.
@@ -210,8 +210,8 @@ void Thread::ExecuteInst_IMUL_B(Instruction *inst)
 	unsigned active;
 
     // Operands
-	unsigned src1_id, src2_id, dst_id;
-	unsigned long long temp, src1, src2;
+	unsigned src1_id = 0, src2_id = 0, dst_id = 0;
+	unsigned long long temp = 0, src1 = 0, src2 = 0;
 	unsigned dst;
 
 	// Determine whether the warp reaches reconvergence pc.
@@ -546,10 +546,10 @@ void Thread::ExecuteInst_ISAD_A(Instruction *inst)
 	Instruction::BytesISAD format = inst_bytes.isad;
 
 	// Predicate register
-	unsigned pred;
+	unsigned pred = 0;
 
 	// Predicate register ID
-	unsigned pred_id;
+	unsigned pred_id = 0;
 
 	// get predicate register value
 	pred_id = format.pred;
@@ -559,13 +559,13 @@ void Thread::ExecuteInst_ISAD_A(Instruction *inst)
 		pred = !ReadPredicate(pred_id - 8);
 
 	// Operand ID
-	unsigned dst_id, src1_id;
+	unsigned dst_id = 0, src1_id = 0;
 
 	// Operand
-	unsigned src1, src2, src3, dst;
+	unsigned src1 = 0, src2 = 0, src3 = 0, dst = 0;
 
 	// Temporary register for carry flag
-	unsigned long long cf_tmp, src1_tmp1, src2_tmp1;
+	unsigned long long cf_tmp = 0, src1_tmp1 = 0, src2_tmp1 = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -662,13 +662,13 @@ void Thread::ExecuteInst_ISAD_B(Instruction *inst)
 		pred = !ReadPredicate(pred_id - 8);
 
 	// Operand ID
-	unsigned dst_id, src1_id;
+	unsigned dst_id = 0, src1_id = 0;
 
 	// Operand
-	unsigned src1, src2, src3, dst;
+	unsigned src1 = 0, src2 = 0, src3 = 0, dst = 0;
 
 	// Temporary register for carry flag
-	unsigned long long cf_tmp, src1_tmp1, src2_tmp1;
+	unsigned long long cf_tmp = 0, src1_tmp1 = 0, src2_tmp1 = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -685,7 +685,7 @@ void Thread::ExecuteInst_ISAD_B(Instruction *inst)
 			src3_id = format.src3;
 			src3 = ReadGPR(src3_id);
 		}
-		else if ((format.op2 == 2)) // src2 is register src3 is const
+		else if (format.op2 == 2) // src2 is register src3 is const
 		{
 			unsigned src2_id;
 			src2_id = format.src3;
@@ -963,7 +963,7 @@ void Thread::ExecuteInst_BFE_B(Instruction *inst)
 
 	if (active == 1 && pred == 1)
 	{
-		unsigned src1_id, src2_id, src1, src2;
+		unsigned src1_id = 0, src2_id = 0, src1 = 0, src2 = 0;
 
 		// Read Src1
 		src1_id = format.src1;
@@ -1165,7 +1165,7 @@ void Thread::ExecuteInst_IADD_A(Instruction *inst)
 	unsigned dst_id, src1_id;
 
 	// Operand
-	unsigned src1, src2, dst;
+	unsigned src1 = 0, src2 = 0, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -1301,7 +1301,7 @@ void Thread::ExecuteInst_IADD_B(Instruction *inst)
 	unsigned dst_id, src1_id;
 
 	// Operand
-	unsigned src1, src2, dst;
+	unsigned src1 = 0, src2 = 0, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -1972,7 +1972,7 @@ void Thread::ExecuteInst_LOP_A(Instruction *inst)
 	unsigned src1_id, dst_id;
 
 	// Operand
-	unsigned src1, src2, dst;
+	unsigned src1 = 0, src2 = 0, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -2050,7 +2050,7 @@ void Thread::ExecuteInst_LOP_B(Instruction *inst)
 	unsigned src1_id, dst_id;
 
 	// Operand
-	unsigned src1, src2, dst;
+	unsigned src1 = 0, src2 = 0, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -2158,7 +2158,7 @@ void Thread::ExecuteInst_ICMP_B(Instruction *inst)
 			src3_id = format.src3;
 			src3 = ReadGPR(src3_id);
 		}
-		else if ((format.op2 == 2)) // src2 is register src3 is const
+		else if (format.op2 == 2) // src2 is register src3 is const
 		{
 			unsigned src2_id;
 			src2_id = format.src3;
@@ -2174,19 +2174,19 @@ void Thread::ExecuteInst_ICMP_B(Instruction *inst)
 			src3 = ReadGPR(src3_id);
 		}
 
-		unsigned int src3_signed;
+		int src3_signed;
 
 		// signed mode
 		if (format.u_s == 1) // sign mode
 			src3_signed = src3;
 
 		unsigned cmp_op = format.comp;
-		bool cmp_result;
+		bool cmp_result = false;
 
 		if (cmp_op == 0)
 			cmp_result = false;
 		else if (cmp_op == 1)
-			cmp_result = format.u_s ? (src3_signed < 0) : (src3 < 0);
+			cmp_result = format.u_s ? (src3_signed < 0) : false;
 		else if (cmp_op == 2)
 			cmp_result = format.u_s ? (src3_signed == 0) : (src3 == 0);
 		else if (cmp_op == 3)
@@ -2462,7 +2462,7 @@ void Thread::ExecuteInst_MOV_B(Instruction *inst)
 
     // Operands
 	unsigned dst_id, src_id;
-	unsigned dst, src;
+	unsigned dst = 0, src = 0;
 
 	// Determine whether the warp reaches reconvergence pc.
 	// If it is, pop the synchronization stack top and restore the active mask
@@ -2782,7 +2782,7 @@ void Thread::ExecuteInst_I2F_A(Instruction *inst)
 
 	// Operand
 	int src;
-	float dst;
+	float dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -2857,7 +2857,7 @@ void Thread::ExecuteInst_I2F_B(Instruction *inst)
 
 	// Operand
 	int src;
-	float dst;
+	float dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -2938,7 +2938,7 @@ void Thread::ExecuteInst_I2I_A(Instruction *inst)
 	unsigned dst_id;
 
 	// Operand
-	int src, dst;
+	int src, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -3012,7 +3012,7 @@ void Thread::ExecuteInst_I2I_B(Instruction *inst)
 	unsigned dst_id;
 
 	// Operand
-	int src, dst;
+	int src, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -3094,7 +3094,7 @@ void Thread::ExecuteInst_F2I_A(Instruction *inst)
 
 	// Operand
 	float src;
-	unsigned dst;
+	unsigned dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -3184,7 +3184,7 @@ void Thread::ExecuteInst_F2I_B(Instruction *inst)
 
 	// Operand
 	float src;
-	unsigned dst;
+	unsigned dst = 0;
 
 
 	// Execute
@@ -3283,7 +3283,7 @@ void Thread::ExecuteInst_F2F_B(Instruction *inst)
 
 	// Operand
 	float src;
-	unsigned dst;
+	unsigned dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -4329,7 +4329,7 @@ void Thread::ExecuteInst_MUFU(Instruction *inst)
 	unsigned src_id, dst_id;
 
 	// Operand
-	float src, dst;
+	float src, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -4405,7 +4405,7 @@ void Thread::ExecuteInst_FFMA_B(Instruction *inst)
 	unsigned src1_id, dst_id;
 
 	// Operand
-	float src1, src2, src3, dst;
+	float src1 = 0, src2 = 0, src3 = 0, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -4684,7 +4684,7 @@ void Thread::ExecuteInst_S2R(Instruction *inst)
 
     // Operands
 	unsigned dst_id, src_id;
-	int dst, src;
+	int dst, src = 0;
 
 	// Determine whether the warp reaches reconvergence pc.
 	// If it is, pop the synchronization stack top and restore the active mask
@@ -4781,7 +4781,7 @@ void Thread::ExecuteInst_PSETP(Instruction *inst)
 	unsigned dst_id, srcA_id, srcB_id, srcC_id;
 
 	// Operands
-	unsigned srcA, srcB, srcC, dst;
+	unsigned srcA, srcB, srcC, dst = 0;
 
 	// Bool operations of the instruction.
 	unsigned bool_op0, bool_op1;
@@ -5040,13 +5040,13 @@ void Thread::ExecuteInst_PLONGJMP(Instruction *inst)
 void Thread::ExecuteInst_SSY(Instruction *inst)
 {
 	// Get emulator
-    Emulator *emulator = Emulator::getInstance();
+	Emulator *emulator = Emulator::getInstance();
 
 	// Get synchronization stack
 	SyncStack* stack = warp->getSyncStack()->get();
 
-    unsigned address;
-    unsigned pc;
+	unsigned address = 0;
+	unsigned pc = 0;
 
 	// Determine whether the warp reaches reconvergence pc.
 	// If it is, pop the synchronization stack top and restore the active mask
@@ -5082,15 +5082,13 @@ void Thread::ExecuteInst_SSY(Instruction *inst)
 			address = offset + pc + warp->getInstructionSize();
 		}
 		else
-        {
+		{
 			// check this
 			if (isconstmem == 1)
-              	emulator->ReadConstantMemory(offset << 2,4, (char*) &address);
-        }
+				emulator->ReadConstantMemory(offset << 2,4, (char*) &address);
+		}
 
-		stack->push(address,
-					stack->getActiveMask(),
-					SyncStackEntrySSY);
+		stack->push(address, stack->getActiveMask(), SyncStackEntrySSY);
 	}
 
 	if (id_in_warp == warp->getThreadCount() - 1)
@@ -5385,7 +5383,7 @@ void Thread::ExecuteInst_BRK(Instruction *inst)
 		}
 		else
 		{
-            warp->setTargetPC(warp->getPC() + warp->getInstructionSize());
+			warp->setTargetPC(warp->getPC() + warp->getInstructionSize());
 		}
 	}
 }
@@ -5520,7 +5518,7 @@ void Thread::ExecuteInst_LOP32I(Instruction *inst)
 	unsigned src1_id, dst_id;
 
 	// Operand
-	unsigned src1, src2, dst;
+	unsigned src1, src2, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -5791,7 +5789,7 @@ void Thread::ExecuteInst_SHR_A(Instruction *inst)
 	unsigned dst_id, src1_id; //srcB_id to be added for register
 
 	// Operands
-	unsigned src1, src2, dst;
+	unsigned src1, src2, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)
@@ -5874,7 +5872,7 @@ void Thread::ExecuteInst_SHR_B(Instruction *inst)
 	unsigned dst_id, src1_id; //srcB_id to be added for register
 
 	// Operands
-	unsigned src1, src2, dst;
+	unsigned src1, src2, dst = 0;
 
 	// Execute
 	if (active == 1 && pred == 1)

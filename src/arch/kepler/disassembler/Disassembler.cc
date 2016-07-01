@@ -21,14 +21,15 @@
 #include <cstdarg>
 #include <cstring>
 #include <iostream>
+#include <elf.h>
 
 #include <lib/cpp/CommandLine.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
+#include <lib/elf/Section32.h>
 #include <lib/cpp/Misc.h>
 #include <lib/cpp/String.h>
 
 #include "Disassembler.h"
-
 #include "Instruction.h"
 
 
@@ -47,7 +48,7 @@ static const int AsmOpcode_B_B = 1;
 static const int AsmOpcode_B_C = 2;
 static const int AsmOpcode_B_D = 3;
 
-static const int AsmOpcode_B_C_A = 0;
+// static const int AsmOpcode_B_C_A = 0;
 static const int AsmOpcode_B_C_B = 1;
 static const int AsmOpcode_B_C_C = 2;
 static const int AsmOpcode_B_C_D = 3;
@@ -85,7 +86,7 @@ static const int AsmOpcode_C_B_E_4 = 7;
 static const int AsmOpcode_C_B_E_5 = 13;
 static const int AsmOpcode_C_B_E_6 = 14;
 static const int AsmOpcode_C_B_E_7 = 15;
-static const int AsmOpcode_C_B_F = 8;
+// static const int AsmOpcode_C_B_F = 8;
 
 static const int AsmOpcode_C_B_C_A = 1;
 static const int AsmOpcode_C_B_C_B = 2;
@@ -469,14 +470,14 @@ Disassembler::Disassembler() : comm::Disassembler("Kepler")
 void Disassembler::DisassembleBinary(const std::string &path) const
 {
 	// Initializations
-	ELFReader::File f(path);
+	elf::File32 f(path);
 	Instruction inst;
 
 	// Read Sections
 	for (int i = 0; i < f.getNumSections(); i++)
 	{
 		// Get section and skip it if it does not contain code
-		ELFReader::Section *section = f.getSection(i);
+		elf::Section32 *section = f.getSection(i);
 		if (!(section->getFlags() & SHF_EXECINSTR))
 			continue;
 

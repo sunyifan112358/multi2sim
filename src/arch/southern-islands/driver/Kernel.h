@@ -48,9 +48,9 @@ class Kernel
 	Program *program = nullptr;
 
 	// Excerpts of program binary
-	ELFReader::Symbol *metadata_symbol = nullptr;
-	ELFReader::Symbol *header_symbol = nullptr;
-	ELFReader::Symbol *kernel_symbol = nullptr;
+	elf::Symbol32 *metadata_symbol = nullptr;
+	elf::Symbol32 *header_symbol = nullptr;
+	elf::Symbol32 *kernel_symbol = nullptr;
 
 	// List of kernel arguments
 	std::vector<std::unique_ptr<Argument>> arguments;

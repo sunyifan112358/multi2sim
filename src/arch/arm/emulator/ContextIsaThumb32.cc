@@ -105,17 +105,17 @@ void Context::ExecuteInstThumb32_LDRD_immc()
 
 void Context::ExecuteInstThumb32_LDRD_immd()
 {
-	int offset;
-	int value1;
-	int value2;
-	void *buf1;
-	void *buf2;
-	int immd12;
-	unsigned int idx;
-	unsigned int wback;
-	unsigned int add;
-	int rn_val;
-	unsigned int addr;
+	int offset = 0;
+	int value1 = 0;
+	int value2 = 0;
+	void *buf1 = nullptr;
+	void *buf2 = nullptr;
+	int immd12 = 0;
+	unsigned int idx = 0;
+	unsigned int wback = 0;
+	unsigned int add = 0;
+	int rn_val = 0;
+	unsigned int addr = 0;
 
 	buf1 = &value1;
 	buf2 = &value2;
@@ -364,10 +364,10 @@ void Context::ExecuteInstThumb32_TBB()
 
 void Context::ExecuteInstThumb32_TBH()
 {
-	int rn_val;
-	int rm_val;
-	int addr;
-	unsigned int hfwrd;
+	int rn_val = 0;
+	int rm_val = 0;
+	int addr = 0;
+	unsigned int hfwrd = 0;
 	void *buf;
 
 	hfwrd = 0;
@@ -1765,13 +1765,11 @@ void Context::ExecuteInstThumb32_ORR_imm3()
 
 void Context::ExecuteInstThumb32_ORR_imm4()
 {
-	unsigned int operand;
-	int rn_val;
-	int result;
-
+	unsigned int operand = 0;
+	int rn_val = 0;
+	int result = 0;
 
 	regsPsr prev_regs_cpsr;
-
 
 	operand = IsaThumb32Immd12(inst.getInstThumb32Info()->cat32);
 	emulator->isa_debug << misc::fmt("  immd32 = 0x%x\n", operand);
@@ -1800,12 +1798,13 @@ void Context::ExecuteInstThumb32_ORR_imm4()
 			regs.getCPSR().C = 0;
 			regs.getCPSR().v = 0;
 		}
-		if(operand < 0)
-		{
-			regs.getCPSR().n = 1;
-			regs.getCPSR().C = 0;
-			regs.getCPSR().v = 0;
-		}
+		// Comment by Yifan: operand is unsigned
+//		if(operand < 0)
+//		{
+//			regs.getCPSR().n = 1;
+//			regs.getCPSR().C = 0;
+//			regs.getCPSR().v = 0;
+//		}
 		regs.getCPSR().C = prev_regs_cpsr.C;
 		IsaCpsrPrint();
 	}
@@ -2171,12 +2170,12 @@ void Context::ExecuteInstThumb32_ADD_imm14()
 void Context::ExecuteInstThumb32_CMN_imm()
 {
 
-	int rn_val;
-	int operand2;
-	int result;
-	int op2;
-	int rd_val;
-	unsigned long flags;
+	int rn_val = 0;
+	int operand2 = 0;
+	int result = 0;
+	int op2 = 0;
+	int rd_val = 0;
+	unsigned long flags = 0L;
 
 	flags = 0;
 
@@ -2322,13 +2321,13 @@ void Context::ExecuteInstThumb32_SUB_imm14()
 
 void Context::ExecuteInstThumb32_CMP_imm()
 {
-	unsigned long flags;
-	unsigned int immd;
-	int rn_val;
-	int rd_val;
-	int result;
-	int operand2;
-	int op2;
+	unsigned long flags = 0L;
+	unsigned int immd = 0;
+	int rn_val = 0;
+	int rd_val = 0;
+	int result = 0;
+	int operand2 = 0;
+	int op2 = 0;
 
 
 

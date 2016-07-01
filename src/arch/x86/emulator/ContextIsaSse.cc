@@ -294,7 +294,7 @@ void Context::ExecuteInst_cvtsi2ss_xmm_rm32()
 void Context::ExecuteInst_cvttss2si_r32_xmmm32()
 {
 	XmmValue xmm;
-	unsigned int r32;
+	unsigned int r32 = 0;
 
 	int spec_mode;
 

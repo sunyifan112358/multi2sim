@@ -72,9 +72,9 @@ public:
 		unsigned physical_address;
 
 		// Statistics
-		long long num_read_accesses = 0;
-		long long num_write_accesses = 0;
-		long long num_execute_accesses = 0;
+		// long long num_read_accesses = 0;
+		// long long num_write_accesses = 0;
+		// long long num_execute_accesses = 0;
 
 	public:
 

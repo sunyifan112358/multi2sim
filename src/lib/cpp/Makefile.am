@@ -11,9 +11,6 @@ libcpp_a_SOURCES = \
 	Debug.cc \
 	Debug.h \
 	\
-	ELFReader.cc \
-	ELFReader.h \
-	\
 	ELFWriter.cc \
 	ELFWriter.h \
 	\
