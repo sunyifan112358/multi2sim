@@ -102,8 +102,7 @@ Disassembler::Disassembler() : comm::Disassembler("VolcanicIslands")
 		else if (info->fmt == Instruction::FormatVOP3a || info->fmt == Instruction::FormatVOP3b)
 		{
 			int i;
-
-			assert(misc::inRange(info->op, 0, dec_table_vop3_count - 1));
+			//assert(misc::inRange(info->op, 0, dec_table_vop3_count - 1));
 			dec_table_vop3[info->op] = info;
 			if (info->flags & Instruction::FlagOp8)
 			{
@@ -303,11 +302,12 @@ void Disassembler::DisassembleBinary(const std::string &path)
 {
 	std::cerr << "VI disassembler disassembling " << path << "\n";
 
-	ELFReader::File file(path);
+	elf::File64 file(path);
 
 	for (int i = 0; i < file.getNumSymbols(); i++)
 	{
-		ELFReader::Symbol *symbol = file.getSymbol(i);
+		
+		elf::Symbol64 *symbol = file.getSymbol(i);
 		std::string symbol_name = symbol->getName();
 
 		// If symbol is '__OpenCL_X_kernel', it points
@@ -315,6 +315,7 @@ void Disassembler::DisassembleBinary(const std::string &path)
 		if (misc::StringPrefix(symbol_name, "__OpenCL_") &&
 			misc::StringSuffix(symbol_name, "_kernel"))
 		{
+			
 			if (!symbol->getBuffer())
 				throw Error(misc::fmt(
 					"%s: symbol '%s' invalid content",
@@ -338,7 +339,7 @@ void Disassembler::DisassembleBinary(const std::string &path)
 			Binary binary(buffer.get(), symbol->getSize(), kernel_name);
 			
 			BinaryDictEntry *vi_dict_entry = binary.GetVIDictEntry();
-			ELFReader::Section *section = vi_dict_entry->text_section;
+			elf::Section64 *section = vi_dict_entry->text_section;
 
 			DisassembleBuffer(std::cout, section->getBuffer(), section->getSize());
 

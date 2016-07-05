@@ -45,17 +45,17 @@ class Disassembler : public comm::Disassembler
 	static const int dec_table_smem_count = 25;
 	
 
-	static const int dec_table_vop3_count = 10;
-	static const int dec_table_vopc_count = 10;
-	static const int dec_table_vop1_count = 10;
-	static const int dec_table_vop2_count = 10;
-	static const int dec_table_vintrp_count = 10;
+	static const int dec_table_vop3_count = 900;
+	static const int dec_table_vopc_count = 100;
+	static const int dec_table_vop1_count = 100;
+	static const int dec_table_vop2_count = 100;
+	static const int dec_table_vintrp_count = 100;
 	static const int dec_table_ds_count = 10;
-	static const int dec_table_mubuf_count = 10;
-	static const int dec_table_mtbuf_count = 10;
+	static const int dec_table_mubuf_count = 20;
+	static const int dec_table_mtbuf_count = 20;
 	static const int dec_table_mimg_count = 10;
 	static const int dec_table_exp_count = 1; //EXPORT
-	static const int dec_table_flat_count = 10;
+	static const int dec_table_flat_count = 100;
 
 	Instruction::Info inst_info[Instruction::OpcodeCount];
 

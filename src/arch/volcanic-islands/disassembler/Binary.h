@@ -21,7 +21,9 @@
 #define ARCH_VOLCANIC_ISLANDS_DISASSEMBLER_BINARY_H
 
 #include <lib/cpp/Debug.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File.h>
+#include <lib/elf/Section64.h>
+#include <lib/elf/ProgramHeader64.h>
 #include <lib/cpp/String.h>
 
 
@@ -153,14 +155,14 @@ struct BinaryDictEntry
 	BinaryDictHeader *header;
 
 	// Streams containing PT_LOAD and PT_NOTE segments
-	ELFReader::ProgramHeader *pt_load_segment;
-	ELFReader::ProgramHeader *pt_note_segment;
+	elf::ProgramHeader64 *pt_load_segment;
+	elf::ProgramHeader64 *pt_note_segment;
 
 	// Streams containing sections
-	ELFReader::Section *text_section;
-	ELFReader::Section *data_section;
-	ELFReader::Section *symtab_section;
-	ELFReader::Section *strtab_section;
+	elf::Section64 *text_section;
+	elf::Section64 *data_section;
+	elf::Section64 *symtab_section;
+	elf::Section64 *strtab_section;
 
 	// Constants extract from '.data' section
 	BinaryDictConsts *consts;
@@ -179,7 +181,7 @@ struct BinaryDictEntry
 
 
 // Binary file
-class Binary : ELFReader::File
+class Binary : elf::File64
 {
 
 	/* Encoding dictionary. Each element of the dictionary contains the

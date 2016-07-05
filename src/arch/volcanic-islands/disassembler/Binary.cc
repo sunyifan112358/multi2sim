@@ -373,7 +373,7 @@ void Binary::ReadNote(BinaryDictEntry *dict_entry, std::istringstream& ss,
 void Binary::ReadNotes(BinaryDictEntry *dict_entry)
 {
 	// Get buffer and set position
-	ELFReader::ProgramHeader *ph = dict_entry->pt_note_segment;
+	elf::ProgramHeader64 *ph = dict_entry->pt_note_segment;
 	std::istringstream ss;
 	ph->getStream(ss);
 	const char *buffer = ph->getBuffer();
@@ -405,7 +405,7 @@ void Binary::ReadDictionary()
 	SI_BIN_FILE_NOT_SUPPORTED_NEQ(getEntry(), 0);
 	
 	// Look for encoding dictionary (program header with type 'PT_LOPROC+2')
-	ELFReader::ProgramHeader *ph = NULL;
+	elf::ProgramHeader64 *ph = NULL;
 	for (int i = 0; i < getNumProgramHeaders(); i++)
 	{
 		ph = getProgramHeader(i);
@@ -480,7 +480,7 @@ void Binary::ReadSegments()
 		for (int j = 0; j < getNumProgramHeaders(); j++)
 		{
 			// Get program header. If not in encoding dictionary segment, skip.
-			ELFReader::ProgramHeader *ph = getProgramHeader(j);
+			elf::ProgramHeader64 *ph = getProgramHeader(j);
 			if (ph->getOffset() < dict_entry->header->d_offset ||
 					ph->getOffset() >= dict_entry->header->d_offset +
 					dict_entry->header->d_size)
@@ -538,15 +538,15 @@ void Binary::ReadSections()
 	for (auto &dict_entry : dict)
 	{
 		// Get encoding dictionary entry
-		ELFReader::ProgramHeader *load_segment = dict_entry->pt_load_segment;
-		ELFReader::ProgramHeader *note_segment = dict_entry->pt_note_segment;
+		elf::ProgramHeader64 *load_segment = dict_entry->pt_load_segment;
+		elf::ProgramHeader64 *note_segment = dict_entry->pt_note_segment;
 		assert(load_segment);
 		assert(note_segment);
 
 		for (int i = 0; i < getNumSections(); i++)
 		{
 			// Get section. If not in PT_LOAD segment, skip.
-			ELFReader::Section *section = getSection(i);
+			elf::Section64 *section = getSection(i);
 			if (section->getOffset() < load_segment->getOffset() ||
 					section->getOffset() >= load_segment->getOffset()
 					+ load_segment->getSize())
@@ -607,7 +607,7 @@ void Binary::ReadSections()
 
 
 Binary::Binary(const char *buffer, unsigned int size, std::string name)
-		: ELFReader::File(buffer, size)
+		: elf::File64(buffer, size)
 {
 	this->name = name;
 
