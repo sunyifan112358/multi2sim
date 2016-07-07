@@ -120,7 +120,7 @@ void File64::ReadSymbols()
 			symbols.emplace_back(misc::new_unique<Symbol64>(
 					this,
 					section.get(),
-					i * sizeof(Elf32_Sym)));
+					i * sizeof(Elf64_Sym)));
 
 			// Discard empty symbol
 			Symbol64 *symbol = symbols.back().get();
