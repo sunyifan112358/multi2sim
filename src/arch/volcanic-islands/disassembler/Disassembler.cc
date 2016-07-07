@@ -23,6 +23,7 @@
 #include <sstream>
 #include <cassert>
 
+#include <lib/elf/File64.h>
 #include <lib/cpp/CommandLine.h>
 #include <lib/cpp/Misc.h>
 
@@ -339,7 +340,7 @@ void Disassembler::DisassembleBinary(const std::string &path)
 			Binary binary(buffer.get(), symbol->getSize(), kernel_name);
 			
 			BinaryDictEntry *vi_dict_entry = binary.GetVIDictEntry();
-			elf::Section64 *section = vi_dict_entry->text_section;
+			elf::Section32 *section = vi_dict_entry->text_section;
 
 			DisassembleBuffer(std::cout, section->getBuffer(), section->getSize());
 

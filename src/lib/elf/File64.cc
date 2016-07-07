@@ -42,9 +42,10 @@ void File64::ReadHeader()
 	if (strncmp((char *) info->e_ident, ELFMAG, 4))
 		throw Error(path, "Invalid ELF file");
 
-	// Check that ELF file is a 32-bit object
-	if (info->e_ident[EI_CLASS] == ELFCLASS64)
-	//	throw Error(path, misc::fmt("Cannot load an ELF-64 file with a ELF-32 loader."));
+	// Check that ELF file is a 64-bit object
+	if (info->e_ident[EI_CLASS] == ELFCLASS32)
+		throw Error(path, misc::fmt("Cannot load an ELF-32 file with a "
+				"ELF-64 loader."));
 
 	;
 }
