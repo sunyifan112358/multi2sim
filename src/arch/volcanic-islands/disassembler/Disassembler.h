@@ -41,7 +41,7 @@ class Disassembler : public comm::Disassembler
 	static const int dec_table_sopc_count = 21;
 	static const int dec_table_sop1_count = 49;
 	static const int dec_table_sopk_count = 20; // no Opcode 19
-	static const int dec_table_sop2_count = 43;
+	static const int dec_table_sop2_count = 200;
 	static const int dec_table_smem_count = 25;
 	
 

@@ -725,7 +725,7 @@ void Instruction::Decode(const char *buf, unsigned int address)
 					"Unimplemented Instruction: SOP2: %d "
 					"// %08X: %08X\n", bytes.sop2.op, address, *(unsigned int *) buf));
 		}
-
+		
 		info = disassembler->getDecTableSop2(bytes.sop2.op);
 
 
