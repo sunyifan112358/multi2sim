@@ -347,6 +347,24 @@ DEFINST(S_XOR_B64,
 	0
 )
 
+// SOP1 Instructions
+
+DEFINST(S_MOV_B32,
+	" s_mov_b32	%SDST, %SSRC0",
+	SOP1,
+	0,
+	4,
+	0
+)
+
+DEFINST(S_MOV_B54,
+	" s_mov_b64	%SDST, %SSRC0",
+	SOP1,
+	1,
+	4,
+	0
+)
+
 // SOPC Instructions
 
 DEFINST(S_CMP_EQ_I32,

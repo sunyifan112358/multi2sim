@@ -729,17 +729,6 @@ void Instruction::Decode(const char *buf, unsigned int address)
 
 		info = disassembler->getDecTableSopp(bytes.sopp.op);
 	}	
-	else if(bytes.sopk.enc == 0xB)
-	{
-		if(!disassembler->getDecTableSopk(bytes.sopk.op))
-		{
-			throw misc::Panic(misc::fmt(
-					"Unimplemented Instruction: SOPK:%d  "
-					"// %08X: %08X\n", bytes.sopk.op, address, *(unsigned int *) buf));
-		}
-
-		info = disassembler->getDecTableSopk(bytes.sopk.op);
-	}
 	else if(bytes.sop1.enc == 0x17D)
 	{
 		if(!disassembler->getDecTableSop1(bytes.sop1.op))
@@ -776,6 +765,17 @@ void Instruction::Decode(const char *buf, unsigned int address)
 			size = 8;
 			bytes.dword = *(unsigned long long *) buf;
 		}
+	} 
+	else if(bytes.sopk.enc == 0xB)
+	{
+		if(!disassembler->getDecTableSopk(bytes.sopk.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: SOPK:%d  "
+					"// %08X: %08X\n", bytes.sopk.op, address, *(unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableSopk(bytes.sopk.op);
 	}
 	else if(bytes.sop2.enc == 0x2)
 	{
@@ -813,31 +813,6 @@ void Instruction::Decode(const char *buf, unsigned int address)
 		}
 
 		info = disassembler->getDecTableSmem(bytes.smem.op);
-	}
-	else if(bytes.vop2.enc == 0x0) // FIXME dpp/sdwa
-	{
-		if (!disassembler->getDecTableVop2(bytes.vop2.op))
-		{
-			throw misc::Panic(misc::fmt(
-					"Unimplemented Instruction: VOP2:%d  "
-					"// %08X: %08X\n", bytes.vop2.op, address, * (unsigned int *) buf));
-		}
-
-		info = disassembler->getDecTableVop2(bytes.vop2.op);
-
-		if (bytes.vop2.src0 == 0xFF)
-		{
-			size = 8;
-			bytes.dword = *(unsigned long long *) buf;
-		}
-
-		// some opcodes define a 32- or 16-bit inline constant. opcodes 36 and 37 define a 16-bit inline constant
-		// stored in the following dword
-		if (bytes.vop2.op == 23 || bytes.vop2.op == 24 || bytes.vop2.op == 36 || bytes.vop2.op == 37)
-		{
-			size = 8;
-			bytes.dword = *(unsigned long long *) buf;
-		}
 	}
 	else if(bytes.vop1.enc == 0x3F) // FIXME dpp/sdwa
 	{
@@ -888,6 +863,31 @@ void Instruction::Decode(const char *buf, unsigned int address)
 		}
 
 		info = disassembler->getDecTableVop3(bytes.vop3a.op);
+	} 
+	else if(bytes.vop2.enc == 0x0) // FIXME dpp/sdwa
+	{
+		if (!disassembler->getDecTableVop2(bytes.vop2.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction: VOP2:%d  "
+					"// %08X: %08X\n", bytes.vop2.op, address, * (unsigned int *) buf));
+		}
+
+		info = disassembler->getDecTableVop2(bytes.vop2.op);
+
+		if (bytes.vop2.src0 == 0xFF)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
+
+		// some opcodes define a 32- or 16-bit inline constant. opcodes 36 and 37 define a 16-bit inline constant
+		// stored in the following dword
+		if (bytes.vop2.op == 23 || bytes.vop2.op == 24 || bytes.vop2.op == 36 || bytes.vop2.op == 37)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
 	}
 	else if(bytes.vintrp.enc == 0x32)
 	{
