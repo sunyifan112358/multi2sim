@@ -243,7 +243,7 @@ public:
 	struct BytesSOPP
 	{
 		unsigned int simm16	: 16; // [15:0]
-		unsigned int op		: 8; // [22:16]
+		unsigned int op		: 7; // [22:16]
 		unsigned int enc	: 9; // [31:23]
 	};
 
