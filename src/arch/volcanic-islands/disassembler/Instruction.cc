@@ -502,9 +502,41 @@ void Instruction::Dump(std::ostream &os) const
 		{
 			DumpScalar(os, bytes.smem.sdata);
 		}
-		else if(comm::Disassembler::isToken(fmt_str, "FLAT_DATA", token_len))
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_DATA1", token_len))
 		{
-				
+			DumpVector(os, bytes.flat.data);	
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_DATA2", token_len))
+		{
+			DumpVectorSeries(os, bytes.flat.data, bytes.flat.data + 1);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_DATA3", token_len))
+		{
+			DumpVectorSeries(os, bytes.flat.data, bytes.flat.data + 2);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_DATA4", token_len))
+		{
+			DumpVectorSeries(os, bytes.flat.data, bytes.flat.data + 3);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_VDST1", token_len))
+		{
+			DumpVector(os, bytes.flat.vdst);
+		} 
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_VDST2", token_len))
+		{
+			DumpVectorSeries(os, bytes.flat.vdst, bytes.flat.vdst+1);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_VDST3", token_len))
+		{
+			DumpVectorSeries(os, bytes.flat.vdst, bytes.flat.vdst+2);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_VDST4", token_len))
+		{
+			DumpVectorSeries(os, bytes.flat.vdst, bytes.flat.vdst+3);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "FLAT_ADDR", token_len))
+		{
+			DumpVectorSeries(os, bytes.flat.addr, bytes.flat.addr + 1);
 		}
 		else if(comm::Disassembler::isToken(fmt_str, "SERIES_SDATA", token_len))
 		{
@@ -676,6 +708,10 @@ void Instruction::Dump(std::ostream &os) const
 		{
 			DumpVop364Src(os, bytes.vop3a.src0, 1);
 		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_64_SDST", token_len))
+		{
+			DumpScalarSeries(os, bytes.vop3b.sdst, bytes.vop3b.sdst + 1);
+		}
 		else
 		{
 			throw misc::Panic(misc::fmt("%s: token not recognized.",
@@ -813,6 +849,22 @@ void Instruction::Decode(const char *buf, unsigned int address)
 		}
 
 		info = disassembler->getDecTableSmem(bytes.smem.op);
+	} 
+	else if(bytes.flat.enc == 0x37)
+	{
+		size = 8;
+		bytes.dword = *(unsigned long long *) buf;
+
+		if(!disassembler->getDecTableFlat(bytes.flat.op))
+		{
+			throw misc::Panic(misc::fmt(
+					"Unimplemented Instruction:: FLAT:%d  "
+					"// %08X: %08X %08X\n", bytes.flat.op, address,
+					*(unsigned int *) buf,
+					*(unsigned int *) (buf + 4)));
+		}
+		
+		info = disassembler->getDecTableFlat(bytes.flat.op);
 	}
 	else if(bytes.vop1.enc == 0x3F) // FIXME dpp/sdwa
 	{
@@ -985,22 +1037,6 @@ void Instruction::Decode(const char *buf, unsigned int address)
 		info = disassembler->getDecTableExp(bytes.exp.op);
 
 	} */
-	else if(bytes.flat.enc == 0x37)
-	{
-		size = 8;
-		bytes.dword = *(unsigned long long *) buf;
-
-		if(!disassembler->getDecTableFlat(bytes.flat.op))
-		{
-			throw misc::Panic(misc::fmt(
-					"Unimplemented Instruction:: FLAT:%d  "
-					"// %08X: %08X %08X\n", bytes.flat.op, address,
-					*(unsigned int *) buf,
-					*(unsigned int *) (buf + 4)));
-		}
-		
-		info = disassembler->getDecTableFlat(bytes.flat.op);
-	}
 	else
 	{
 		throw misc::Panic(misc::fmt(

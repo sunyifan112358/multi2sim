@@ -464,7 +464,8 @@ public:
 		unsigned int glc	: 1; // 16
 		unsigned int slc	: 1; // 17
 		unsigned int op		: 7; // [24:18]
-		unsigned int enc	: 7; // [31:26]
+		unsigned int unused	: 1; // 25 FIXME what is this?
+		unsigned int enc	: 6; // [31:26]
 		unsigned int addr	: 8; // [39:32]
 		unsigned int data	: 8; // [47:40]
 		unsigned int reserved1	: 7; // [54:48]
