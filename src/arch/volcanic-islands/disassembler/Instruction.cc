@@ -717,26 +717,18 @@ void Instruction::Decode(const char *buf, unsigned int address)
 	bytes.word[1] = 0;
 	this->address = address;
 
-	if(bytes.sop2.enc == 0x2)
+	
+	if(bytes.sopp.enc == 0x17F)
 	{
-		if(!disassembler->getDecTableSop2(bytes.sop2.op))
+		if(!disassembler->getDecTableSopp(bytes.sopp.op))
 		{
 			throw misc::Panic(misc::fmt(
-					"Unimplemented Instruction: SOP2: %d "
-					"// %08X: %08X\n", bytes.sop2.op, address, *(unsigned int *) buf));
+					"Unimplemented Instruction: SOPP:%d  "
+					"// %08X: %08X\n", bytes.sopp.op, address, *(unsigned int *) buf));
 		}
-		
-		info = disassembler->getDecTableSop2(bytes.sop2.op);
 
-
-		// only one src field may use a literal constant, indicated by 255
-		assert(!(bytes.sop2.ssrc0 == 0xFF && bytes.sop2.ssrc1 == 0xFF));
-		if(bytes.sop2.ssrc0 == 0xFF || bytes.sop2.ssrc1 == 0xFF)
-		{
-			size = 8;
-			bytes.dword = *(unsigned long long *) buf;
-		}
-	}
+		info = disassembler->getDecTableSopp(bytes.sopp.op);
+	}	
 	else if(bytes.sopk.enc == 0xB)
 	{
 		if(!disassembler->getDecTableSopk(bytes.sopk.op))
@@ -785,16 +777,25 @@ void Instruction::Decode(const char *buf, unsigned int address)
 			bytes.dword = *(unsigned long long *) buf;
 		}
 	}
-	else if(bytes.sopp.enc == 0x17F)
+	else if(bytes.sop2.enc == 0x2)
 	{
-		if(!disassembler->getDecTableSopp(bytes.sopp.op))
+		if(!disassembler->getDecTableSop2(bytes.sop2.op))
 		{
 			throw misc::Panic(misc::fmt(
-					"Unimplemented Instruction: SOPP:%d  "
-					"// %08X: %08X\n", bytes.sopp.op, address, *(unsigned int *) buf));
+					"Unimplemented Instruction: SOP2: %d "
+					"// %08X: %08X\n", bytes.sop2.op, address, *(unsigned int *) buf));
 		}
+		
+		info = disassembler->getDecTableSop2(bytes.sop2.op);
 
-		info = disassembler->getDecTableSopp(bytes.sopp.op);
+
+		// only one src field may use a literal constant, indicated by 255
+		assert(!(bytes.sop2.ssrc0 == 0xFF && bytes.sop2.ssrc1 == 0xFF));
+		if(bytes.sop2.ssrc0 == 0xFF || bytes.sop2.ssrc1 == 0xFF)
+		{
+			size = 8;
+			bytes.dword = *(unsigned long long *) buf;
+		}
 	}
 	else if(bytes.smem.enc == 0x30)
 	{

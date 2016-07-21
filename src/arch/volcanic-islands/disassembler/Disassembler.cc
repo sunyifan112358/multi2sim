@@ -221,6 +221,7 @@ void Disassembler::DisassembleBuffer(std::ostream& os, const char *buffer, int s
 
 	while(buffer < original_buffer + size)
 	{
+		
 		inst.Decode(buffer, rel_addr);
 		format = inst.getFormat();
 		bytes = inst.getBytes();
@@ -228,7 +229,6 @@ void Disassembler::DisassembleBuffer(std::ostream& os, const char *buffer, int s
 		// s_endpgm
 		if(format == Instruction::FormatSOPP && bytes->sopp.op == 1)
 			break;
-
 
 		// FIXME branching
 		if(format == Instruction::FormatSOPP &&
