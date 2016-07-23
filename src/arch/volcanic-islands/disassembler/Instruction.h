@@ -274,7 +274,7 @@ public:
 		unsigned int src0	: 9; //[8:0]
 		unsigned int vsrc1	: 8; // [16:9]
 		unsigned int vdst	: 8; // [24:17]
-		unsigned int op		: 7; // [30:25]
+		unsigned int op		: 6; // [30:25]
 		unsigned int enc	: 1; // 31
 		unsigned int lit_cnst	: 32; // [63:32]
 	};
