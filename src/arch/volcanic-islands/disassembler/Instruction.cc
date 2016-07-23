@@ -622,7 +622,7 @@ void Instruction::Dump(std::ostream &os) const
 		else if(comm::Disassembler::isToken(fmt_str, "OFFSET", token_len))
 		{
 			if(bytes.smem.imm)
-				os << misc::fmt("0x%d", bytes.smem.offset);
+				os << misc::fmt("0x%08X", bytes.smem.offset);
 			else
 				DumpScalar(os, bytes.smem.offset);
 		}

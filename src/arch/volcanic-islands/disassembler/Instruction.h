@@ -265,8 +265,8 @@ public:
 		unsigned int imm	: 1; // 17
 		unsigned int op		: 8; // [25:18]
 		unsigned int enc	: 6; // [31:26]
-		unsigned int offset	: 6; // [51:32]
-		unsigned int reserved1	: 10; // [63:52]
+		unsigned int offset	: 20; // [51:32]
+		unsigned int reserved1	: 12; // [63:52]
 	};
 
 	struct BytesVOP2
