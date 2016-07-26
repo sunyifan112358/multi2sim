@@ -46,7 +46,7 @@ class Disassembler : public comm::Disassembler
 	
 
 	static const int dec_table_vop3_count = 900;
-	static const int dec_table_vopc_count = 100;
+	static const int dec_table_vopc_count = 500;
 	static const int dec_table_vop1_count = 100;
 	static const int dec_table_vop2_count = 111;
 	static const int dec_table_vintrp_count = 100;

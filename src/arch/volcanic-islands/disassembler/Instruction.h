@@ -251,7 +251,7 @@ public:
 	{
 		unsigned int ssrc0	: 8; // [7:0]
 		unsigned int ssrc1	: 8; // [15:8]
-		unsigned int op		: 8; // [22:16]
+		unsigned int op		: 7; // [22:16]
 		unsigned int enc	: 9; // [31:23]
 		unsigned int lit_cnst	: 32; // [63:32]
 	};
@@ -562,6 +562,7 @@ private:
 	void DumpSsrc(std::ostream& os, unsigned int ssrc) const;
 	void DumpVop364Src(std::ostream& os, unsigned int src, int neg) const;
 	void DumpVop3Src(std::ostream& os, unsigned int src, int neg) const; 
+	void Dump64Ssrc(std::ostream& os, unsigned int ssrc) const;
 
 public:
 

@@ -365,6 +365,14 @@ DEFINST(S_MOV_B54,
 	0
 )
 
+DEFINST(S_AND_SAVEEXEC_B64,
+	" s_and_saveexec_b64  %64_SDST, %64_SSRC0",
+	SOP1,
+	32,
+	4,
+	0
+)
+
 // SOPC Instructions
 
 DEFINST(S_CMP_EQ_I32,
@@ -666,6 +674,14 @@ DEFINST(V_LSHLREV_B32,
 	0
 )
 
+DEFINST(V_ASHRREV_I32,
+	" v_ashrrev_i32  %VDST, %SRC0, %VSRC1",
+	VOP2,
+	17,
+	4,
+	0
+)
+
 // VOP3a Instructions
 
 DEFINST(V_ADD_U32_VOP3a,
@@ -693,9 +709,17 @@ DEFINST(V_LSHLREV_B64,
 )
 
 DEFINST(V_CMP_GT_U32_VOP3a,
-	" v_cmp_gt_u32	%VOP3_64_SVDST, %VOP3_SRC0, %VOP3_SRC1",
+	" v_cmp_gt_u32	%VOP3_64_VDST, %VOP3_SRC0, %VOP3_SRC1",
 	VOP3a,
 	204, //FIXME ??
+	8,
+	0
+)
+
+DEFINST(V_BFE_I32,
+	" v_bfe_i32     %VOP3_VDST, %VOP3_SRC0, %VOP3_SRC1, %VOP3_SRC2",
+	VOP3a,
+	457,
 	8,
 	0
 )
@@ -710,6 +734,8 @@ DEFINST(V_ADDC_U32_VOP3b,
 	0
 )
 
+
+
 // VOPC Instructions
 
 DEFINST(V_CMP_F_F32,
@@ -721,10 +747,26 @@ DEFINST(V_CMP_F_F32,
 )
 
 
+DEFINST(V_CMP_GE_U32,
+	" v_cmp_ge_u32  vcc, %SRC0, %VSRC1",
+	VOPC,
+	206,
+	4,
+	0
+)
+
+
+DEFINST(V_CMP_LE_U32,
+	" v_cmp_le_u32  vcc, %SRC0, %VSRC1",
+	VOPC,
+	203,
+	4,
+	0
+)
+
 
 // FLAT Instructions
 
-// FIXME for FLAT_LOAD_DWORD[*], opcodes shifted by 8 from GCN3 manual
 
 DEFINST(FLAT_LOAD_DWORD,
 	" flat_load_dword	%FLAT_VDST1, %FLAT_ADDR",

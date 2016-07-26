@@ -382,8 +382,24 @@ void Instruction::DumpSsrc(std::ostream& os, unsigned int ssrc) const
 void Instruction::DumpVop364Src(std::ostream& os, unsigned int src, int neg) const
 {
 	std::stringstream ss;
+	if(misc::inRange(src, 128, 191))
+	{
+		ss << src - 128;
+	} 
+	else if(src == 192)
+	{
+		ss << 64;
+	}
+	else if(misc::inRange(src, 193, 208))
+	{
+		ss << src - 194;
+	}
+	else 
+	{
+		DumpOperandSeries(ss, src, src + 1);
+	}
 
-	DumpOperandSeries(ss, src, src + 1);
+
 	// Vop3b operations have no abs field
 	if(!misc::inRange(bytes.vop3a.op, 480, 481) &&
 		!misc::inRange(bytes.vop3a.op, 281, 286))
@@ -441,6 +457,16 @@ void Instruction::DumpVop3Src(std::ostream& os, unsigned int src, int neg) const
 	}
 }
 
+void Instruction::Dump64Ssrc(std::ostream& os, unsigned int ssrc) const
+{
+	if(ssrc == 0xff)
+	{
+		os << misc::fmt("0x%08X", bytes.sop2.lit_cnst);
+	}
+	else
+		DumpScalarSeries(os, ssrc, ssrc+1);
+}
+
 void Instruction::Dump(std::ostream &os) const
 {
 	int token_len;
@@ -457,7 +483,6 @@ void Instruction::Dump(std::ostream &os) const
 		}
 
 		fmt_str++; // '%'
-		// TODO add token handlers here
 		if (comm::Disassembler::isToken(fmt_str, "LABEL", token_len))
 		{		
 			const BytesSOPP *sopp = &bytes.sopp;
@@ -676,6 +701,18 @@ void Instruction::Dump(std::ostream &os) const
 			else
 				DumpOperand(os, bytes.vopc.src0);
 		}
+		else if(comm::Disassembler::isToken(fmt_str, "64_SDST", token_len))
+		{
+			DumpScalarSeries(os, bytes.sop2.sdst, bytes.sop2.sdst + 1);
+		} 
+		else if(comm::Disassembler::isToken(fmt_str, "64_SSRC0", token_len))
+		{
+			Dump64Ssrc(os, bytes.sop2.ssrc0);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "64_SSRC1", token_len))
+		{
+			Dump64Ssrc(os, bytes.sop2.ssrc1);
+		} 
 		else if(comm::Disassembler::isToken(fmt_str, "VSRC1", token_len))
 		{
 			DumpVector(os, bytes.vopc.vsrc1);
@@ -691,6 +728,10 @@ void Instruction::Dump(std::ostream &os) const
 		else if(comm::Disassembler::isToken(fmt_str, "VOP3_SRC1", token_len))
 		{
 			DumpVop3Src(os, bytes.vop3a.src1, 2);
+		}
+		else if(comm::Disassembler::isToken(fmt_str, "VOP3_SRC2", token_len))
+		{
+			DumpVop3Src(os, bytes.vop3a.src2, 4);
 		}
 		else if(comm::Disassembler::isToken(fmt_str, "VOP3_64_VDST", token_len))
 		{
