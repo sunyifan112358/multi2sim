@@ -33,7 +33,7 @@ namespace dram
 {
 
 // Forward declarations
-struct Address;
+class Address;
 class Bank;
 class Rank;
 

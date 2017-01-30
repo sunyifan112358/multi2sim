@@ -190,7 +190,7 @@ static misc::StringMap syscall_error_map =
 #define SIM_CLONE_NEWNET		0x40000000
 #define SIM_CLONE_IO			0x80000000
 
-static struct misc::StringMap clone_flags_map =
+static misc::StringMap clone_flags_map =
 {
 	{ "CLONE_VM", 0x00000100 },
 	{ "CLONE_FS", 0x00000200 },
@@ -2415,7 +2415,7 @@ int Context::ExecuteSyscall_readlink()
 	if (full_path == "/proc/self/exe")
 	{
 		/* Return path to simulated executable */
-		dest_path == loader->exe;
+		dest_path = loader->exe;
 	}
 	else
 	{

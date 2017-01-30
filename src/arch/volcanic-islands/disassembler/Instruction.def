@@ -1,0 +1,843 @@
+// SOP2
+
+
+DEFINST(S_ADD_I32,
+	" s_add_i32     %SDST, %SSRC0, %SSRC1",
+	SOP2,
+	2,
+	4,
+	0
+)
+
+DEFINST(S_ABSDIFF_I32,
+	" s_absdiff_i32     %SDST, %SSRC0, %SSRC1",
+	SOP2,
+	42,
+	4,
+	0
+)
+
+
+DEFINST(S_ADD_U32,
+	" s_add_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	0,
+	4,
+	0
+)
+
+DEFINST(S_ADDC_U32,
+	" s_addc_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	4,
+	4,
+	0
+)
+
+DEFINST(S_AND_B32,
+	" s_and_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	13,
+	4,
+	0
+)
+
+DEFINST(S_AND_B64,
+	" s_and_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	19,
+	4,
+	0
+)
+
+DEFINST(S_ANDN2_B32,
+	" s_andn2_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	18,
+	4,
+	0
+)
+
+DEFINST(S_ANDN2_B64,
+	" s_andn2_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	19,
+	4,
+	0
+)
+
+DEFINST(S_ASHR_I32,
+	" s_ashr_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	32,
+	4,
+	0
+)
+
+DEFINST(S_ASHR_I64,
+	" s_ashr_i64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	33,
+	4,
+	0
+)
+
+DEFINST(S_BFE_I32,
+	" s_bfe_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	38,
+	4,
+	0
+)
+
+
+DEFINST(S_BFE_I64,
+	" s_bfe_i64	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	40,
+	4,
+	0
+)
+
+DEFINST(S_BFE_U32,
+	" s_bfe_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	37,
+	4,
+	0
+)
+
+DEFINST(S_BFE_U64,
+	" s_bfe_u64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	39,
+	4,
+	0
+)
+
+DEFINST(S_BFM_B32,
+	" s_bfm_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	34,
+	4,
+	0
+)
+
+DEFINST(S_BFM_B64,
+	" s_bfm_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	35,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_G_FORK,
+	" s_cbranch_g_fork	%SDST, %SSRC0, %64_SSRC1",
+	SOP2,
+	41,
+	4,
+	0
+)
+
+DEFINST(S_CSELECT_B32,
+	" s_cselect_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	10,
+	4,
+	0
+)
+
+DEFINST(S_CSELECT_B64,
+	" s_cselect_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	11,
+	4,
+	0
+)
+
+DEFINST(S_LSHL_B32,
+	" s_lshl_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	28,
+	4,
+	0
+)
+
+DEFINST(S_LSHL_B64,
+	" s_lshl_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	29,
+	4,
+	0
+)
+
+DEFINST(S_LSHR_B32,
+	" s_lshr_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	30,
+	4,
+	0
+)
+
+DEFINST(S_LSHR_B64,
+	" s_lshr_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	31,
+	4,
+	0
+)
+
+DEFINST(S_MAX_I32,
+	" s_max_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	8,
+	4,
+	0
+)
+
+DEFINST(S_MAX_U32,
+	" s_max_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	9,
+	4,
+	0
+)
+
+DEFINST(S_MIN_I32,
+	" s_min_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	6,
+	4,
+	0
+)
+
+DEFINST(S_MIN_U32,
+	" s_min_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	7,
+	4,
+	0
+)
+
+DEFINST(S_MUL_I32,
+	" s_mul_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	36,
+	4,
+	0
+)
+
+DEFINST(S_NAND_B32,
+	" s_nand_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	22,
+	4,
+	0
+)
+
+DEFINST(S_NAND_B64,
+	" s_nand_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	23,
+	4,
+	0
+)
+
+DEFINST(S_NOR_B32,
+	" s_nor_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	24,
+	4,
+	0
+)
+
+DEFINST(S_NOR_B64,
+	" s_nor_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	25,
+	4,
+	0
+)
+
+DEFINST(S_OR_B32,
+	" s_or_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	14,
+	4,
+	0
+)
+
+DEFINST(S_OR_B64,
+	" s_or_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	15,
+	4,
+	0
+)
+
+DEFINST(S_ORN2_B32,
+	" s_orn2_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	20,
+	4,
+	0
+)
+
+DEFINST(S_ORN2_B64,
+	" s_orn2_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	21,
+	4,
+	0
+)
+
+DEFINST(S_SUB_I32,
+	" s_sub_i32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	3,
+	4,
+	0
+)
+
+DEFINST(S_SUB_U32,
+	" s_SUB_U32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	1,
+	4,
+	0
+)
+
+DEFINST(S_SUBB_U32,
+	" s_subb_u32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	5,
+	4,
+	0
+)
+
+DEFINST(S_xnor_b32,
+	" s_xnor_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	26,
+	4,
+	0
+)
+
+DEFINST(S_xnor_b64,
+	" s_xnor_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	27,
+	4,
+	0
+)
+
+DEFINST(S_XOR_B32,
+	" s_xor_b32	%SDST, %SSRC0, %SSRC1",
+	SOP2,
+	16,
+	4,
+	0
+)
+
+DEFINST(S_XOR_B64,
+	" s_xor_b64	%64_SDST, %64_SSRC0, %64_SSRC1",
+	SOP2,
+	17,
+	4,
+	0
+)
+
+// SOP1 Instructions
+
+DEFINST(S_MOV_B32,
+	" s_mov_b32	%SDST, %SSRC0",
+	SOP1,
+	0,
+	4,
+	0
+)
+
+DEFINST(S_MOV_B54,
+	" s_mov_b64	%SDST, %SSRC0",
+	SOP1,
+	1,
+	4,
+	0
+)
+
+DEFINST(S_AND_SAVEEXEC_B64,
+	" s_and_saveexec_b64  %64_SDST, %64_SSRC0",
+	SOP1,
+	32,
+	4,
+	0
+)
+
+// SOPC Instructions
+
+DEFINST(S_CMP_EQ_I32,
+	" s_cmp_eq_i32	%SSRC0, %SSRC1",
+	SOPC,
+	0,
+	4,
+	0
+)
+
+DEFINST(S_CMP_LG_I32,
+	" s_cmp_lg_i32	%SSRC0, %SSRC1",
+	SOPC,
+	1,
+	4,
+	0
+)
+
+DEFINST(S_CMP_GT_I32,
+	" s_cmp_lg_i32	%SSRC0, %SSRC1",
+	SOPC,
+	2,
+	4,
+	0
+)
+
+DEFINST(S_CMP_GE_I32,
+	" s_cmp_ge_i32	%SSRC0, %SSRC1",
+	SOPC,
+	3,
+	4,
+	0
+)
+
+DEFINST(S_CMP_LT_I32,
+	" s_cmp_lt_i32	%SSRC0, %SSRC1",
+	SOPC,
+	4,
+	4,
+	0
+)
+
+DEFINST(S_CMP_LE_I32,
+	" s_cmp_le_i32	%SSRC0, %SSRC1",
+	SOPC,
+	5,
+	4,
+	0
+)
+
+DEFINST(S_CMP_EQ_U32,
+	" s_cmp_eq_u32	%SSRC0, %SSRC1",
+	SOPC,
+	6,
+	4,
+	0
+)
+
+DEFINST(S_CMP_LG_U32,
+	" s_cmp_lg_u32	%SSRC0, %SSRC1",
+	SOPC,
+	7,
+	4,
+	0
+)
+
+DEFINST(S_CMP_GT_U32,
+	" s_cmp_gt_u32	%SSRC0, %SSRC1",
+	SOPC,
+	8,
+	4,
+	0
+)
+
+DEFINST(S_CMP_GE_U32,
+	" S_cmp_ge_u32	%SSRC0, %SSRC1",
+	SOPC,
+	9,
+	4,
+	0
+)
+
+DEFINST(S_CMP_LT_U32,
+	" S_cmp_lt_u32	%SSRC0, %SSRC1",
+	SOPC,
+	10,
+	4,
+	0
+)
+
+DEFINST(S_CMP_LE_U32,
+	" s_cmp_le_u32	%SSRC0, %SSRC1",
+	SOPC,
+	11,
+	4,
+	0
+)
+
+
+// SOPP Instructions
+
+DEFINST(S_WAITCNT,
+	" s_waitcnt	%WAIT_CNT",
+	SOPP,
+	12,
+	4,
+	0
+)
+
+DEFINST(S_ENDPGM,
+	" s_endpgm",
+	SOPP,
+	1,
+	4,
+	0
+)
+
+DEFINST(S_BRANCH,
+	" s_branch	%LABEL",
+	SOPP,
+	2,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_SCC0,
+	" s_cbranch_scc0	%LABEL",
+	SOPP,
+	4,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_SCC1,
+	" s_cbranch_scc1	%LABEL",
+	SOPP,
+	5,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_VCCZ,
+	" s_cbranch_vccz	%LABEL",
+	SOPP,
+	6,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_VCCNZ,
+	" s_cbranch_vccnz	%LABEL",
+	SOPP,
+	7,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_EXECZ,
+	" s_cbranch_execz	%LABEL",
+	SOPP,
+	8,
+	4,
+	0
+)
+
+DEFINST(S_CBRANCH_EXECNZ,
+	" s_cbranch_execnz	%LABEL",
+	SOPP,
+	9,
+	4,
+	0
+)
+
+DEFINST(S_BARRIER,
+	" s_barrier",
+	SOPP,
+	10,
+	4,
+	0
+)
+
+// SMEM Instructions
+
+DEFINST(S_BUFFER_LOAD_DWORD,
+	" s_buffer_load_dword	%SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	8,
+	8,
+	0
+)
+
+
+DEFINST(S_BUFFER_LOAD_DWORDX2,
+	" s_buffer_load_dwordx2	%SERIES_SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	9,
+	8,
+	0
+)
+
+
+DEFINST(S_BUFFER_LOAD_DWORDX4,
+	" s_buffer_load_dwordx4	%SERIES_SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	10,
+	8,
+	0
+)
+
+DEFINST(S_BUFFER_LOAD_DWORDX8,
+	" s_buffer_load_dwordx8	%SERIES_SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	11,
+	8,
+	0
+)
+
+DEFINST(S_BUFFER_LOAD_DWORDX16,
+	" s_buffer_load_dwordx16	%SERIES_SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	12,
+	8,
+	0
+)
+	
+DEFINST(S_LOAD_DWORD,
+	" s_load_dword	%SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	0,
+	8,
+	0
+)
+
+DEFINST(S_LOAD_DWORDX2,
+	" s_load_dwordx2	%SERIES_SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	1,
+	8,
+	0
+)
+
+DEFINST(S_LOAD_DWORDX4,
+	" s_load_dwordx4	%SERIES_SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	2,
+	8,
+	0
+)
+
+DEFINST(S_LOAD_DWORDX8,
+	" s_load_dwordx8	%SERIES_SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	3,
+	8,
+	0
+)
+
+DEFINST(S_LOAD_DWORDX16,
+	" s_load_dwordx16	%SERIES_SDATA, %SERIES_SBASE, %OFFSET",
+	SMEM,
+	4,
+	8,
+	0
+)
+
+// VOP1 Instructions
+
+DEFINST(V_MOV_B32,
+	" v_mov_b32	%VDST, %SRC0",
+	VOP1,
+	1,
+	4,
+	0
+)
+
+// VOP2 Instructions
+
+DEFINST(V_ADD_U32,
+	" v_add_u32	%VDST, %SRC0, %VSRC1",
+	VOP2,
+	28,
+	4,
+	0
+)
+
+DEFINST(V_ADDC_U32,
+	" v_addc_u32	%VDST, %SRC0, %VSRC1",
+	VOP2,
+	25,
+	4,
+	0
+)
+
+DEFINST(V_LSHLREV_B32,
+	" v_lshlrev_b32	%VDST, %SRC0, %VSRC1",
+	VOP2,
+	18,
+	4,
+	0
+)
+
+DEFINST(V_ASHRREV_I32,
+	" v_ashrrev_i32  %VDST, %SRC0, %VSRC1",
+	VOP2,
+	17,
+	4,
+	0
+)
+
+// VOP3a Instructions
+
+DEFINST(V_ADD_U32_VOP3a,
+	" v_add_u32	%VOP3_VDST, %VOP3_SRC0, %VOP3_SRC1, %VOP3_64_SRC2",
+	VOP3a,
+	281,
+	8,
+	0
+)
+
+DEFINST(V_LSHLREV_B32_VOP3a,
+	" v_lshlrev_b32	%VOP3_VDST, %VOP3_SRC0, %VOP3_SRC1, %VOP3_SRC2",
+	VOP3a,
+	274,
+	8,
+	0
+)
+
+DEFINST(V_LSHLREV_B64,
+	" v_lshlrev_b64	%VOP3_64_VDST, %VOP3_64_SRC0, %VOP3_64_SRC1",
+	VOP3a,
+	655,
+	8,
+	0
+)
+
+DEFINST(V_CMP_GT_U32_VOP3a,
+	" v_cmp_gt_u32	%VOP3_64_VDST, %VOP3_SRC0, %VOP3_SRC1",
+	VOP3a,
+	204, //FIXME ??
+	8,
+	0
+)
+
+DEFINST(V_BFE_I32,
+	" v_bfe_i32     %VOP3_VDST, %VOP3_SRC0, %VOP3_SRC1, %VOP3_SRC2",
+	VOP3a,
+	457,
+	8,
+	0
+)
+	
+//VOP3b Instructions
+
+DEFINST(V_ADDC_U32_VOP3b,
+	" v_addc_u32	%VOP3_VDST, %VOP3_64_SDST, %VOP3_SRC0, %VOP3_SRC1, %VOP3_64_SRC2",
+	VOP3b,
+	284,
+	8,
+	0
+)
+
+
+
+// VOPC Instructions
+
+DEFINST(V_CMP_F_F32,
+	" v_cmp_f_f32	%vcc, %SRC0, %VSRC1",
+	VOPC,
+	0,
+	4,
+	0
+)
+
+
+DEFINST(V_CMP_GE_U32,
+	" v_cmp_ge_u32  vcc, %SRC0, %VSRC1",
+	VOPC,
+	206,
+	4,
+	0
+)
+
+
+DEFINST(V_CMP_LE_U32,
+	" v_cmp_le_u32  vcc, %SRC0, %VSRC1",
+	VOPC,
+	203,
+	4,
+	0
+)
+
+
+// FLAT Instructions
+
+
+DEFINST(FLAT_LOAD_DWORD,
+	" flat_load_dword	%FLAT_VDST1, %FLAT_ADDR",
+	FLAT,
+	20,
+	8,
+	0
+)
+
+DEFINST(FLAT_LOAD_DWORDX2,
+	" flat_load_dwordx2	%FLAT_VDST2, %FLAT_ADDR",
+	FLAT,
+	21,
+	8,
+	0
+)
+
+DEFINST(FLAT_LOAD_DWORDX4,
+	" flat_load_dwordx4	%FLAT_VDST4, %FLAT_ADDR",
+	FLAT,
+	22,
+	8,
+	0
+)
+
+DEFINST(FLAT_LOAD_DWORDX3,
+	" flat_load_dwordx3	%FLAT_VDST3, %FLAT_ADDR",
+	FLAT,
+	23,
+	8,
+	0
+)
+
+DEFINST(FLAT_STORE_DWORD,
+	" flat_store_dword	%FLAT_ADDR, %FLAT_DATA1",
+	FLAT,
+	28,
+	8,
+	0
+)
+
+
+DEFINST(FLAT_STORE_DWORDx2,
+	" flat_store_dwordx2	%FLAT_ADDR, %FLAT_DATA2",
+	FLAT,
+	29,
+	8,
+	0
+)
+
+DEFINST(FLAT_STORE_DWORDx4,
+	" flat_store_dword	%FLAT_ADDR, %FLAT_DATA4",
+	FLAT,
+	30,
+	8,
+	0
+)
+
+DEFINST(FLAT_STORE_DWORDx3,
+	" flat_store_dwordx3	%FLAT_ADDR, %FLAT_DATA3",
+	FLAT,
+	31,
+	8,
+	0
+)
+// EXP Instructions
+
+DEFINST(EXPORT,
+	" export	%TGT, %EXP_VSRCs",
+	EXP,
+	0,
+	8,
+	0
+)

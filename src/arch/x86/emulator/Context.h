@@ -28,7 +28,7 @@
 #include <arch/common/FileTable.h>
 #include <lib/cpp/Bitmap.h>
 #include <lib/cpp/Debug.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
 #include <lib/cpp/String.h>
 #include <memory/Memory.h>
 #include <memory/Mmu.h>
@@ -323,7 +323,7 @@ private:
 	struct Loader
 	{
 		// Program executable
-		std::unique_ptr<ELFReader::File> binary;
+		std::unique_ptr<elf::File32> binary;
 
 		// Command-line arguments
 		std::vector<std::string> args;
@@ -379,7 +379,7 @@ private:
 	void LoadEnv();
 
 	// Load ELF sections from binary
-	void LoadELFSections(ELFReader::File *binary);
+	void LoadELFSections(elf::File32 *binary);
 
 	// Load dynamic linker
 	void LoadInterp();

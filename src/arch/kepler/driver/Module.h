@@ -22,7 +22,7 @@
 #include <memory>
 #include <vector>
 
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
 
 #include "Function.h"
 
@@ -38,7 +38,7 @@ class Module
 	int id;
 
 	// Kernel binary
-	ELFReader::File elf_file;
+	elf::File32 elf_file;
 
 	// List of CUDA functions created by the guest application
 	std::vector<std::unique_ptr<Function>> functions;
@@ -54,7 +54,7 @@ public:
 	unsigned getId() const { return id; }
 
 	/// Get kernel binary
-	ELFReader::File *getELFFile() { return &elf_file; }
+	elf::File32 *getELFFile() { return &elf_file; }
 
 	/// Return the number of available functions
 	int getNumFunctions() { return functions.size(); }

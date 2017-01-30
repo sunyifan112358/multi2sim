@@ -220,7 +220,7 @@ void Context::Load(const std::vector<std::string> &args,
 		if (!(loader->binary->getSymbol(i)->getName().compare(0, 2, "$a"))
 				|| !(loader->binary->getSymbol(i)->getName().compare(0, 2, "$t")))
 		{
-			ELFReader::Symbol *symbolPtr = loader->binary->getSymbol(i);
+			elf::Symbol32 *symbolPtr = loader->binary->getSymbol(i);
 			thumb_symbol_list.push_back(symbolPtr);
 		}
 	}
@@ -651,11 +651,11 @@ void Context::Finish(int exit_code)
 
 ContextMode Context::OperateMode(unsigned int addr)
 {
-	ELFReader::Symbol *symbol;
-	ContextMode mode;
+	elf::Symbol32 *symbol;
+	ContextMode mode = ContextMode::ContextModeArm;
 
 	// Locate the symbol tag in the sorted symbol list by input address
-	unsigned int tag_index;
+	unsigned int tag_index = 0;
 	for (unsigned int i = 0; i < thumb_symbol_list.size(); ++i)
 	{
 		symbol = thumb_symbol_list[i];
@@ -667,7 +667,7 @@ ContextMode Context::OperateMode(unsigned int addr)
 	}
 
 	// Get the ARM operating mode based on the symbol
-	if (tag_index < 0 || tag_index >= thumb_symbol_list.size())
+	if (tag_index >= thumb_symbol_list.size())
 	{
 		symbol = nullptr;
 	}

@@ -169,8 +169,8 @@ void Context::ExecuteInstThumb16_MOV_imm()
 void Context::ExecuteInstThumb16_CMP_imm()
 {
 	// Local variable declaration
-	int rn_val;
-	int rd_val;
+	int rn_val = 0;
+	int rd_val = 0;
 	unsigned long flags = 0;
 
 	// Get operand 2 from the instruction info
@@ -337,12 +337,14 @@ void Context::ExecuteInstThumb16_AND_reg()
 		regs.getCPSR().C = 0;
 		regs.getCPSR().v = 0;
 	}
-	if (result < 0)
-	{
-		regs.getCPSR().n = 1;
-		regs.getCPSR().C = 0;
-		regs.getCPSR().v = 0;
-	}
+
+	// Comment by Yifan: result is unsigned, it cannot < 0
+//	if (result < 0)
+//	{
+//		regs.getCPSR().n = 1;
+//		regs.getCPSR().C = 0;
+//		regs.getCPSR().v = 0;
+//	}
 	regs.getCPSR().C = prev_regs_cpsr.C;
 
 	// Print out the CPSR status
@@ -352,8 +354,8 @@ void Context::ExecuteInstThumb16_AND_reg()
 void Context::ExecuteInstThumb16_EOR_reg()
 {
 	// Local variable declaration
-	int rn_val;
-	int rm_val;
+	int rn_val = 0;
+	int rm_val = 0;
 
 	// Get the current CPSR register status
 	regsPsr prev_regs_cpsr = regs.getCPSR();
@@ -380,12 +382,14 @@ void Context::ExecuteInstThumb16_EOR_reg()
 		regs.getCPSR().C = 0;
 		regs.getCPSR().v = 0;
 	}
-	if (result < 0)
-	{
-		regs.getCPSR().n = 1;
-		regs.getCPSR().C = 0;
-		regs.getCPSR().v = 0;
-	}
+
+	// Comment by Yifan: Result is unsigned, cannot < 0
+//	if (result < 0)
+//	{
+//		regs.getCPSR().n = 1;
+//		regs.getCPSR().C = 0;
+//		regs.getCPSR().v = 0;
+//	}
 	regs.getCPSR().C = prev_regs_cpsr.C;
 
 	// Print out the CPSR status
@@ -396,8 +400,8 @@ void Context::ExecuteInstThumb16_EOR_reg()
 void Context::ExecuteInstThumb16_LSL_reg()
 {
 	// Local variable declaration
-	int rn_val;
-	int rm_val;
+	int rn_val = 0;
+	int rm_val = 0;
 
 	// Get the current CPSR register status
 	regsPsr prev_regs_cpsr = regs.getCPSR();
@@ -425,12 +429,13 @@ void Context::ExecuteInstThumb16_LSL_reg()
 		regs.getCPSR().C = 0;
 		regs.getCPSR().v = 0;
 	}
-	if (result < 0)
-	{
-		regs.getCPSR().n = 1;
-		regs.getCPSR().C = 0;
-		regs.getCPSR().v = 0;
-	}
+	// Comment by Yifan: result is unsigned, not possible < 0
+//	if (result < 0)
+//	{
+//		regs.getCPSR().n = 1;
+//		regs.getCPSR().C = 0;
+//		regs.getCPSR().v = 0;
+//	}
 	regs.getCPSR().C = prev_regs_cpsr.C;
 
 	// Print out the CPSR status
@@ -475,9 +480,9 @@ void Context::ExecuteInstThumb16_RSB_reg()
 void Context::ExecuteInstThumb16_CMP_reg1()
 {
 	// Local variable declaration
-	int rn_val;
-	int rm_val;
-	int rd_val;
+	int rn_val = 0;
+	int rm_val = 0;
+	int rd_val = 0;
 	unsigned long flags = 0;
 
 	// Load register rs/rd value to local variable

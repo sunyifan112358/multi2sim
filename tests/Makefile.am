@@ -45,7 +45,8 @@ check_PROGRAMS = \
 
 src_lib_esim_test_LDADD = \
 	$(top_builddir)/src/lib/esim/libesim.a \
-	$(top_builddir)/src/lib/cpp/libcpp.a
+	$(top_builddir)/src/lib/cpp/libcpp.a \
+	$(top_builddir)/src/lib/elf/libelf.a
 
 src_lib_esim_test_SOURCES = \
 	src/lib/esim/TestEngine.cc 
@@ -54,6 +55,7 @@ src_network_test_LDADD = \
 	$(top_builddir)/src/network/libnetwork.a \
 	$(top_builddir)/src/lib/esim/libesim.a \
 	$(top_builddir)/src/lib/cpp/libcpp.a \
+	$(top_builddir)/src/lib/elf/libelf.a \
 	$(am__append_2) -lz
 
 src_network_test_SOURCES = \
@@ -63,7 +65,8 @@ src_network_test_SOURCES = \
 src_dram_test_LDADD = \
 	$(top_builddir)/src/dram/libdram.a \
 	$(top_builddir)/src/lib/esim/libesim.a \
-	$(top_builddir)/src/lib/cpp/libcpp.a
+	$(top_builddir)/src/lib/cpp/libcpp.a \
+	$(top_builddir)/src/lib/elf/libelf.a
 
 src_dram_test_SOURCES = \
 	src/dram/TestDramConfig.cc \
@@ -78,6 +81,7 @@ src_arch_x86_timing_test_LDADD = \
 	$(top_builddir)/src/network/libnetwork.a \
 	$(top_builddir)/src/lib/esim/libesim.a \
 	$(top_builddir)/src/lib/cpp/libcpp.a \
+	$(top_builddir)/src/lib/elf/libelf.a \
 	-lz
 
 src_arch_x86_timing_test_SOURCES = \
@@ -95,6 +99,7 @@ src_arch_southern_islands_emu_test_LDADD = \
 	$(top_builddir)/src/arch/common/libcommon.a \
 	$(top_builddir)/src/memory/libmemory.a \
 	$(top_builddir)/src/lib/esim/libesim.a \
+	$(top_builddir)/src/lib/elf/libelf.a \
 	$(top_builddir)/src/lib/cpp/libcpp.a
 
 src_arch_southern_islands_emu_test_SOURCES = \
@@ -111,6 +116,7 @@ src_arch_southern_islands_timing_test_LDADD = \
 	$(top_builddir)/src/memory/libmemory.a \
 	$(top_builddir)/src/network/libnetwork.a \
 	$(top_builddir)/src/lib/esim/libesim.a \
+	$(top_builddir)/src/lib/elf/libelf.a \
 	$(top_builddir)/src/lib/cpp/libcpp.a \
 	-lz
 	
@@ -127,6 +133,7 @@ src_memory_test_LDADD = \
 	$(top_builddir)/src/lib/esim/libesim.a \
 	$(top_builddir)/src/arch/common/libcommon.a \
 	$(top_builddir)/src/lib/cpp/libcpp.a \
+	$(top_builddir)/src/lib/elf/libelf.a \
 	$(am__append_2) -lz
 
 src_memory_test_SOURCES = \
@@ -164,6 +171,7 @@ src_arch_hsa_emulator_test_LDADD = \
 	$(top_builddir)/src/network/libnetwork.a \
 	$(top_builddir)/src/lib/esim/libesim.a \
 	$(top_builddir)/src/arch/common/libcommon.a \
+	$(top_builddir)/src/lib/elf/libelf.a \
 	$(top_builddir)/src/lib/cpp/libcpp.a \
 	$(am__append_2) -lz
 

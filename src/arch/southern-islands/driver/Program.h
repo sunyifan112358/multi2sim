@@ -21,7 +21,8 @@
 #ifndef ARCH_SI_PROGRAM_H
 #define ARCH_SI_PROGRAM_H
 
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File.h>
+#include <lib/elf/Symbol.h>
 
 #include "Driver.h"
 
@@ -72,7 +73,7 @@ class Program
 	int id = 0;
 
 	// ELF binary
-	std::unique_ptr<ELFReader::File> elf_file;
+	std::unique_ptr<elf::File32> elf_file;
 
 	// List of constant buffers
 	std::vector<std::unique_ptr<ConstantBuffer>> constant_buffers;
@@ -98,7 +99,7 @@ public:
 	///
 	/// \param name
 	///	Name of the symbol
-	ELFReader::Symbol *getSymbol(const std::string &name) const 
+	elf::Symbol32 *getSymbol(const std::string &name) const
 	{
 		return elf_file->getSymbol(name); 
 	}
