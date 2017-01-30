@@ -96,7 +96,7 @@ void Emulator::Dump(std::ostream &os) const
 }
 
 
-void Emulator::DumpSummary(std::ostream &os)
+void Emulator::DumpSummary(std::ostream &os) const
 {
 	Dump();
 }

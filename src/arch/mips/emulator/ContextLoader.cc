@@ -48,7 +48,7 @@ void Context::LoadInterp()
 			loader->interp.c_str());
 
 	// Load section from program interpreter
-	ELFReader::File binary(loader->interp);
+	elf::File32 binary(loader->interp);
 	LoadELFSections(&binary);
 
 	// Change program entry to the one specified by the interpreter
@@ -75,7 +75,7 @@ void Context::LoadProgramHeaders()
 {
 	// Debug
 	emulator->loader_debug << "\nLoading program headers\n";
-	ELFReader::File *binary = loader->binary.get();
+	elf::File32 *binary = loader->binary.get();
 
 	// Load program header table from ELF
 	int phdr_count = binary->getPhnum();
@@ -134,7 +134,7 @@ void Context::LoadProgramHeaders()
 }
 
 
-void Context::LoadELFSections(ELFReader::File *binary)
+void Context::LoadELFSections(elf::File32 *binary)
 {
 	Emulator::loader_debug << "\nLoading ELF sections\n";
 	loader->bottom = 0xffffffff;
@@ -367,7 +367,7 @@ void Context::LoadBinary()
 	}
 
 	// Load ELF binary
-	loader->binary.reset(new ELFReader::File(loader->exe));
+	loader->binary.reset(new elf::File32(loader->exe));
 
 	// Read sections and program entry
 	LoadELFSections(loader->binary.get());

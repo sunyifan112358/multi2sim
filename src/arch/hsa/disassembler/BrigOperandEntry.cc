@@ -86,20 +86,11 @@ void BrigOperandEntry::DumpOperandAddress(BrigType type = BRIG_TYPE_NONE,
 		reg->Dump(BRIG_TYPE_NONE, os);
 		if (offset > 0)
 			os << "+" << offset;
-		if (offset < 0)
-			os << "-" << -offset;
 		os << "]";
 	}
 	else if (offset != 0 || !symbol.get())
 	{
-		if (symbol.get() && offset < 0)
-		{
-			os << "[" << "-" << -offset << "]";
-		}
-		else
-		{
-			os << "[" << (unsigned long long)offset << "]";
-		}
+		os << "[" << (unsigned long long)offset << "]";
 	}
 }
 

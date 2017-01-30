@@ -41,6 +41,8 @@ LDADD = \
 	$(top_builddir)/src/arch/southern-islands/emulator/libemulator.a \
 	$(top_builddir)/src/arch/southern-islands/disassembler/libdisassembler.a \
 	\
+	$(top_builddir)/src/arch/volcanic-islands/disassembler/libdisassembler.a \
+	\
 	$(top_builddir)/src/arch/common/libcommon.a \
 	\
 	$(top_builddir)/src/dram/libdram.a \
@@ -58,7 +60,8 @@ LDADD = \
 	$(top_builddir)/src/lib/esim/libesim.a \
 	$(top_builddir)/src/lib/util/libutil.a \
 	$(top_builddir)/src/lib/mhandle/libmhandle.a \
-	$(top_builddir)/src/lib/cpp/libcpp.a
+	$(top_builddir)/src/lib/cpp/libcpp.a \
+	$(top_builddir)/src/lib/elf/libelf.a
 
 if ENABLE_DEBUG
 AM_LDFLAGS = -rdynamic

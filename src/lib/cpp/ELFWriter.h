@@ -99,6 +99,9 @@ public:
 	/// Return the number of bytes in the buffer
 	size_t getSize();
 
+	/// Return the File
+	File *getFile() const { return file; }
+
 	/// reset the content of the buffer.
 	void Clear() { stream.str(""); }
 

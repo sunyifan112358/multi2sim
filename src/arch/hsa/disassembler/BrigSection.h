@@ -20,7 +20,6 @@
 #ifndef ARCH_HSA_DISASSEMBLER_BRIGSECTION_H
 #define ARCH_HSA_DISASSEMBLER_BRIGSECTION_H
  
-#include <lib/cpp/ELFReader.h>
 #include <lib/cpp/Misc.h>
 
 #include "Brig.h"

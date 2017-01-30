@@ -239,24 +239,24 @@ Bitmap &Bitmap::operator-=(const Bitmap &b)
 }
 
 
-Bitmap &Bitmap::operator<<=(size_t n)
+Bitmap &Bitmap::operator<<=(long long n)
 {
-	if (n >= size)
+	if ((unsigned long long)n >= size)
 	{
 		Reset();
 		return *this;
 	}
-	for (size_t i = size - 1; i >= n; i--)
+	for (long long i = size - 1; i >= n; i--)
 		Set(i, Test(i - n));
-	for (size_t i = n - 1; i >= 0; i--)
+	for (long long i = n - 1; i >= 0; i--)
 		Set(i, false);
 	return *this;
 }
 
 
-Bitmap &Bitmap::operator>>=(size_t n)
+Bitmap &Bitmap::operator>>=(long long n)
 {
-	if (n >= size)
+	if ((unsigned long long)n >= size)
 	{
 		Reset();
 		return *this;
@@ -269,14 +269,14 @@ Bitmap &Bitmap::operator>>=(size_t n)
 }
 
 
-Bitmap Bitmap::operator<<(size_t n) const
+Bitmap Bitmap::operator<<(long long n) const
 {
 	Bitmap b = *this;
 	return b <<= n;
 }
 
 
-Bitmap Bitmap::operator>>(size_t n) const
+Bitmap Bitmap::operator>>(long long n) const
 {
 	Bitmap b = *this;
 	return b >>= n;

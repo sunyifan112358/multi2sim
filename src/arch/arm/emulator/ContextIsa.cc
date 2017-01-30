@@ -51,7 +51,7 @@ int Context::IsaGetOp2(unsigned int op2, ContextOp2Catecory cat)
 {
 	unsigned int imm;
 	unsigned int rotate;
-	int op_val;
+	int op_val = 0;
 	unsigned int shift;
 	unsigned int rm;
 	unsigned int rs;
@@ -140,19 +140,19 @@ int Context::IsaGetOp2(unsigned int op2, ContextOp2Catecory cat)
 
 int Context::IsaOp2Carry(unsigned int op2, ContextOp2Catecory cat)
 {
-	unsigned int imm;
-	unsigned int rotate;
-	unsigned int shift;
-	unsigned int rm;
-	unsigned int rs;
-	unsigned int shift_imm;
-	signed int rm_val;
-	unsigned int carry_ret;
-	unsigned int cry_bit;
-	unsigned int cry_mask;
-	unsigned int rot_val;
-	unsigned int imm_8r;
-	int rs_val;
+	unsigned int imm = 0;
+	unsigned int rotate = 0;
+	unsigned int shift = 0;
+	unsigned int rm = 0;
+	unsigned int rs = 0;
+	unsigned int shift_imm = 0;
+	signed int rm_val = 0;
+	unsigned int carry_ret = 0;
+	unsigned int cry_bit = 0;
+	unsigned int cry_mask = 0;
+	unsigned int rot_val = 0;
+	unsigned int imm_8r = 0;
+	int rs_val = 0;
 
 	if (cat == ContextOp2CatecoryImmd)
 	{
@@ -1541,8 +1541,8 @@ void Context::IsaSubtractRev(unsigned int rd, unsigned int rn, int op2,
 void Context::IsaAdd(unsigned int rd, unsigned int rn, int op2,
 		unsigned int op3)
 {
-	int rd_val;
-	int rn_val;
+	int rd_val = 0;
+	int rn_val = 0;
 	unsigned long flags = 0;
 
 	IsaRegLoad( rn, rn_val);
@@ -1897,8 +1897,8 @@ bool Context::IsaInvalidAddrLdr(unsigned int addr, unsigned int *value)
 void Context::IsaThumbAdd(unsigned int rd, unsigned int rn, int op2,
 		unsigned int op3, unsigned int flag_set)
 {
-	int rd_val;
-	int rn_val;
+	int rd_val = 0;
+	int rn_val = 0;
 	unsigned long flags = 0;
 
 	IsaRegLoad(rn, rn_val);
@@ -1925,8 +1925,8 @@ void Context::IsaThumbAdd(unsigned int rd, unsigned int rn, int op2,
 				"pushf\n\t"
 				"pop %0\n\t"
 				: "=g" (flags), "=m" (rn_val)
-				  : "m" (rn_val), "m" (op2), "m" (rd_val), "g" (flags)
-				    : "eax"
+				: "m" (rn_val), "m" (op2), "m" (rd_val), "g" (flags)
+				: "eax"
 		);
 
 

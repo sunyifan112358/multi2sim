@@ -18,7 +18,8 @@
  */
 
 #include <lib/cpp/CommandLine.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
+#include <lib/elf/Section32.h>
 #include <lib/cpp/String.h>
 
 #include "Disassembler.h"
@@ -1223,11 +1224,11 @@ void Disassembler::Thumb16SetupTable(const char* name , const char* fmt_str ,
 }
 
 
-void Disassembler::ElfSymbolFunc(const ELFReader::File &file, std::ostream &os,
+void Disassembler::ElfSymbolFunc(const elf::File32 &file, std::ostream &os,
 		unsigned int inst_addr,
 		DisassemblyMode disasm_mode)
 {
-	ELFReader::Symbol *symbol;
+	elf::Symbol32 *symbol;
 	//unsigned int prev_symbol;
 
 	if (disasm_mode == DisassemblyModeArm)
@@ -1279,10 +1280,11 @@ void Disassembler::ElfSymbolFunc(const ELFReader::File &file, std::ostream &os,
 }
 
 
-unsigned int Disassembler::ElfDumpWordSymbol(const ELFReader::File &file, std::ostream &os,
+unsigned int Disassembler::ElfDumpWordSymbol(const elf::File32 &file,
+		std::ostream &os,
 		unsigned int inst_addr, unsigned int *inst_ptr)
 {
-	ELFReader::Symbol *symbol;
+	elf::Symbol32 *symbol;
 	unsigned int word_flag;
 	symbol = file.getSymbolByAddress(inst_addr);
 
@@ -1300,10 +1302,11 @@ unsigned int Disassembler::ElfDumpWordSymbol(const ELFReader::File &file, std::o
 }
 
 
-unsigned int Disassembler::ElfDumpThumbWordSymbol(const ELFReader::File &file, std::ostream &os,
-		unsigned int inst_addr, unsigned int *inst_ptr)
+unsigned int Disassembler::ElfDumpThumbWordSymbol(const elf::File32 &file,
+		std::ostream &os, unsigned int inst_addr,
+		unsigned int *inst_ptr)
 {
-	ELFReader::Symbol *symbol;
+	elf::Symbol32 *symbol;
 	unsigned int word_flag;
 	symbol = file.getSymbolByAddress(inst_addr);;
 
@@ -1321,8 +1324,8 @@ unsigned int Disassembler::ElfDumpThumbWordSymbol(const ELFReader::File &file, s
 }
 
 
-void Disassembler::ElfSymbolListCreate(const ELFReader::File &file,
-			std::vector<ELFReader::Symbol*> &symbol_list)
+void Disassembler::ElfSymbolListCreate(const elf::File32 &file,
+			std::vector<elf::Symbol32 *> &symbol_list)
 {
 	for (int i = 0; i < file.getNumSymbols(); i++)
 	{
@@ -1336,11 +1339,11 @@ void Disassembler::ElfSymbolListCreate(const ELFReader::File &file,
 
 
 Disassembler::DisassemblyMode Disassembler::DissassembleMode(
-		const std::vector<ELFReader::Symbol*> &symbol_list,
+		const std::vector<elf::Symbol32 *> &symbol_list,
 		unsigned int addr)
 {
-	ELFReader::Symbol *symbol = NULL;
-	DisassemblyMode disasm_mode;
+	elf::Symbol32 *symbol = NULL;
+	DisassemblyMode disasm_mode = DisassemblyModeArm;
 	unsigned int tag_index = 0;
 
 	// Binary search
@@ -1401,9 +1404,9 @@ int Disassembler::TestThumb32(const char *inst_ptr)
 
 void Disassembler::DisassembleBinary(const std::string &path)
 {
-	ELFReader::File file(path);
-	ELFReader::Section *section;
-	std::vector<ELFReader::Symbol*> symbol_list;
+	elf::File32 file(path);
+	elf::Section32 *section;
+	std::vector<elf::Symbol32 *> symbol_list;
 	Instruction inst;
 	static DisassemblyMode disasm_mode;
 

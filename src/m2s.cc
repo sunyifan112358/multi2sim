@@ -43,6 +43,7 @@
 #include <arch/southern-islands/timing/Timing.h>
 #include <arch/arm/disassembler/Disassembler.h>
 #include <arch/arm/emulator/Emulator.h>
+#include <arch/volcanic-islands/disassembler/Disassembler.h>
 #include <dram/System.h>
 #include <memory/Mmu.h>
 #include <memory/Manager.h>
@@ -156,7 +157,7 @@ void LoadProgram(const std::vector<std::string> &arguments,
 	
 	// Choose emulator based on ELF header
 	std::string exe = misc::getFullPath(arguments[0], current_directory);
-	ELFReader::File elf_file(exe, false);
+	elf::File32 elf_file(exe, false);
 	comm::Emulator *emulator;
 	switch (elf_file.getMachine())
 	{
@@ -608,6 +609,7 @@ int MainProgram(int argc, char **argv)
 	net::System::RegisterOptions();
 	ARM::Disassembler::RegisterOptions();
 	ARM::Emulator::RegisterOptions();
+	VI::Disassembler::RegisterOptions();
 
 	// Process command line. Return to C version of Multi2Sim if a
 	// command-line option was not recognized.
@@ -638,6 +640,7 @@ int MainProgram(int argc, char **argv)
 	net::System::ProcessOptions();
 	ARM::Disassembler::ProcessOptions();
 	ARM::Emulator::ProcessOptions();
+	VI::Disassembler::ProcessOptions();
 
 	// Initialize memory system, only if there is at least one timing
 	// simulation active. Check this in the architecture pool after all

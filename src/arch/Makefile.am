@@ -5,4 +5,5 @@ SUBDIRS = \
 	kepler \
 	mips \
 	southern-islands \
+	volcanic-islands \
 	x86

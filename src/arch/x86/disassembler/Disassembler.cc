@@ -19,10 +19,13 @@
 
 #include <cassert>
 #include <cstring>
+#include <elf.h>
 
 #include <lib/cpp/CommandLine.h>
-#include <lib/cpp/ELFReader.h>
 #include <lib/cpp/String.h>
+#include <lib/elf/File32.h>
+#include <lib/elf/Section32.h>
+#include <lib/elf/Symbol32.h>
 
 #include "Disassembler.h"
 #include "Instruction.h"
@@ -284,11 +287,11 @@ Disassembler *Disassembler::getInstance()
 void Disassembler::DisassembleBinary(const std::string &path, std::ostream &os) const
 {
 	// Traverse sections of ELF file
-	ELFReader::File file(path);
+	elf::File32 file(path);
 	for (int idx = 0; idx < file.getNumSections(); idx++)
 	{
 		// Get section and skip if it does not contain code
-		ELFReader::Section *section = file.getSection(idx);
+		elf::Section32 *section = file.getSection(idx);
 		if ((section->getFlags() & SHF_EXECINSTR) == 0)
 			continue;
 
@@ -298,7 +301,7 @@ void Disassembler::DisassembleBinary(const std::string &path, std::ostream &os) 
 
 		// Keep track of current symbol
 		int current_symbol = 0;
-		ELFReader::Symbol *symbol = file.getSymbol(current_symbol);
+		elf::Symbol32 *symbol = file.getSymbol(current_symbol);
 
 		// Disassemble
 		Instruction inst;
