@@ -22,3 +22,7 @@ test-driver
 *.dirstamp
 .dirstamp
 .*.swp
+
+build
+.idea
+
