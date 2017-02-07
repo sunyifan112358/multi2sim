@@ -1,1 +1,5 @@
+# CMake build file
 build
+
+# vim file
+.*.swp
