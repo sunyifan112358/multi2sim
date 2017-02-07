@@ -13,6 +13,5 @@ add_library(cpp
 	Misc.cc
 	String.cc
 	Terminal.cc
-	Timer.cc
-	)
+	Timer.cc)
 
