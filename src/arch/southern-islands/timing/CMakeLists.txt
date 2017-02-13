@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-add_library(siemu
+add_library(sitiming
   BranchUnit.cc
   ComputeUnit.cc
   ExecutionUnit.cc

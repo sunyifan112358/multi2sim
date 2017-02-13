@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-add_library(x86emu
+add_library(x86timing
   Alu.cc
   BranchPredictor.cc
   Core.cc
