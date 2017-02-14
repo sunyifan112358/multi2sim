@@ -102,7 +102,7 @@ void Actions::ParseAction(const std::string &line)
 void Actions::ParseActionRequest(const std::vector<std::string> &tokens)
 {
 	// Get the cycle of the action.
-	long long cycle = misc::StringToInt64(tokens[0]);
+	// long long cycle = misc::StringToInt64(tokens[0]);
 
 	// Create the request object that will be inserted into the queue.
 	std::shared_ptr<Request> request = std::make_shared<Request>();

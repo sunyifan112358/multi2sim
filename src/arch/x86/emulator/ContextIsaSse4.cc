@@ -40,7 +40,7 @@ namespace x86
 
 
 #ifndef HAVE_SSE4
-static char *x86_isa_err_sse4 =
+static const char *x86_isa_err_sse4 =
 	"\tThis version of Multi2Sim has been built on a machine without support\n"
 	"\tfor SSE4 x86 instructions. While the implementation of this\n"
 	"\tinstruction is supported, it was disabled for compatibility with your\n"
