@@ -4,4 +4,5 @@ add_library(armdisasm
   Disassembler.cc
   Instruction.cc
 )  
+target_link_libraries(armdisasm archcommon)
 

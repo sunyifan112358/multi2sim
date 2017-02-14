@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.2)
 set(SUBDIRECTORIES 
   arch
   lib
+  dram
+  memory
+  network
 )
 
 foreach(subdir ${SUBDIRECTORIES} )
@@ -12,6 +15,16 @@ endforeach(subdir)
 add_executable(m2s m2s.cc)
 target_link_libraries(m2s 
   cpp
+  elf
+  esim
+  mhandle
+  util
+  
+  dram
+  memory
+  network
+
+  archcommon
 
   armdisasm
   armemu
@@ -24,17 +37,18 @@ target_link_libraries(m2s
   keplerdriver
   kepleremu
 
-  mipsdisasm
-  mipsemu
-
   sidisasm
   sidriver
   siemu
   sitiming
 
-  vidiasm
+  vidisasm
 
   x86disasm
   x86emu
   x86timing
+
+  pthread
+  z
+  m
 )

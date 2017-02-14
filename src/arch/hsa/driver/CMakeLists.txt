@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-add_library(hsadrive
+add_library(hsadriver
   DriverCall.cc
   Driver.cc
   HsaExecutable.cc

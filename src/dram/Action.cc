@@ -36,9 +36,9 @@ std::unique_ptr<Actions> Actions::instance;
 Actions::Actions()
 {
 	// Get the esim engine instance and register events with it.
-	esim::Engine *esim = esim::Engine::getInstance();
-	System::ACTION_REQUEST = esim->RegisterEvent("ACTION_REQUEST",
-			ActionRequestHandler, System::frequency_domain);
+	// esim::Engine *esim = esim::Engine::getInstance();
+	// System::ACTION_REQUEST = esim->RegisterEvent("ACTION_REQUEST",
+	// 		ActionRequestHandler, System::frequency_domain);
 
 	// Set the debugger
 	debug.setPath("stderr");
@@ -120,9 +120,9 @@ void Actions::ParseActionRequest(const std::vector<std::string> &tokens)
 	request->setEncodedAddress(misc::StringToInt64(tokens[3]));
 
 	// Schedule an event to insert it at the specified cycle.
-	esim::Engine *esim = esim::Engine::getInstance();
-	auto request_frame = std::make_shared<ActionRequestFrame>(request);
-	esim->Call(System::ACTION_REQUEST, request_frame, nullptr, cycle);
+	// esim::Engine *esim = esim::Engine::getInstance();
+	// auto request_frame = std::make_shared<ActionRequestFrame>(request);
+	// esim->Call(System::ACTION_REQUEST, request_frame, nullptr, cycle);
 }
 
 void Actions::ParseActionDecode(const std::vector<std::string> &tokens)

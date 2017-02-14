@@ -5,4 +5,5 @@ add_library(vidisasm
   Instruction.cc
   Binary.cc
 )  
+target_link_libraries(vidisasm elf)
 

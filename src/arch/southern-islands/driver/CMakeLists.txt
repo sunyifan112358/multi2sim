@@ -6,3 +6,4 @@ add_library(sidriver
   Kernel.cc
   Program.cc
 )
+target_link_libraries(sidriver sidisasm)

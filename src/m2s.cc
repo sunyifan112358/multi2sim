@@ -27,9 +27,6 @@
 #include <arch/kepler/disassembler/Disassembler.h>
 #include <arch/kepler/driver/Driver.h>
 #include <arch/kepler/emulator/Emulator.h>
-#include <arch/mips/disassembler/Disassembler.h>
-#include <arch/mips/emulator/Context.h>
-#include <arch/mips/emulator/Emulator.h>
 #include <arch/x86/disassembler/Disassembler.h>
 #include <arch/x86/emulator/Context.h>
 #include <arch/x86/emulator/Emulator.h>
@@ -57,10 +54,6 @@
 #include <lib/esim/Engine.h>
 #include <lib/esim/Trace.h>
 
-extern "C"
-{
-#include <visual/common/visual.h>
-}
 //
 // Configuration options
 //
@@ -94,9 +87,6 @@ std::string m2s_opencl_devices;
 
 // Trace file
 std::string m2s_trace_file;
-
-// Visualization tool input file
-std::string m2s_visual_file;
 
 
 
@@ -169,11 +159,6 @@ void LoadProgram(const std::vector<std::string> &arguments,
 	case EM_ARM:
 
 		emulator = ARM::Emulator::getInstance();
-		break;
-
-	case EM_MIPS:
-
-		emulator = MIPS::Emulator::getInstance();
 		break;
 
 	default:
@@ -311,15 +296,6 @@ void RegisterOptions()
 			"simulation runs, since the trace file can quickly "
 			"become extremely large.");
 	
-	// Visualization tool input file
-	command_line->RegisterString("--visual <file>",
-			m2s_visual_file,
-			"Run the Multi2Sim Visualization Tool. This option "
-			"consumes a file generated with the '--trace' option "
-			"in a previous simulation. This option is only "
-			"available on systems with support for GTK 3.0 or "
-			"higher.");
-
 	//
 	// CUDA runtime options
 	//
@@ -412,10 +388,6 @@ void ProcessOptions()
 		trace_system->setPath(m2s_trace_file);
 	}
 
-	// Visualization
-	if (!m2s_visual_file.empty())
-		visual_run(m2s_visual_file.c_str());
-		
 }
 
 
@@ -595,8 +567,6 @@ int MainProgram(int argc, char **argv)
 	Kepler::Emulator::RegisterOptions();
 	mem::Mmu::RegisterOptions();
 	mem::Manager::RegisterOptions();
-	MIPS::Disassembler::RegisterOptions();
-	MIPS::Emulator::RegisterOptions();
 	SI::Driver::RegisterOptions();
 	SI::Disassembler::RegisterOptions();
 	SI::Emulator::RegisterOptions();
@@ -626,8 +596,6 @@ int MainProgram(int argc, char **argv)
 	Kepler::Emulator::ProcessOptions();
 	mem::Mmu::ProcessOptions();
 	mem::Manager::ProcessOptions();
-	MIPS::Disassembler::ProcessOptions();
-	MIPS::Emulator::ProcessOptions();
 	SI::Driver::ProcessOptions();
 	SI::Disassembler::ProcessOptions();
 	SI::Emulator::ProcessOptions();

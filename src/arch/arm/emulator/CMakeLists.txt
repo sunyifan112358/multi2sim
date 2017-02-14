@@ -12,3 +12,4 @@ add_library(armemu
   Emulator.cc
   Regs.cc
 )
+target_link_libraries(armemu memory)
