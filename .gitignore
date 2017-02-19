@@ -3,3 +3,7 @@ build
 
 # vim file
 .*.swp
+
+# CLion files
+.idea
+cmake-build-*
