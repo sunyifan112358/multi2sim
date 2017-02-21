@@ -22,12 +22,12 @@
 
 #include <arch/common/Disassembler.h>
 #include <lib/cpp/Error.h>
+#include <lib/elf/Section64.h>
 #include <memory>
 
 namespace x86_64 {
 
 class Disassembler : public comm::Disassembler {
-
   // Disassemble a file
   static std::string path;
 
@@ -37,11 +37,14 @@ class Disassembler : public comm::Disassembler {
   // Unique instance of x86_64 disassembler
   static std::unique_ptr<Disassembler> instance;
 
-public:
+  // Disassemble a section
+  void DisassembleSection(elf::Section64 *section,
+                          std::ostream &os = std::cout) const;
 
+ public:
   /// Exception for the x86 disassembler
   class Error : public misc::Error {
-  public:
+   public:
     Error(const std::string &message) : misc::Error(message) {
       AppendPrefix("x86_64 disassembler");
     }
@@ -66,7 +69,6 @@ public:
                          std::ostream &os = std::cout) const;
 };
 
-
 }  // namespace x86_64
 
-#endif // ARCH_X86_64_DISASSEMBLER_DISASSEMBLER_H
+#endif  // ARCH_X86_64_DISASSEMBLER_DISASSEMBLER_H

@@ -76,8 +76,13 @@ void Disassembler::DisassembleBinary(const std::string &path,
       continue;
     }
 
-		os << "Disassembly of section " << section->getName()
-				<< ":\n";
+    DisassembleSection(section, os);
+
   }
+}
+
+void Disassembler::DisassembleSection(elf::Section64 *section,
+                                      std::ostream &os) const {
+  os << "Disassembly of section " << section->getName() << ":\n";
 }
 }
