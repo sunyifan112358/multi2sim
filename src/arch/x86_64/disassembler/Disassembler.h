@@ -48,10 +48,10 @@ public:
   };
 
   /// Destructor
-	~Disassembler();
+  ~Disassembler();
 
-	/// Get instance of singleton
-	static Disassembler *getInstance();
+  /// Get instance of singleton
+  static Disassembler *getInstance();
 
   /// Register options in the command line
   static void RegisterOptions();
@@ -60,10 +60,10 @@ public:
   static void ProcessOptions();
 
   /// Disassemble the x86_64 ELF executable contained in file \a path, and
-	/// dump its content into the output stream given in \c os (or the
-	/// standard output if no output stream is specified.
-	void DisassembleBinary(const std::string &path,
-			std::ostream &os = std::cout) const;
+  /// dump its content into the output stream given in \c os (or the
+  /// standard output if no output stream is specified.
+  void DisassembleBinary(const std::string &path,
+                         std::ostream &os = std::cout) const;
 };
 
 

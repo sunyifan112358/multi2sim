@@ -74,5 +74,4 @@ void Disassembler::ProcessOptions() {
 void Disassembler::DisassembleBinary(const std::string &path, std::ostream &os) const {
   os << "Disassembling\n";
 }
-
 }
