@@ -18,6 +18,8 @@
  */
 
 #include <lib/cpp/CommandLine.h>
+#include <lib/elf/File64.h>
+#include <lib/elf/Section32.h>
 
 #include "Disassembler.h"
 
@@ -26,20 +28,13 @@ namespace x86_64 {
 std::string Disassembler::path;
 std::unique_ptr<Disassembler> Disassembler::instance;
 
-Disassembler::Disassembler() : comm::Disassembler("x86_64") {
+Disassembler::Disassembler() : comm::Disassembler("x86_64") {}
 
-}
-
-Disassembler::~Disassembler() {
-
-}
+Disassembler::~Disassembler() {}
 
 Disassembler *Disassembler::getInstance() {
-  // Instance already exists
-  if (instance.get())
-    return instance.get();
+  if (instance.get()) return instance.get();
 
-  // Create instance
   instance.reset(new Disassembler());
   return instance.get();
 }
@@ -53,9 +48,10 @@ void Disassembler::RegisterOptions() {
 
   // Option --x86_64-disasm <file>
   command_line->RegisterString("--x86_64-disasm <file>", path,
-                               "Disassemble the x86_64 ELF file provided in <arg>, "
-                                   "using the internal x86_64 disassembler. This option is "
-                                   "incompatible with any other option.");
+                               "Disassemble the x86_64 ELF file provided in "
+                               "<arg>, using the internal x86_64 disassembler. "
+                               "This option is incompatible with any other "
+                               "option.");
 
   // Incompatible options
   command_line->setIncompatible("--x86_64-disasm");
@@ -63,15 +59,25 @@ void Disassembler::RegisterOptions() {
 
 void Disassembler::ProcessOptions() {
   // Run x86 disassembler
-  if (!path.empty())
-  {
+  if (!path.empty()) {
     Disassembler *disassembler = Disassembler::getInstance();
     disassembler->DisassembleBinary(path);
     exit(0);
   }
 }
 
-void Disassembler::DisassembleBinary(const std::string &path, std::ostream &os) const {
-  os << "Disassembling\n";
+void Disassembler::DisassembleBinary(const std::string &path,
+                                     std::ostream &os) const {
+  elf::File64 file(path);
+
+  for (int idx = 0; idx < file.getNumSections(); idx++) {
+    elf::Section64 *section = file.getSection(idx);
+    if ((section->getFlags() & SHF_EXECINSTR) == 0) {
+      continue;
+    }
+
+		os << "Disassembly of section " << section->getName()
+				<< ":\n";
+  }
 }
 }
