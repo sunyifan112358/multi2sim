@@ -32,6 +32,7 @@
 #include <arch/x86/emulator/Emulator.h>
 #include <arch/x86/emulator/Signal.h>
 #include <arch/x86/timing/Timing.h>
+#include <arch/x86_64/disassembler/Disassembler.h>
 #include <arch/hsa/disassembler/Disassembler.h>
 #include <arch/hsa/driver/Driver.h>
 #include <arch/hsa/emulator/Emulator.h>
@@ -574,6 +575,7 @@ int MainProgram(int argc, char **argv)
 	x86::Disassembler::RegisterOptions();
 	x86::Emulator::RegisterOptions();
 	x86::Timing::RegisterOptions();
+	x86_64::Disassembler::RegisterOptions();
 	mem::System::RegisterOptions();
 	dram::System::RegisterOptions();
 	net::System::RegisterOptions();
@@ -603,6 +605,7 @@ int MainProgram(int argc, char **argv)
 	x86::Disassembler::ProcessOptions();
 	x86::Emulator::ProcessOptions();
 	x86::Timing::ProcessOptions();
+	x86_64::Disassembler::ProcessOptions();
 	mem::System::ProcessOptions();
 	dram::System::ProcessOptions();
 	net::System::ProcessOptions();

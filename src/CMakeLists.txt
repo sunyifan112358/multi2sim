@@ -48,6 +48,8 @@ target_link_libraries(m2s
   x86emu
   x86timing
 
+  x86_64disasm
+
   pthread
   z
   m

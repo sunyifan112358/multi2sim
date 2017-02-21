@@ -1,15 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
 set(SUBDIRECTORIES
-  common
-  arm
-  mips
-  hsa
-  x86
-  x86_64
-  southern-islands
-  volcanic-islands
-  kepler
+    disassembler
 )
 
 foreach(subdir ${SUBDIRECTORIES})
