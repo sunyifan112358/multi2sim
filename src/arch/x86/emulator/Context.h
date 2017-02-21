@@ -332,7 +332,7 @@ private:
 		std::vector<std::string> env;
 
 		// Executable interpreter
-		std::string interp;
+		std::string interpreter;
 
 		// Executable file name
 		std::string exe;
@@ -350,20 +350,17 @@ private:
 		unsigned stack_size;
 		unsigned environ_base;
 
-		// Lowest address initialized
-		unsigned bottom;
-
 		// Program entries
 		unsigned prog_entry;
 		unsigned interp_prog_entry;
 
-		// Program headers
-		unsigned phdt_base;
-		unsigned phdr_count;
-
 		// Random bytes
 		unsigned at_random_addr;
 		unsigned at_random_addr_holder;
+
+		// Address of the value of the AT_PLATFORM element of the
+		// auxiliary vector pointing to the name of the platform
+		unsigned at_platform_ptr = 0;
 	};
 
 	// String map from program header types
@@ -375,23 +372,18 @@ private:
 	// it.
 	std::shared_ptr<Loader> loader;
 
-	// Load environment variables in 'loader.env' into the stack
-	void LoadEnv();
-
-	// Load ELF sections from binary
-	void LoadELFSections(elf::File32 *binary);
+	// Load segments from binary. The function returns the highest loaded
+	// virtual address from all the loaded segments.
+	unsigned LoadSegments(elf.File32 *binary);
 
 	// Load dynamic linker
-	void LoadInterp();
-
-	// Load program headers
-	void LoadProgramHeaders();
+	void LoadInterpreter();
 
 	// Load entry of the auxiliary vector
-	void LoadAVEntry(unsigned &sp, unsigned type, unsigned value);
+	void LoadAuxiliaryVectorEntry(unsigned &sp, unsigned type, unsigned value);
 
 	// Load auxiliary vector and return its size in bytes
-	unsigned LoadAV(unsigned where);
+	unsigned LoadAuxiliaryVector(unsigned where);
 
 	// Load content of stack
 	void LoadStack();
