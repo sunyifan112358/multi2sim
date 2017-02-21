@@ -24,7 +24,7 @@
 #include <vector>
 
 #include <arch/common/CallStack.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
 #include <memory/Memory.h>
 #include <memory/SpecMem.h>
 #include <arch/common/FileTable.h>
@@ -214,7 +214,7 @@ class Context
 	struct Loader
 	{
 		// Program executable
-		std::unique_ptr<ELFReader::File> binary;
+		std::unique_ptr<elf::File32> binary;
 
 		// Command-line arguments
 		std::vector<std::string> args;
@@ -268,7 +268,7 @@ class Context
 	std::shared_ptr<Loader> loader;
 
 	// Load ELF sections from binary
-	void LoadELFSections(ELFReader::File *binary);
+	void LoadELFSections(elf::File32 *binary);
 
 	// Load program headers
 	void LoadProgramHeaders();

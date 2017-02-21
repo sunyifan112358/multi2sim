@@ -28,7 +28,7 @@
 #include <arch/common/FileTable.h>
 #include <lib/cpp/Bitmap.h>
 #include <lib/cpp/Debug.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
 #include <lib/cpp/String.h>
 #include <memory/Memory.h>
 #include <memory/Mmu.h>
@@ -323,7 +323,7 @@ private:
 	struct Loader
 	{
 		// Program executable
-		std::unique_ptr<ELFReader::File> binary;
+		std::unique_ptr<elf::File32> binary;
 
 		// Command-line arguments
 		std::vector<std::string> args;
@@ -374,7 +374,7 @@ private:
 
 	// Load segments from binary. The function returns the highest loaded
 	// virtual address from all the loaded segments.
-	unsigned LoadSegments(ELFReader::File *binary);
+	unsigned LoadSegments(elf.File32 *binary);
 
 	// Load dynamic linker
 	void LoadInterpreter();

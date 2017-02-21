@@ -22,7 +22,6 @@
 #include <arch/southern-islands/emulator/Wavefront.h>
 #include <arch/southern-islands/emulator/WorkItem.h>
 #include <lib/cpp/CommandLine.h>
-#include <lib/cpp/ELFReader.h>
 #include <lib/cpp/Misc.h>
 
 #include "Emulator.h"

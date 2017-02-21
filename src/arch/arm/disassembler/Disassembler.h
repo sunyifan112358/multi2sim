@@ -27,7 +27,8 @@
 
 #include <arch/common/Disassembler.h>
 #include <lib/cpp/Error.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
+#include <lib/elf/Symbol32.h>
 
 #include "Instruction.h"
 
@@ -220,27 +221,27 @@ public:
 		int op4 , int op5 , int op6, Instruction::Thumb16Opcode inst_name);
 
 	/// ELF file processing function
-	void ElfSymbolFunc(const ELFReader::File &file,
+	void ElfSymbolFunc(const elf::File32 &file,
 			std::ostream &os,
 			unsigned int inst_addr,
 			DisassemblyMode disasm_mode);
 
-	unsigned int ElfDumpWordSymbol(const ELFReader::File &file,
+	unsigned int ElfDumpWordSymbol(const elf::File32 &file,
 			std::ostream &os,
 			unsigned int inst_addr,
 			unsigned int *inst_ptr);
 
-	unsigned int ElfDumpThumbWordSymbol(const ELFReader::File &file,
+	unsigned int ElfDumpThumbWordSymbol(const elf::File32 &file,
 			std::ostream &os,
 			unsigned int inst_addr,
 			unsigned int *inst_ptr);
 
-	void ElfSymbolListCreate(const ELFReader::File &file,
-			std::vector<ELFReader::Symbol*> &symbol_list);
+	void ElfSymbolListCreate(const elf::File32 &file,
+			std::vector<elf::Symbol32 *> &symbol_list);
 
 	/// Disasseble Mode
 	DisassemblyMode DissassembleMode(
-			const std::vector<ELFReader::Symbol*> &symbol_list,
+			const std::vector<elf::Symbol32 *> &symbol_list,
 			unsigned int addr);
 
 	/// Disassembler

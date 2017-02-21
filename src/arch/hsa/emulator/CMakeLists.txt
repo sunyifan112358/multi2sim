@@ -1,0 +1,54 @@
+cmake_minimum_required(VERSION 3.2)
+
+add_library(hsaemu
+  AddInstructionWorker.cc
+  AndInstructionWorker.cc
+  AQLPacket.cc
+  AQLQueue.cc
+  AtomicNoRetInstructionWorker.cc
+  BarrierInstructionWorker.cc
+  BrInstructionWorker.cc
+  CbrInstructionWorker.cc
+  CmovInstructionWorker.cc
+  CmpInstructionWorker.cc
+  Component.cc
+  CurrentWorkGroupSizeInstructionWorker.cc
+  CurrentWorkGroupSizeInstructionWorker_test.cc
+  CvtInstructionWorker.cc
+  Emulator.cc
+  Function.cc
+  Grid.cc
+  GridSizeInstructionWorker.cc
+  HsaInstructionWorker.cc
+  LdaInstructionWorker.cc
+  LdInstructionWorker.cc
+  MadInstructionWorker.cc
+  MadInstructionWorker_test.cc
+  MemFenceInstructionWorker.cc
+  MinInstructionWorker.cc
+  MinInstructionWorker_test.cc
+  MovInstructionWorker.cc
+  MulInstructionWorker.cc
+  OperandValueRetriever.cc
+  OperandValueWriter.cc
+  OrInstructionWorker.cc
+  RetInstructionWorker.cc
+  SegmentManager.cc
+  ShlInstructionWorker.cc
+  ShrInstructionWorker.cc
+  Signal.cc
+  StackFrame.cc
+  StInstructionWorker.cc
+  SubInstructionWorker.cc
+  Variable.cc
+  VariablePrinter.cc
+  Wavefront.cc
+  WorkGroup.cc
+  WorkGroupIdInstructionWorker.cc
+  WorkItemAbsIdInstructionWorker.cc
+  WorkItem.cc
+  WorkItemIdInstructionWorker.cc
+  WorkItemIsa.cc
+  XorInstructionWorker.cc
+)  
+

@@ -136,7 +136,7 @@ static const unsigned LoaderStackBase = 0xc0000000;
 static const unsigned LoaderMaxEnviron = 0x10000;  // 16KB for environment
 static const unsigned LoaderStackSize = 0x800000;  // 8MB stack size
 
-
+  
 misc::StringMap Context::program_header_type_map =
 {
 	{ "PT_NULL",        0 },
@@ -544,7 +544,7 @@ void Context::LoadBinary()
 	}
 	
 	// Load ELF binary
-	loader->binary = misc::new_unique<ELFReader::File>(loader->exe);
+	loader->binary = misc::new_unique<elf::File32>(loader->exe);
 
 	// Read sections and program entry
 	loader->prog_entry = loader->binary->getEntry();

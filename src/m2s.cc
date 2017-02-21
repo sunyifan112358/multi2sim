@@ -27,9 +27,6 @@
 #include <arch/kepler/disassembler/Disassembler.h>
 #include <arch/kepler/driver/Driver.h>
 #include <arch/kepler/emulator/Emulator.h>
-#include <arch/mips/disassembler/Disassembler.h>
-#include <arch/mips/emulator/Context.h>
-#include <arch/mips/emulator/Emulator.h>
 #include <arch/x86/disassembler/Disassembler.h>
 #include <arch/x86/emulator/Context.h>
 #include <arch/x86/emulator/Emulator.h>
@@ -43,6 +40,7 @@
 #include <arch/southern-islands/timing/Timing.h>
 #include <arch/arm/disassembler/Disassembler.h>
 #include <arch/arm/emulator/Emulator.h>
+#include <arch/volcanic-islands/disassembler/Disassembler.h>
 #include <dram/System.h>
 #include <memory/Mmu.h>
 #include <memory/Manager.h>
@@ -56,10 +54,6 @@
 #include <lib/esim/Engine.h>
 #include <lib/esim/Trace.h>
 
-extern "C"
-{
-#include <visual/common/visual.h>
-}
 //
 // Configuration options
 //
@@ -93,9 +87,6 @@ std::string m2s_opencl_devices;
 
 // Trace file
 std::string m2s_trace_file;
-
-// Visualization tool input file
-std::string m2s_visual_file;
 
 
 
@@ -156,7 +147,7 @@ void LoadProgram(const std::vector<std::string> &arguments,
 	
 	// Choose emulator based on ELF header
 	std::string exe = misc::getFullPath(arguments[0], current_directory);
-	ELFReader::File elf_file(exe, false);
+	elf::File32 elf_file(exe, false);
 	comm::Emulator *emulator;
 	switch (elf_file.getMachine())
 	{
@@ -168,11 +159,6 @@ void LoadProgram(const std::vector<std::string> &arguments,
 	case EM_ARM:
 
 		emulator = ARM::Emulator::getInstance();
-		break;
-
-	case EM_MIPS:
-
-		emulator = MIPS::Emulator::getInstance();
 		break;
 
 	default:
@@ -310,15 +296,6 @@ void RegisterOptions()
 			"simulation runs, since the trace file can quickly "
 			"become extremely large.");
 	
-	// Visualization tool input file
-	command_line->RegisterString("--visual <file>",
-			m2s_visual_file,
-			"Run the Multi2Sim Visualization Tool. This option "
-			"consumes a file generated with the '--trace' option "
-			"in a previous simulation. This option is only "
-			"available on systems with support for GTK 3.0 or "
-			"higher.");
-
 	//
 	// CUDA runtime options
 	//
@@ -411,10 +388,6 @@ void ProcessOptions()
 		trace_system->setPath(m2s_trace_file);
 	}
 
-	// Visualization
-	if (!m2s_visual_file.empty())
-		visual_run(m2s_visual_file.c_str());
-		
 }
 
 
@@ -594,8 +567,6 @@ int MainProgram(int argc, char **argv)
 	Kepler::Emulator::RegisterOptions();
 	mem::Mmu::RegisterOptions();
 	mem::Manager::RegisterOptions();
-	MIPS::Disassembler::RegisterOptions();
-	MIPS::Emulator::RegisterOptions();
 	SI::Driver::RegisterOptions();
 	SI::Disassembler::RegisterOptions();
 	SI::Emulator::RegisterOptions();
@@ -608,6 +579,7 @@ int MainProgram(int argc, char **argv)
 	net::System::RegisterOptions();
 	ARM::Disassembler::RegisterOptions();
 	ARM::Emulator::RegisterOptions();
+	VI::Disassembler::RegisterOptions();
 
 	// Process command line. Return to C version of Multi2Sim if a
 	// command-line option was not recognized.
@@ -624,8 +596,6 @@ int MainProgram(int argc, char **argv)
 	Kepler::Emulator::ProcessOptions();
 	mem::Mmu::ProcessOptions();
 	mem::Manager::ProcessOptions();
-	MIPS::Disassembler::ProcessOptions();
-	MIPS::Emulator::ProcessOptions();
 	SI::Driver::ProcessOptions();
 	SI::Disassembler::ProcessOptions();
 	SI::Emulator::ProcessOptions();
@@ -638,6 +608,7 @@ int MainProgram(int argc, char **argv)
 	net::System::ProcessOptions();
 	ARM::Disassembler::ProcessOptions();
 	ARM::Emulator::ProcessOptions();
+	VI::Disassembler::ProcessOptions();
 
 	// Initialize memory system, only if there is at least one timing
 	// simulation active. Check this in the architecture pool after all
@@ -717,6 +688,8 @@ int MainProgram(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+	srand(time(NULL));
+
 	// Main exception handler
 	try
 	{

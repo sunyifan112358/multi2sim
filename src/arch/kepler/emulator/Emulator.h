@@ -213,7 +213,7 @@ public:
 	}
 
 	/// Dump the statistics summary
-	void DumpSummary(std::ostream &os);
+	void DumpSummary(std::ostream &os) const;
 
 	/// Run one iteration of the emulation loop
 	bool Run();

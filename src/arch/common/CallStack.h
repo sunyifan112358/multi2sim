@@ -28,7 +28,7 @@
 #include <vector>
 
 #include <lib/cpp/Debug.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
 
 
 namespace comm
@@ -128,13 +128,13 @@ class CallStack
 	int level;
 
 	// List of ELF files created, holding ownership with smart pointer
-	std::list<std::unique_ptr<ELFReader::File>> elf_file_list;
+	std::list<std::unique_ptr<elf::File32>> elf_file_list;
 
 	// Map of ELF files, indexed by name
-	std::unordered_map<std::string, ELFReader::File *> elf_file_map;
+	std::unordered_map<std::string, elf::File32 *> elf_file_map;
 
 	// Parse ELF file and return it, or return a previously parsed one.
-	ELFReader::File *getELFFile(const std::string &path);
+	elf::File32 *getELFFile(const std::string &path);
 
 	// Return a symbol name for a virtual address.
 	std::string getSymbolName(unsigned address);

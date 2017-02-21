@@ -21,7 +21,11 @@
 #define ARCH_SOUTHERN_ISLANDS_DISASSEMBLER_BINARY_H
 
 #include <lib/cpp/Debug.h>
-#include <lib/cpp/ELFReader.h>
+#include <lib/elf/File32.h>
+#include <lib/elf/Section32.h>
+#include <lib/elf/ProgramHeader32.h>
+#include <lib/elf/Symbol.h>
+#include <lib/elf/Section.h>
 #include <lib/cpp/String.h>
 
 
@@ -154,14 +158,14 @@ struct BinaryDictEntry
 	BinaryDictHeader *header;
 
 	// Streams containing PT_LOAD and PT_NOTE segments
-	ELFReader::ProgramHeader *pt_load_segment;
-	ELFReader::ProgramHeader *pt_note_segment;
+	elf::ProgramHeader32 *pt_load_segment;
+	elf::ProgramHeader32 *pt_note_segment;
 
 	// Streams containing sections
-	ELFReader::Section *text_section;
-	ELFReader::Section *data_section;
-	ELFReader::Section *symtab_section;
-	ELFReader::Section *strtab_section;
+	elf::Section32 *text_section;
+	elf::Section32 *data_section;
+	elf::Section32 *symtab_section;
+	elf::Section32 *strtab_section;
 
 	// Constants extract from '.data' section
 	BinaryDictConsts *consts;
@@ -180,7 +184,7 @@ struct BinaryDictEntry
 
 
 // Binary file
-class Binary : ELFReader::File
+class Binary : elf::File32
 {
 	/* Encoding dictionary. Each element of the dictionary contains the
 	 * binary for a different architecture (Evergreen, x86, etc.) */
