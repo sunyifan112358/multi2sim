@@ -20,9 +20,49 @@
 #ifndef ARCH_X86_64_DISASSEMBLER_INSTRUCTION_H
 #define ARCH_X86_64_DISASSEMBLER_INSTRUCTION_H
 
+#include <cstdint>
+#include <assert.h>
+
 namespace x86_64 {
 
-class Instruction {};
+class Instruction {
+
+  enum Opcode {
+		OpcodeInvalid = 0,
+		OpcodeCount
+	};
+
+	bool decoded = false;
+
+	Opcode opcode = OpcodeInvalid;
+  int size = 0;
+
+public:
+
+  /// Return the instruction opcode, or \c OpcodeInvalid if the
+	/// sequence of bytes failed to decode. This function must be invoked
+	/// after a previous call to Decode().
+	Opcode getOpcode() const
+	{
+		assert(decoded);
+		return opcode;
+	}
+
+  /// Return the number of bytes of this instruction, or 0 if the sequence
+	/// of bytes failed to decode. This function must be invoked after a
+	/// previous call to Decode().
+	int getSize() const
+	{
+		assert(decoded);
+		return size;
+	}
+
+  /// Read the bytes in the beginning of \a buffer and decode the x86
+	/// instruction represented by them. The value given in \a address
+	/// specifies the virtual address of the instruction, stored internally
+	/// and used later for branch decoding purposes.
+	void Decode(const char *buffer, uint64_t eip);
+};
 
 }  // namespace x86_64
 

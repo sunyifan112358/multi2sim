@@ -60,7 +60,7 @@ public:
 	int getIndex() const { return index; }
 
 	/// Return the section name
-	const std::string &getName() const { return name; }
+	virtual const std::string &getName() const { return name; }
 
 	/// Return a pointer to the section content. The section content
 	/// is not a dedicated buffer. Instead, the returned pointer points to

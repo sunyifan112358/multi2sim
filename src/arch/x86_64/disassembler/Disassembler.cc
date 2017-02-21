@@ -22,6 +22,7 @@
 #include <lib/elf/Section32.h>
 
 #include "Disassembler.h"
+#include "Instruction.h"
 
 namespace x86_64 {
 
@@ -84,5 +85,20 @@ void Disassembler::DisassembleBinary(const std::string &path,
 void Disassembler::DisassembleSection(elf::Section64 *section,
                                       std::ostream &os) const {
   os << "Disassembly of section " << section->getName() << ":\n";
+
+  Instruction inst;
+  uint64_t offset = 0;
+  while(offset < section->getSize()) {
+    uint64_t eip = section->getAddr() + offset;
+    const char *buffer = section->getBuffer() + offset;
+
+    inst.Decode(buffer, eip);
+    if (inst.getOpcode()) {
+      assert(inst.getSize());
+      offset += inst.getSize();
+    } else {
+      offset++;
+    }
+  }
 }
 }
