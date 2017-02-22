@@ -18,6 +18,7 @@
  */
 
 #include <fcntl.h>
+#include <fstream>
 #include <unistd.h>
 
 #include <lib/cpp/String.h>
@@ -135,97 +136,7 @@ static const unsigned LoaderStackBase = 0xc0000000;
 static const unsigned LoaderMaxEnviron = 0x10000;  // 16KB for environment
 static const unsigned LoaderStackSize = 0x800000;  // 8MB stack size
 
-
-static misc::StringMap section_flags_map =
-{
-	{ "SHF_WRITE", 1 },
-	{ "SHF_ALLOC", 2 },
-	{ "SHF_EXECINSTR", 4 }
-};
-
-void Context::LoadELFSections(elf::File32 *binary)
-{
-	Emulator::loader_debug << "\nLoading ELF sections\n";
-	loader->bottom = 0xffffffff;
-	for (auto &section : binary->getSections())
-	{
-		// Debug
-		unsigned perm = mem::Memory::AccessInit | mem::Memory::AccessRead;
-		std::string flags_str = section_flags_map.MapFlags(section->getFlags());
-		Emulator::loader_debug << misc::fmt("  section '%s': offset=0x%x, "
-				"addr=0x%x, size=%u, flags=%s\n",
-				section->getName().c_str(), section->getOffset(),
-				section->getAddr(), section->getSize(),
-				flags_str.c_str());
-
-		// Process section
-		if (section->getFlags() & SHF_ALLOC)
-		{
-			// Write permission
-			if (section->getFlags() & SHF_WRITE)
-				perm |= mem::Memory::AccessWrite;
-
-			// Executable section
-			if (section->getFlags() & SHF_EXECINSTR)
-			{
-				// Add execute permission
-				perm |= mem::Memory::AccessExec;
-
-				// Add region to call stack
-				if (call_stack != nullptr)
-				{
-					call_stack->Map(binary->getPath(),
-							section->getOffset(),
-							section->getAddr(),
-							section->getSize(),
-							false);
-				}
-			}
-
-			// Load section
-			memory->Map(section->getAddr(), section->getSize(), perm);
-			memory->growHeapBreak(section->getAddr() + section->getSize());
-			loader->bottom = std::min(loader->bottom, section->getAddr());
-
-			// If section type is SHT_NOBITS (sh_type=8), initialize to 0.
-			// Otherwise, copy section contents from ELF file.
-			if (section->getType() == 8)
-			{
-				if (section->getSize())
-				{
-					auto zero_buffer = misc::new_unique_array<char>(section->getSize());
-					memory->Init(section->getAddr(),
-							section->getSize(),
-							zero_buffer.get());
-				}
-			}
-			else
-			{
-				memory->Init(section->getAddr(), section->getSize(),
-						section->getBuffer());
-			}
-		}
-	}
-}
-
-
-void Context::LoadInterp()
-{
-	// Debug
-	emulator->loader_debug << misc::fmt("\nLoading program interpreter '%s'\n",
-			loader->interp.c_str());
-	
-	// Load section from program interpreter
-	elf::File32 binary(loader->interp);
-	LoadELFSections(&binary);
-
-	// Change program entry to the one specified by the interpreter
-	loader->interp_prog_entry = binary.getEntry();
-	emulator->loader_debug << misc::fmt("  program interpreter entry: 0x%x\n\n",
-			loader->interp_prog_entry);
-}
-
-
+  
 misc::StringMap Context::program_header_type_map =
 {
 	{ "PT_NULL",        0 },
@@ -239,44 +150,23 @@ misc::StringMap Context::program_header_type_map =
 };
 
 
-void Context::LoadProgramHeaders()
+unsigned Context::LoadSegments(ELFReader::File *binary)
 {
+	// Highest written memory address
+	unsigned top = 0;
+
 	// Debug
-	emulator->loader_debug << "\nLoading program headers\n";
-	elf::File32 *binary = loader->binary.get();
+	emulator->loader_debug << "\nLoading segments\n";
 
-	// Load program header table from ELF
-	int phdr_count = binary->getPhnum();
-	int phdr_size = binary->getPhentsize();
-	int phdt_size = phdr_count * phdr_size;
-	assert(phdr_count == binary->getNumProgramHeaders());
-	
-	// Program header PT_PHDR, specifying location and size of the program
-	// header table itself. Search for program header PT_PHDR, specifying
-	// location and size of the program header table. If none found, choose
-	// loader->bottom - phdt_size. */
-	unsigned phdt_base = loader->bottom - phdt_size;
-	for (auto &program_header : binary->getProgramHeaders())
-		if (program_header->getType() == PT_PHDR)
-			phdt_base = program_header->getVaddr();
-	emulator->loader_debug << misc::fmt("  virtual address for program header "
-			"table: 0x%x\n", phdt_base);
-
-	// Allocate memory for program headers
-	memory->Map(phdt_base, phdt_size, mem::Memory::AccessInit
-			| mem::Memory::AccessRead);
-
-	// Load program headers
-	int index = 0;
+	// Traverse segments
 	for (auto &program_header : binary->getProgramHeaders())
 	{
-		// Load program header
-		unsigned address = phdt_base + index * phdr_size;
-		memory->Init(address, phdr_size, (char *)
-				program_header->getRawInfo());
+		// Skip if segment is not loadable
+		if (program_header->getType() != 1)
+			continue;
 
 		// Debug
-		emulator->loader_debug << misc::fmt("  header loaded at 0x%x\n", address)
+		emulator->loader_debug << "  segment loaded\n"
 				<< misc::fmt("    type=%s, offset=0x%x, vaddr=0x%x, paddr=0x%x\n",
 				program_header_type_map.MapValue(program_header->getType()),
 				program_header->getOffset(),
@@ -288,21 +178,109 @@ void Context::LoadProgramHeaders()
 				program_header->getFlags(),
 				program_header->getAlign());
 
-		// Program interpreter
-		if (program_header->getType() == 3)
-			loader->interp = memory->ReadString(program_header->getVaddr());
+		// Compute segment permissions, initially just init and read
+		unsigned perm = mem::Memory::AccessInit | mem::Memory::AccessRead;
+		
+		// Check if segment has write permission
+		if (program_header->getFlags() & PF_W)
+			perm |= mem::Memory::AccessWrite;
 
-		// Next
-		index++;
+		// Check if segment has execution permission
+		if (program_header->getFlags() & PF_X)
+			perm |= mem::Memory::AccessExec;
+
+		// Map segment in memory
+		memory->Map(program_header->getVaddr(),
+				program_header->getMemsz(),
+				perm);
+		
+		// Load segment
+		memory->Init(program_header->getVaddr(),
+				program_header->getFilesz(),
+				program_header->getBuffer());
+
+		// Record highest address
+		top = std::max(top, program_header->getVaddr() + program_header->getMemsz());
 	}
 
-	// Free buffer and save pointers
-	loader->phdt_base = phdt_base;
-	loader->phdr_count = phdr_count;
+	// Return highest address
+	return top;
 }
 
 
-void Context::LoadAVEntry(unsigned &sp, unsigned type, unsigned value)
+static const unsigned LoaderInterpBase = 0xc0001000;
+static const unsigned LoaderInterpMaxSize = 0x800000;  // 8MB
+
+void Context::LoadInterpreter()
+{
+	// Traverse program headers in search of a program interpreter
+	for (auto &program_header : loader->binary->getProgramHeaders())
+	{
+		// Skip if not a program interpreter entry
+		if (program_header->getType() != 3)
+			continue;
+
+		// Found
+		loader->interpreter = memory->ReadString(program_header->getVaddr());
+		break;
+	}
+
+	// No program interpreter
+	if (loader->interpreter.empty())
+	{
+		// Debug
+		emulator->loader_debug << "\nNo program interpreter found\n";
+
+		// Done
+		return;
+	}
+
+	// Debug
+	emulator->loader_debug << misc::fmt("\nLoading program interpreter '%s'\n",
+			loader->interpreter.c_str());
+
+	// Open interpreter
+	std::ifstream f(loader->interpreter);
+	if (!f)
+		throw Error(loader->interpreter + ": Invalid interpreter");
+
+	// Get file size
+	f.seekg(0, std::ios_base::end);
+	unsigned size = f.tellg();
+	f.seekg(0, std::ios_base::beg);
+
+	// Check maximum size
+	if (size > LoaderInterpMaxSize)
+		throw Error(loader->interpreter + ": Interpreter too large");
+	
+	// Read content of interpreter
+	auto buffer = misc::new_unique_array<char>(size);
+	f.read(buffer.get(), size);
+	f.close();
+
+	// Load interpreter in memory
+	unsigned address = LoaderInterpBase;
+	memory->Map(address, size, mem::Memory::AccessInit);
+	memory->Init(address, size, buffer.get());
+	
+	// Debug
+	emulator->loader_debug << misc::fmt(
+			"\n\tInterpreter loaded at 0x%x (%u bytes)\n\n",
+			address, size);
+	
+	// Load segments from program interpreter
+	ELFReader::File binary(loader->interpreter);
+	LoadSegments(&binary);
+	
+	// Change program entry to the one specified by the interpreter
+	loader->interp_prog_entry = binary.getEntry();
+	emulator->loader_debug << misc::fmt("  program interpreter entry: 0x%x\n\n",
+			loader->interp_prog_entry);
+	
+}
+
+
+void Context::LoadAuxiliaryVectorEntry(unsigned &sp, unsigned type, unsigned value)
 {
 	// Write values
 	memory->Write(sp, 4, (char *) &type);
@@ -313,41 +291,81 @@ void Context::LoadAVEntry(unsigned &sp, unsigned type, unsigned value)
 }
 
 
-unsigned Context::LoadAV(unsigned where)
+unsigned Context::LoadAuxiliaryVector(unsigned where)
 {
 	// Debug
 	unsigned sp = where;
 	emulator->loader_debug << misc::fmt("Loading auxiliary vector at 0x%x\n", where);
+	
+	// Search for program header PT_PHDR, which specifies the location of
+	// the program header table itself.
+	unsigned phdt_base = 0;
+	for (auto &program_header : loader->binary->getProgramHeaders())
+		if (program_header->getType() == PT_PHDR)
+			phdt_base = program_header->getVaddr();
 
-	// Program headers
-	LoadAVEntry(sp, 3, loader->phdt_base);  // AT_PHDR
-	LoadAVEntry(sp, 4, 32);  // AT_PHENT -> program header size of 32 bytes
-	LoadAVEntry(sp, 5, loader->phdr_count);  // AT_PHNUM
+	// AT_PHDR
+	if (phdt_base)
+		LoadAuxiliaryVectorEntry(sp, 3, phdt_base);
 
-	// Other values
-	LoadAVEntry(sp, 6, mem::Memory::PageSize);  // AT_PAGESZ
-	LoadAVEntry(sp, 7, 0);  // AT_BASE
-	LoadAVEntry(sp, 8, 0);  // AT_FLAGS
-	LoadAVEntry(sp, 9, loader->prog_entry);  // AT_ENTRY
-	LoadAVEntry(sp, 11, getuid());  // AT_UID
-	LoadAVEntry(sp, 12, geteuid());  // AT_EUID
-	LoadAVEntry(sp, 13, getgid());  // AT_GID
-	LoadAVEntry(sp, 14, getegid());  // AT_EGID
-	LoadAVEntry(sp, 17, 0x64);  // AT_CLKTCK
-	LoadAVEntry(sp, 23, 0);  // AT_SECURE
+	// AT_PHENT
+	LoadAuxiliaryVectorEntry(sp, 4, 32);
 
-	// Random bytes
+	// AT_PHNUM
+	LoadAuxiliaryVectorEntry(sp, 5, loader->binary->getPhnum());
+
+	// AT_PAGESZ
+	LoadAuxiliaryVectorEntry(sp, 6, mem::Memory::PageSize);
+
+	// AT_BASE
+	if (!loader->interpreter.empty())
+		LoadAuxiliaryVectorEntry(sp, 7, LoaderInterpBase);
+
+	// AT_FLAGS
+	LoadAuxiliaryVectorEntry(sp, 8, 0);
+
+	// AT_ENTRY
+	LoadAuxiliaryVectorEntry(sp, 9, loader->prog_entry);
+
+	// AT_UID
+	LoadAuxiliaryVectorEntry(sp, 11, getuid());
+
+	// AT_EUID
+	LoadAuxiliaryVectorEntry(sp, 12, geteuid());
+
+	// AT_GID
+	LoadAuxiliaryVectorEntry(sp, 13, getgid());
+
+	// AT_EGID
+	LoadAuxiliaryVectorEntry(sp, 14, getegid());
+
+	// AT_PLATFORM
+	loader->at_platform_ptr = sp + 4;
+	LoadAuxiliaryVectorEntry(sp, 15, 0);
+
+	// AT_HWCAP
+	LoadAuxiliaryVectorEntry(sp, 16, 0x78bfbff);
+
+	// AT_CLKTCK
+	LoadAuxiliaryVectorEntry(sp, 17, 0x64);
+
+	// AT_SECURE
+	LoadAuxiliaryVectorEntry(sp, 23, 0);
+
+	// AT_RANDOM
 	loader->at_random_addr_holder = sp + 4;
-	LoadAVEntry(sp, 25, 0);  // AT_RANDOM
+	LoadAuxiliaryVectorEntry(sp, 25, 0);
 
-	/*LoadAVEntry(sp, 32, 0xffffe400);
-	LoadAVEntry(sp, 33, 0xffffe000);
-	LoadAVEntry(sp, 16, 0xbfebfbff);*/
+	/*LoadAuxiliaryVectorEntry(sp, 32, 0xffffe400);
+	LoadAuxiliaryVectorEntry(sp, 33, 0xffffe000);
+	LoadAuxiliaryVectorEntry(sp, 16, 0xbfebfbff);*/
 
-	/* ??? AT_HWCAP, AT_PLATFORM, 32 and 33 ???*/
+	/* ??? 32 and 33 ???*/
 
-	// Finally, AT_NULL, and return size
-	LoadAVEntry(sp, 0, 0);
+	// AT_NULL
+	LoadAuxiliaryVectorEntry(sp, 0, 0);
+
+	// Return size of auxiliary vector
 	return sp - where;
 }
 
@@ -358,6 +376,8 @@ unsigned Context::LoadAV(unsigned where)
  * ------------------------------------------------------------------------------
  * (0xc0000000)		< bottom of stack >		0	(virtual)
  * (0xbffffffc)		[ end marker ]			4	(= NULL)
+ *
+ *			[ platform string ]		= "i686"
  *
  * 			[ environment ASCIIZ strings ]	>= 0
  * 			[ argument ASCIIZ strings ]	>= 0
@@ -407,7 +427,7 @@ void Context::LoadStack()
 	sp += loader->env.size() * 4 + 4;
 
 	// Load here the auxiliary vector
-	sp += LoadAV(sp);
+	sp += LoadAuxiliaryVector(sp);
 
 	// Write arguments into stack
 	emulator->loader_debug << "\nArguments:\n";
@@ -446,6 +466,13 @@ void Context::LoadStack()
 	}
 	memory->Write(loader->at_random_addr_holder, 4, (char *)
 			&loader->at_random_addr);
+	
+	// Platform string
+	std::string platform = "i686";
+	assert(loader->at_platform_ptr);
+	memory->WriteString(sp, platform);
+	memory->Write(loader->at_platform_ptr, 4, (char *) &sp);
+	sp += platform.length() + 1;
 
 	// Check that we didn't overflow the stack
 	if (sp > LoaderStackBase)
@@ -453,6 +480,19 @@ void Context::LoadStack()
 			__FUNCTION__);
 }
 
+
+/*
+ * The following layout is used for the initial virtual memory image of the
+ * new context:
+ *
+ *
+ * Low		High		Size			Description
+ * ------------------------------------------------------------------------------
+ * 0xc0001000	0xc0801000	0x800000 (8MB) max	Interpreter
+ * 0xbf800000	0xc0000000	0x800000 (8MB)		Stack
+ * <variable>	0xb7fb0000	<variable>		Dynamic data (mmap)
+ *
+ */
 
 void Context::LoadBinary()
 {
@@ -504,30 +544,32 @@ void Context::LoadBinary()
 	}
 	
 	// Load ELF binary
-	loader->binary.reset(new elf::File32(loader->exe));
+	loader->binary = misc::new_unique<elf::File32>(loader->exe);
 
 	// Read sections and program entry
-	LoadELFSections(loader->binary.get());
 	loader->prog_entry = loader->binary->getEntry();
+
+	// Load segments from binary. The returned value is the highest virtual
+	// address used by a segment. Round it up to the page boundary.
+	unsigned top = LoadSegments(loader->binary.get());
+	top = misc::RoundUp(top, mem::Memory::PageSize);
 
 	// Set heap break to the highest written address rounded up to
 	// the memory page boundary.
-	memory->setHeapBreak(misc::RoundUp(memory->getHeapBreak(),
-			mem::Memory::PageSize));
+	memory->setHeapBreak(top);
 
 	// Load program header table. If we found a PT_INTERP program header,
 	// we have to load the program interpreter. This means we are dealing with
 	// a dynamically linked application.
-	LoadProgramHeaders();
-	if (!loader->interp.empty())
-		LoadInterp();
+	// Load program interpreter, if any
+	LoadInterpreter();
 
 	// Stack
 	LoadStack();
 
 	// Register initialization
 	regs.setEsp(loader->environ_base);
-	regs.setEip(loader->interp.empty() ? loader->prog_entry
+	regs.setEip(loader->interpreter.empty() ? loader->prog_entry
 			: loader->interp_prog_entry);
 
 	// Debug
