@@ -374,7 +374,7 @@ private:
 
 	// Load segments from binary. The function returns the highest loaded
 	// virtual address from all the loaded segments.
-	unsigned LoadSegments(elf.File32 *binary);
+	unsigned LoadSegments(elf::File32 *binary);
 
 	// Load dynamic linker
 	void LoadInterpreter();

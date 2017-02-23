@@ -150,7 +150,7 @@ misc::StringMap Context::program_header_type_map =
 };
 
 
-unsigned Context::LoadSegments(ELFReader::File *binary)
+unsigned Context::LoadSegments(elf::File32 *binary)
 {
 	// Highest written memory address
 	unsigned top = 0;
@@ -269,9 +269,9 @@ void Context::LoadInterpreter()
 			address, size);
 	
 	// Load segments from program interpreter
-	ELFReader::File binary(loader->interpreter);
+	elf::File32 binary(loader->interpreter);
 	LoadSegments(&binary);
-	
+
 	// Change program entry to the one specified by the interpreter
 	loader->interp_prog_entry = binary.getEntry();
 	emulator->loader_debug << misc::fmt("  program interpreter entry: 0x%x\n\n",
