@@ -25,10 +25,16 @@
 
 namespace x86_64 {
 
+/// X86_64 instructions
 class Instruction {
 
   enum Opcode {
 		OpcodeInvalid = 0,
+#define DEFINST(name, prefix, prefix0f, opcode_ext, po, so, op1, op2, op3, op4) \
+    Opcode_##name,
+#include "Instruction.def"
+#undef DEFINST
+
 		OpcodeCount
 	};
 
@@ -36,6 +42,8 @@ class Instruction {
 
 	Opcode opcode = OpcodeInvalid;
   int size = 0;
+  uint64_t eip = 0;
+  uint8_t rex = 0;
 
 public:
 

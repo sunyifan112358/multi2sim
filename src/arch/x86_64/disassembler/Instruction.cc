@@ -22,7 +22,8 @@
 namespace x86_64 {
 
 void Instruction::Decode(const char *buffer, uint64_t eip) {
-
+  decoded = true;
+  this->eip = eip;
 }
 
 }

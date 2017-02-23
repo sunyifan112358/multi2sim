@@ -1,0 +1,11 @@
+// In a format of
+// DEFINST(Name, PREFIX, 0F, Opcode Extension, Primary Opcode, Secondary Opcode, op1, op2, op3, op4)
+DEFINST(add_rm8_r8,     SKIP, SKIP, SKIP, 00, SKIP, rm8, r8,   SKIP, SKIP)
+DEFINST(add_rm_imm8,    SKIP, SKIP, 0,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(or_rm_1mm8,     SKIP, SKIP, 1,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(adc_rm_imm8,    SKIP, SKIP, 2,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(sbb_rm_imm8,    SKIP, SKIP, 3,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(and_rm_imm8,    SKIP, SKIP, 4,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(sub_rm_imm8,    SKIP, SKIP, 5,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(xor_rm_imm8,    SKIP, SKIP, 6,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(cmp_rm_imm8,    SKIP, SKIP, 7,    83, SKIP, rm,  imm8, SKIP, SKIP)
