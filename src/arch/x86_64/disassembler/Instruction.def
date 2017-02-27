@@ -1,11 +1,32 @@
 // In a format of
 // DEFINST(Name, PREFIX, 0F, Opcode Extension, Primary Opcode, Secondary Opcode, op1, op2, op3, op4)
-DEFINST(add_rm8_r8,     SKIP, SKIP, SKIP, 00, SKIP, rm8, r8,   SKIP, SKIP)
-DEFINST(add_rm_imm8,    SKIP, SKIP, 0,    83, SKIP, rm,  imm8, SKIP, SKIP)
-DEFINST(or_rm_1mm8,     SKIP, SKIP, 1,    83, SKIP, rm,  imm8, SKIP, SKIP)
-DEFINST(adc_rm_imm8,    SKIP, SKIP, 2,    83, SKIP, rm,  imm8, SKIP, SKIP)
-DEFINST(sbb_rm_imm8,    SKIP, SKIP, 3,    83, SKIP, rm,  imm8, SKIP, SKIP)
-DEFINST(and_rm_imm8,    SKIP, SKIP, 4,    83, SKIP, rm,  imm8, SKIP, SKIP)
-DEFINST(sub_rm_imm8,    SKIP, SKIP, 5,    83, SKIP, rm,  imm8, SKIP, SKIP)
-DEFINST(xor_rm_imm8,    SKIP, SKIP, 6,    83, SKIP, rm,  imm8, SKIP, SKIP)
-DEFINST(cmp_rm_imm8,    SKIP, SKIP, 7,    83, SKIP, rm,  imm8, SKIP, SKIP)
+
+DEFINST(nop_rm, SKIP, 0F, 0, 1F, SKIP, rm, SKIP, SKIP, SKIP)
+
+DEFINST(je_rel8, SKIP, SKIP, SKIP, 74, SKIP, imm8, SKIP, SKIP, SKIP)
+
+DEFINST(xor_rm_r, SKIP, SKIP, SKIP, 31, SKIP, rm,  r, SKIP, SKIP)
+
+DEFINST(add_rm8_r8,  SKIP, SKIP, SKIP, 00, SKIP, rm8, r8,   SKIP, SKIP)
+DEFINST(add_rm_imm8, SKIP, SKIP, 0,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(or_rm_1mm8,  SKIP, SKIP, 1,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(adc_rm_imm8, SKIP, SKIP, 2,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(sbb_rm_imm8, SKIP, SKIP, 3,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(and_rm_imm8, SKIP, SKIP, 4,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(sub_rm_imm8, SKIP, SKIP, 5,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(xor_rm_imm8, SKIP, SKIP, 6,    83, SKIP, rm,  imm8, SKIP, SKIP)
+DEFINST(cmp_rm_imm8, SKIP, SKIP, 7,    83, SKIP, rm,  imm8, SKIP, SKIP)
+
+DEFINST(test_r_rm, SKIP, SKIP, SKIP, 85, SKIP, r, rm, SKIP, SKIP)
+
+DEFINST(mov_r_rm, SKIP, SKIP, SKIP, 8b, SKIP, r, rm, SKIP, SKIP)
+
+// This one is weird it takes no other comands but the op_code dictates which reg swtiches
+// with rAX
+DEFINST(xchg_r_ax, SKIP, SKIP, SKIP, 90|INDEX, SKIP, SKIP, SKIP, SKIP, SKIP)
+
+DEFINST(ret, SKIP, SKIP, SKIP, c3, SKIP, SKIP, SKIP, SKIP, SKIP)
+
+DEFINST(jmp_rm,  SKIP, SKIP, 4, FF, SKIP, rm, SKIP, SKIP, SKIP)
+DEFINST(push_rm, SKIP, SKIP, 6, FF, SKIP, rm, SKIP, SKIP, SKIP)
+
