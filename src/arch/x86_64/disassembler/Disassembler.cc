@@ -283,6 +283,8 @@ namespace x86_64 {
       if (instance.get())
         return instance.get();
 
+        std::cout << "Got instance of Dissasm" << std::endl;
+
       // Create instance
       instance.reset(new Disassembler());
       return instance.get();
@@ -292,11 +294,11 @@ namespace x86_64 {
     void Disassembler::DisassembleBinary(const std::string &path, std::ostream &os) const
     {
       // Traverse sections of ELF file
-      elf::File32 file(path);
+      elf::File64 file(path);
       for (int idx = 0; idx < file.getNumSections(); idx++)
       {
         // Get section and skip if it does not contain code
-        elf::Section32 *section = file.getSection(idx);
+        elf::Section64 *section = file.getSection(idx);
         if ((section->getFlags() & SHF_EXECINSTR) == 0)
           continue;
 
@@ -306,7 +308,7 @@ namespace x86_64 {
 
         // Keep track of current symbol
         int current_symbol = 0;
-        elf::Symbol32 *symbol = file.getSymbol(current_symbol);
+        elf::Symbol64 *symbol = file.getSymbol(current_symbol);
 
         // Disassemble
         Instruction inst;

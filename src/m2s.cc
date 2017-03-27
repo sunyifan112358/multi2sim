@@ -589,6 +589,7 @@ int MainProgram(int argc, char **argv)
 	command_line->Process(argc, argv, false);
 	
 	// Process command line
+	std::cout << "Process Command Line options" << std::endl;
 	ProcessOptions();
 	HSA::Disassembler::ProcessOptions();
 	HSA::Driver::ProcessOptions();
@@ -616,6 +617,7 @@ int MainProgram(int argc, char **argv)
 	// Initialize memory system, only if there is at least one timing
 	// simulation active. Check this in the architecture pool after all
 	// '--xxx-sim' command-line options have been processed.
+	std::cout << "Initializing Memory System" << std::endl;
 	comm::ArchPool *arch_pool = comm::ArchPool::getInstance();
 
 	// Throw an error if we have two instances of simulation options. For
@@ -655,6 +657,7 @@ int MainProgram(int argc, char **argv)
 	// Initialize network system, only if the option --net-sim is used
 	if (net::System::isStandAlone())
 	{
+		std::cout << "Initializing Network systems" << std::endl;
 		net::System *net_system = net::System::getInstance();
 		net_system->ReadConfiguration();
 		net_system->StandAlone();
@@ -663,19 +666,23 @@ int MainProgram(int argc, char **argv)
 	// Initialize dram system, only if the option --dram-sim is used
 	if (dram::System::isStandAlone())
 	{
+		std::cout << "Initializing DRAM" << std::endl;
 		dram::System *dram_system = dram::System::getInstance();
 		dram_system->ReadConfiguration();
 		dram_system->Run();
 	}
 
 	// Register drivers and runtimes
+	std::cout << "Registering Drivers" << std::endl;
 	RegisterDrivers();
 	RegisterRuntimes();
 
 	// Load programs
+	std::cout << "Loading Programs" << std::endl;
 	LoadPrograms();
 		
 	// Main simulation loop
+	std::cout << "Before main loop" << std::endl;
 	MainLoop();
 
 	// Statistics summary
