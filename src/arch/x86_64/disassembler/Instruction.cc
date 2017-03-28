@@ -481,71 +481,85 @@ namespace x86_64 {
 
     void Instruction::Decode(const char *buffer, unsigned eip)
     {
-      // Initialize instruction
-      Clear();
-      decoded = true;
-      this->eip = eip;
-      op_size = 4;
-      addr_size = 4;
+        // Initialize instruction
+        Clear();
+        std::cout << "Decoding instruction\n";
+        decoded = true;
+        this->eip = eip;
+        op_size = 8;
+        addr_size = 8;
 
-      // Prefixes
-      while (disassembler->isPrefix(*buffer))
-      {
-        switch ((unsigned char) *buffer)
+        std::cout << "Decoding buffer: ";
+        for (int i=0; i < 8; i++) {
+            std::printf("%x ", 0x0ff & buffer[i]);
+        }
+        std::cout << std::endl;
+
+        // Prefixes
+        while (disassembler->isPrefix(*buffer))
         {
+            switch ((unsigned char) *buffer)
+            {
 
-          case 0xf0:
-            // lock prefix is ignored
-            break;
-
-          case 0xf2:
-            prefixes |= PrefixRepnz;
+                case 0xf0:
+                // lock prefix is ignored
                 break;
 
-          case 0xf3:
-            prefixes |= PrefixRep;
+                case 0xf2:
+                    prefixes |= PrefixRepnz;
+                    break;
+
+                case 0xf3:
+                    prefixes |= PrefixRep;
+                    break;
+
+                case 0x66:
+                    prefixes |= PrefixOp;
+                    op_size = 2;
+                    break;
+
+                case 0x67:
+                    prefixes |= PrefixAddr;
+                    addr_size = 2;
+                    break;
+
+                case 0x2e:
+                    segment = RegCs;
+                    break;
+
+                case 0x36:
+                    segment = RegSs;
+                    break;
+
+                case 0x3e:
+                    segment = RegDs;
+                    break;
+
+                case 0x26:
+                    segment = RegEs;
+                    break;
+
+                // x64 specific header
+                case 0x48:
+                std::cout << "Decoded Prefix x48\n";
+                    prefixes |= Prefix64;
+                    op_size = 8;
                 break;
 
-          case 0x66:
-            prefixes |= PrefixOp;
-                op_size = 2;
+                case 0x64:
+                segment = RegFs;
                 break;
 
-          case 0x67:
-            prefixes |= PrefixAddr;
-                addr_size = 2;
+                case 0x65:
+                segment = RegGs;
                 break;
 
-          case 0x2e:
-            segment = RegCs;
-                break;
+                default:
 
-          case 0x36:
-            segment = RegSs;
-                break;
-
-          case 0x3e:
-            segment = RegDs;
-                break;
-
-          case 0x26:
-            segment = RegEs;
-                break;
-
-          case 0x64:
-            segment = RegFs;
-                break;
-
-          case 0x65:
-            segment = RegGs;
-                break;
-
-          default:
-
-            throw Disassembler::Error(misc::fmt("Invalid prefix (0x%x)",
+                throw Disassembler::Error(misc::fmt("Invalid prefix (0x%x)",
                                                 (unsigned char) *buffer));
 
-        }
+            }
 
         // One more prefix
         buffer++;
@@ -556,17 +570,17 @@ namespace x86_64 {
       unsigned char buf8 = *buffer;
       unsigned buf32 = * (unsigned *) buffer;
       const DecodeInfo * const *table;
-      int index;
-      if (buf8 == 0x0f)
-      {
-        table = (const DecodeInfo *const *) disassembler->getDecTable0f();
-        index = * (unsigned char *) (buffer + 1);
-      }
-      else
-      {
-        table = (const DecodeInfo *const *) disassembler->getDecTable();
-        index = buf8;
-      }
+        int index;
+        if (buf8 == 0x0f)
+        {
+            table = (const DecodeInfo *const *) disassembler->getDecTable0f();
+            index = * (unsigned char *) (buffer + 1);
+        }
+        else
+        {
+            table = (const DecodeInfo *const *) disassembler->getDecTable();
+            index = buf8;
+        }
 
       // Find instruction
       const DecodeInfo *elem = nullptr;
@@ -583,10 +597,13 @@ namespace x86_64 {
       }
 
       // Instruction not implemented
-      if (!elem)
-        return;
+      if (!elem) {
+          std::cout << "Instruction not implemented\n";
+          return;
+      }
 
       // Instruction found
+        std::cout << "Instruction found\n";
       format = info->fmt;
       opcode = info->opcode;
       opcode_size = info->opcode_size;

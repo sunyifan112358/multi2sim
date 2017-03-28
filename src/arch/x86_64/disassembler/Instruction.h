@@ -59,7 +59,8 @@ namespace x86_64 {
 			PrefixRepnz = 0x02,
 			PrefixLock = 0x04,
 			PrefixAddr = 0x08,  // address-size override
-			PrefixOp = 0x10  // operand-size override
+			PrefixOp = 0x10,  // operand-size override
+            Prefix64 = 0x40
 		};
 
 
@@ -207,7 +208,7 @@ namespace x86_64 {
 		// Prefixes
 		Reg segment;  // Reg. used to override segment
 		int prefixes;  // Mask of prefixes of type 'X86InstPrefix'
-		int op_size;  // Operand size: 2 or 4, default 4
+		int op_size;  // Operand size: 2 or 4 or 8, default 8
 		int addr_size;  // Address size: 2 or 4, default 4
 
 		// ModR/M Field

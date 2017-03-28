@@ -36,7 +36,7 @@ namespace x86_64 {
         static std::string path;
 
         // For fields 'op1', 'op2', 'modrm', 'imm'
-        static const int SKIP = 0x0100;
+        static const int SKIP = 0x0100; // 256
 
         // For field 'modrm'
         static const int REG = 0x0200;
@@ -134,7 +134,7 @@ namespace x86_64 {
         /// of the instruction is 0x0f.
         Instruction::DecodeInfo * const *getDecTable0f() const { return dec_table_0f; }
 
-        /// Return \c true if \a byte is a valid x86 instruction prefix.
+        /// Return \c true if \a byte is a valid x86_64 instruction prefix.
         bool isPrefix(unsigned char byte) const { return is_prefix[byte]; }
 
         /// Disassemble the x86 ELF executable contained in file \a path, and
