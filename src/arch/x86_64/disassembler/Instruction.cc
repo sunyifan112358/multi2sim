@@ -498,67 +498,70 @@ namespace x86_64 {
         // Prefixes
         while (disassembler->isPrefix(*buffer))
         {
-            switch ((unsigned char) *buffer)
-            {
+            if (disassembler->isRexPrefix(*buffer)) {
+                unsigned char b = *buffer;
+                if (b & REX_B); // TODO: MODRM.rm extension
+                if (b & REX_X); // TODO: SIB extension
+                if (b & REX_R); // TODO: MODRM.reg extension
+                if (b & REX_W); // TODO: 64-bit operand size
+            }
 
-                case 0xf0:
-                // lock prefix is ignored
-                break;
+            else {
+                switch ((unsigned char) *buffer)
+                {
 
-                case 0xf2:
-                    prefixes |= PrefixRepnz;
-                    break;
+                    case 0xf0:
+                        // lock prefix is ignored
+                        break;
 
-                case 0xf3:
-                    prefixes |= PrefixRep;
-                    break;
+                    case 0xf2:
+                        prefixes |= PrefixRepnz;
+                        break;
 
-                case 0x66:
-                    prefixes |= PrefixOp;
-                    op_size = 2;
-                    break;
+                    case 0xf3:
+                        prefixes |= PrefixRep;
+                        break;
 
-                case 0x67:
-                    prefixes |= PrefixAddr;
-                    addr_size = 2;
-                    break;
+                    case 0x66:
+                        prefixes |= PrefixOp;
+                        op_size = 2;
+                        break;
 
-                case 0x2e:
-                    segment = RegCs;
-                    break;
+                    case 0x67:
+                        prefixes |= PrefixAddr;
+                        addr_size = 2;
+                        break;
 
-                case 0x36:
-                    segment = RegSs;
-                    break;
+                    case 0x2e:
+                        segment = RegCs;
+                        break;
 
-                case 0x3e:
-                    segment = RegDs;
-                    break;
+                    case 0x36:
+                        segment = RegSs;
+                        break;
 
-                case 0x26:
-                    segment = RegEs;
-                    break;
+                    case 0x3e:
+                        segment = RegDs;
+                        break;
 
-                // x64 specific header
-                case 0x48:
-                std::cout << "Decoded Prefix x48\n";
-                    prefixes |= Prefix64;
-                    op_size = 8;
-                break;
+                    case 0x26:
+                        segment = RegEs;
+                        break;
 
-                case 0x64:
-                segment = RegFs;
-                break;
+                    case 0x64:
+                        segment = RegFs;
+                        break;
 
-                case 0x65:
-                segment = RegGs;
-                break;
+                    case 0x65:
+                        segment = RegGs;
+                        break;
 
-                default:
+                    default:
 
-                throw Disassembler::Error(misc::fmt("Invalid prefix (0x%x)",
-                                                (unsigned char) *buffer));
+                        throw Disassembler::Error(misc::fmt("Invalid prefix (0x%x)",
+                                                            (unsigned char) *buffer));
 
+                }
             }
 
         // One more prefix

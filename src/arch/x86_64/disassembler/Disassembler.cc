@@ -70,17 +70,17 @@ void Disassembler::ProcessOptions()
 static const unsigned char asm_prefixes[] =
 {
     0xf0,  // lock
-    0xf2,  // repnz
-    0xf3,  // rep
-    0x66,  // op
-    0x67,  // addr
+    0xf2,  // repne/repnz
+    0xf3,  // rep repe/repz
+    0x66,  // opsize override
+    0x67,  // addrsize override
     0x2e,  // use cs
     0x36,  // use ss
     0x3e,  // use ds
     0x26,  // use es
-    0x48,  // x64 REX.W use long
     0x64,  // use fs
-    0x65   // use gs
+    0x65,   // use gs
+
 };
 
 std::unique_ptr<Disassembler> Disassembler::instance;
@@ -194,16 +194,16 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
             // it must be matched.
             if (!(info->opcode_ext & REG))
             {
-            info->match_mask = 0x38;
-            info->match_result = (info->opcode_ext & 0x7) << 3;
+                info->match_mask = 0x38;
+                info->match_result = (info->opcode_ext & 0x7) << 3;
             }
 
             // If instruction expects a memory operand, the 'mod' field of
             // the ModR/M byte cannot be 11.
             if (info->opcode_ext & MEM)
             {
-            info->nomatch_mask = 0xc0;
-            info->nomatch_result = 0xc0;
+                info->nomatch_mask = 0xc0;
+                info->nomatch_result = 0xc0;
             }
         }
 

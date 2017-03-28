@@ -35,6 +35,13 @@ namespace x86_64 {
         // Disassemble a file
         static std::string path;
 
+        // REX fields
+        static const int REX = 0x40;
+        static const int REX_B = 0x01;
+        static const int REX_X = 0x02;
+        static const int REX_R = 0x04;
+        static const int REX_W = 0x08;
+
         // For fields 'op1', 'op2', 'modrm', 'imm'
         static const int SKIP = 0x0100; // 256
 
@@ -134,8 +141,12 @@ namespace x86_64 {
         /// of the instruction is 0x0f.
         Instruction::DecodeInfo * const *getDecTable0f() const { return dec_table_0f; }
 
+        // The 4 most MSBs are 0100b
+        bool isRexPrefix(unsigned char byte) const { return (byte & 0xF0) == REX; }
+
         /// Return \c true if \a byte is a valid x86_64 instruction prefix.
-        bool isPrefix(unsigned char byte) const { return is_prefix[byte]; }
+        bool isPrefix(unsigned char byte) const {
+            return (isRexPrefix(byte) || is_prefix[byte]); }
 
         /// Disassemble the x86 ELF executable contained in file \a path, and
         /// dump its content into the output stream given in \c os (or the

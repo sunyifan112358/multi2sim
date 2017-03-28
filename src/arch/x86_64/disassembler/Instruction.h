@@ -60,7 +60,7 @@ namespace x86_64 {
 			PrefixLock = 0x04,
 			PrefixAddr = 0x08,  // address-size override
 			PrefixOp = 0x10,  // operand-size override
-            Prefix64 = 0x40
+            Prefix64 = 0x20   // 0x48 demarks that prefix for x64
 		};
 
 
@@ -122,6 +122,13 @@ namespace x86_64 {
 
 		/// String map used for values of type Register
 		static const misc::StringMap reg_map;
+
+        // REX fields
+        static const int REX = 0x40;
+        static const int REX_B = 0x01;
+        static const int REX_X = 0x02;
+        static const int REX_R = 0x04;
+        static const int REX_W = 0x08;
 
 		/// x86 flags in register \c eflags
 		enum Flag
