@@ -28,8 +28,7 @@
 
 namespace x86_64 {
 
-    const misc::StringMap Instruction::reg_map =
-    {
+const misc::StringMap Instruction::reg_map = {
         { "rax", RegRax },
         { "rcx", RegRcx },
         { "rdx", RegRdx },
@@ -68,9 +67,9 @@ namespace x86_64 {
         { "ds", RegDs },
         { "fs", RegFs },
         { "gs", RegGs }
-    };
+};
 
-    const Instruction::ModRMTableEntry Instruction::modrm_table[32] = {
+const Instruction::ModRMTableEntry Instruction::modrm_table[32] = {
         { RegEax, 0, 0 },
         { RegEcx, 0, 0 },
         { RegEdx, 0, 0 },
@@ -106,517 +105,456 @@ namespace x86_64 {
         { RegNone, 0, 0 },
         { RegNone, 0, 0 },
         { RegNone, 0, 0 }
-    };
+};
 
 
 // Table to obtain the scale from its decoded value
-    static const unsigned ea_scale_table[4] = { 1, 2, 4, 8 };
+static const unsigned ea_scale_table[4] = { 1, 2, 4, 8 };
 
 
-    Instruction::Instruction()
-    {
-      disassembler = Disassembler::getInstance();
-      Clear();
-    }
+Instruction::Instruction() {
+    disassembler = Disassembler::getInstance();
+    Clear();
+}
+
+void Instruction::DumpMoffsAddr(std::ostream &os) const {
+    Reg reg = segment ? segment : RegDs;
+    os << misc::fmt("%s:0x%x", reg_map.MapValue(reg), imm.d);
+}
 
 
-    void Instruction::DumpMoffsAddr(std::ostream &os) const
-    {
-      Reg reg = segment ? segment : RegDs;
-      os << misc::fmt("%s:0x%x", reg_map.MapValue(reg), imm.d);
-    }
-
-
-    void Instruction::DumpAddr(std::ostream &os) const
-    {
-      // Segment
-      assert(modrm_mod != 3);
-      std::string segment_str;
-      if (segment)
-      {
+void Instruction::DumpAddr(std::ostream &os) const {
+    // Segment
+    assert(modrm_mod != 3);
+    std::string segment_str;
+    if (segment) {
         assert(segment >= 0 && segment < RegCount);
         segment_str = reg_map.MapValue(segment);
         segment_str += ':';
-      }
+    }
 
-      // When there is only a displacement
-      if (!ea_base && !ea_index)
-      {
-        if (segment_str.empty())
-          segment_str = "ds:";
+    // When there is only a displacement
+    if (!ea_base && !ea_index) {
+        if (segment_str.empty()) {
+            segment_str = "ds:";
+        }
         os << segment_str;
         os << misc::fmt("0x%x", disp);
         return;
-      }
-
-      bool write_sign = false;
-      os << segment_str << '[';
-      if (ea_base)
-      {
-        os << reg_map.MapValue(ea_base);
-        write_sign = true;
-      }
-      if (ea_index)
-      {
-        if (write_sign)
-          os << '+';
-        os << reg_map.MapValue(ea_index);
-        if (ea_scale > 1)
-          os << '*' << ea_scale;
-        write_sign = true;
-      }
-      if (disp > 0)
-      {
-        if (write_sign)
-          os << '+';
-        os << misc::fmt("0x%x", disp);
-      }
-      if (disp < 0)
-        os << misc::fmt("-0x%x", -disp);
-      os << ']';
     }
 
+    bool write_sign = false;
+    os << segment_str << '[';
+    if (ea_base) {
+        os << reg_map.MapValue(ea_base);
+        write_sign = true;
+    }
+    if (ea_index) {
+        if (write_sign)
+            os << '+';
+        os << reg_map.MapValue(ea_index);
+        if (ea_scale > 1)
+            os << '*' << ea_scale;
+        write_sign = true;
+    }
+    if (disp > 0) {
+        if (write_sign)
+            os << '+';
+        os << misc::fmt("0x%x", disp);
+    }
+    if (disp < 0)
+        os << misc::fmt("-0x%x", -disp);
+    os << ']';
+}
 
-    void Instruction::Dump(std::ostream &os) const
-    {
-      // Instruction must have been decoded
-      assert(decoded);
 
-      // Get instruction information
-      const Info *info = disassembler->getInstInfo(opcode);
-      bool name_printed = false;
-      const char *fmt = info->fmt;
-      const char *fmt_first_arg = index(fmt, '_');
-      int name_length = fmt_first_arg ? fmt_first_arg - fmt : strlen(fmt);
+void Instruction::Dump(std::ostream &os) const {
+    // Instruction must have been decoded
+    assert(decoded);
 
-      // Dump instruction
-      while (*fmt)
-      {
+    // Get instruction information
+    const Info *info = disassembler->getInstInfo(opcode);
+    bool name_printed = false;
+    const char *fmt = info->fmt;
+    const char *fmt_first_arg = index(fmt, '_');
+    int name_length = fmt_first_arg ? fmt_first_arg - fmt : strlen(fmt);
+
+    // Dump instruction
+    while (*fmt) {
         // Check tokens
         int length = 0;
-        if (comm::Disassembler::isToken(fmt, "r", length))
-        {
+        if (comm::Disassembler::isToken(fmt, "r", length)) {
 
         }
-        else if (comm::Disassembler::isToken(fmt, "r8", length))
-        {
-          os << reg_map.MapValue(modrm_reg
-                                 + RegAl);
+        else if (comm::Disassembler::isToken(fmt, "r8", length)) {
+            os << reg_map.MapValue(modrm_reg + RegAl);
         }
-        else if (comm::Disassembler::isToken(fmt, "r16", length))
-        {
-          os << reg_map.MapValue(modrm_reg
-                                 + RegAx);
+        else if (comm::Disassembler::isToken(fmt, "r16", length)) {
+            os << reg_map.MapValue(modrm_reg + RegAx);
         }
-        else if (comm::Disassembler::isToken(fmt, "r32", length))
-        {
-          os << reg_map.MapValue(modrm_reg
-                                 + RegEax);
+        else if (comm::Disassembler::isToken(fmt, "r32", length)) {
+            os << reg_map.MapValue(modrm_reg + RegEax);
         }
-        else if (comm::Disassembler::isToken(fmt, "rm8", length))
-        {
-          if (modrm_mod == 0x03)
-            os << reg_map.MapValue(modrm_rm
-                                   + RegAl);
-          else
-          {
+        else if (comm::Disassembler::isToken(fmt, "rm8", length)) {
+            if (modrm_mod == 0x03)
+                os << reg_map.MapValue(modrm_rm + RegAl);
+            else {
+                os << "BYTE PTR ";
+                DumpAddr(os);
+            }
+        }
+        else if (comm::Disassembler::isToken(fmt, "rm16", length)) {
+            if (modrm_mod == 0x03)
+                os << reg_map.MapValue(modrm_rm + RegAx);
+            else {
+                os << "WORD PTR ";
+                DumpAddr(os);
+            }
+        }
+        else if (comm::Disassembler::isToken(fmt, "rm32", length)) {
+            if (modrm_mod == 0x03)
+                os << reg_map.MapValue(modrm_rm + RegEax);
+            else {
+                os << "DWORD PTR ";
+                DumpAddr(os);
+            }
+        }
+        else if (comm::Disassembler::isToken(fmt, "r32m8", length)) {
+            if (modrm_mod == 3)
+                os << reg_map.MapValue(modrm_rm + RegEax);
+            else {
+                os << "BYTE PTR ";
+                DumpAddr(os);
+            }
+        }
+        else if (comm::Disassembler::isToken(fmt, "r32m16", length)) {
+            if (modrm_mod == 3)
+                os << reg_map.MapValue(modrm_rm + RegEax);
+            else {
+                os << "WORD PTR ";
+                DumpAddr(os);
+            }
+        }
+        else if (comm::Disassembler::isToken(fmt, "m", length)) {
+            DumpAddr(os);
+        }
+        else if (comm::Disassembler::isToken(fmt, "imm8", length)) {
+            os << misc::fmt("0x%x", imm.b);
+        }
+        else if (comm::Disassembler::isToken(fmt, "imm16", length)) {
+            os << misc::fmt("0x%x", imm.w);
+        }
+        else if (comm::Disassembler::isToken(fmt, "imm32", length)) {
+            os << misc::fmt("0x%x", imm.d);
+        }
+        else if (comm::Disassembler::isToken(fmt, "rel8", length)) {
+            os << misc::fmt("%x", (char) imm.b + eip + size);
+        }
+        else if (comm::Disassembler::isToken(fmt, "rel16", length)) {
+            os << misc::fmt("%x", (short) imm.w + eip + size);
+        }
+        else if (comm::Disassembler::isToken(fmt, "rel32", length)) {
+            os << misc::fmt("%x", imm.d + eip + size);
+        }
+        else if (comm::Disassembler::isToken(fmt, "moffs8", length)) {
+            DumpMoffsAddr(os);
+        }
+        else if (comm::Disassembler::isToken(fmt, "moffs16", length)) {
+            DumpMoffsAddr(os);
+        }
+        else if (comm::Disassembler::isToken(fmt, "moffs32", length)) {
+            DumpMoffsAddr(os);
+        }
+        else if (comm::Disassembler::isToken(fmt, "m8", length)) {
             os << "BYTE PTR ";
             DumpAddr(os);
-          }
         }
-        else if (comm::Disassembler::isToken(fmt, "rm16", length))
-        {
-          if (modrm_mod == 0x03)
-            os << reg_map.MapValue(modrm_rm
-                                   + RegAx);
-          else
-          {
+        else if (comm::Disassembler::isToken(fmt, "m16", length)) {
             os << "WORD PTR ";
             DumpAddr(os);
-          }
         }
-        else if (comm::Disassembler::isToken(fmt, "rm32", length))
-        {
-          if (modrm_mod == 0x03)
-            os << reg_map.MapValue(modrm_rm
-                                   + RegEax);
-          else
-          {
+        else if (comm::Disassembler::isToken(fmt, "m32", length)) {
             os << "DWORD PTR ";
             DumpAddr(os);
-          }
         }
-        else if (comm::Disassembler::isToken(fmt, "r32m8", length))
-        {
-          if (modrm_mod == 3)
-            os << reg_map.MapValue(modrm_rm
-                                   + RegEax);
-          else
-          {
-            os << "BYTE PTR ";
-            DumpAddr(os);
-          }
-        }
-        else if (comm::Disassembler::isToken(fmt, "r32m16", length))
-        {
-          if (modrm_mod == 3)
-            os << reg_map.MapValue(modrm_rm
-                                   + RegEax);
-          else
-          {
-            os << "WORD PTR ";
-            DumpAddr(os);
-          }
-        }
-        else if (comm::Disassembler::isToken(fmt, "m", length))
-        {
-          DumpAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "imm8", length))
-        {
-          os << misc::fmt("0x%x", imm.b);
-        }
-        else if (comm::Disassembler::isToken(fmt, "imm16", length))
-        {
-          os << misc::fmt("0x%x", imm.w);
-        }
-        else if (comm::Disassembler::isToken(fmt, "imm32", length))
-        {
-          os << misc::fmt("0x%x", imm.d);
-        }
-        else if (comm::Disassembler::isToken(fmt, "rel8", length))
-        {
-          os << misc::fmt("%x", (char) imm.b + eip + size);
-        }
-        else if (comm::Disassembler::isToken(fmt, "rel16", length))
-        {
-          os << misc::fmt("%x", (short) imm.w + eip + size);
-        }
-        else if (comm::Disassembler::isToken(fmt, "rel32", length))
-        {
-          os << misc::fmt("%x", imm.d + eip + size);
-        }
-        else if (comm::Disassembler::isToken(fmt, "moffs8", length))
-        {
-          DumpMoffsAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "moffs16", length))
-        {
-          DumpMoffsAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "moffs32", length))
-        {
-          DumpMoffsAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "m8", length))
-        {
-          os << "BYTE PTR ";
-          DumpAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "m16", length))
-        {
-          os << "WORD PTR ";
-          DumpAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "m32", length))
-        {
-          os << "DWORD PTR ";
-          DumpAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "m64", length))
-        {
-          os << "QWORD PTR ";
-          DumpAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "m80", length))
-        {
-          os << "TBYTE PTR ";
-          DumpAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "m128", length))
-        {
-          os << "XMMWORD PTR ";
-          DumpAddr(os);
-        }
-        else if (comm::Disassembler::isToken(fmt, "st0", length))
-        {
-          os << "st";
-        }
-        else if (comm::Disassembler::isToken(fmt, "sti", length))
-        {
-          os << misc::fmt("st(%d)", opindex);
-        }
-        else if (comm::Disassembler::isToken(fmt, "ir8", length))
-        {
-          os << reg_map.MapValue(opindex + RegAl);
-        }
-        else if (comm::Disassembler::isToken(fmt, "ir16", length))
-        {
-          os << reg_map.MapValue(opindex + RegAx);
-        }
-        else if (comm::Disassembler::isToken(fmt, "ir32", length))
-        {
-          os << reg_map.MapValue(opindex + RegEax);
-        }
-        else if (comm::Disassembler::isToken(fmt, "sreg", length))
-        {
-          os << reg_map.MapValue(reg + RegEs);
-        }
-        else if (comm::Disassembler::isToken(fmt, "xmmm32", length))
-        {
-          if (modrm_mod == 3)
-            os << "xmm" << (unsigned) modrm_rm;
-          else
-          {
-            os << "DWORD PTR ";
-            DumpAddr(os);
-          }
-        }
-        else if (comm::Disassembler::isToken(fmt, "xmmm64", length))
-        {
-          if (modrm_mod == 3)
-            os << "xmm" << (unsigned) modrm_rm;
-          else
-          {
+        else if (comm::Disassembler::isToken(fmt, "m64", length)) {
             os << "QWORD PTR ";
             DumpAddr(os);
-          }
         }
-        else if (comm::Disassembler::isToken(fmt, "xmmm128", length))
-        {
-          if (modrm_mod == 3)
-            os << "xmm" << (unsigned) modrm_rm;
-          else
-          {
+        else if (comm::Disassembler::isToken(fmt, "m80", length)) {
+            os << "TBYTE PTR ";
+            DumpAddr(os);
+        }
+        else if (comm::Disassembler::isToken(fmt, "m128", length)) {
             os << "XMMWORD PTR ";
             DumpAddr(os);
-          }
         }
-        else if (comm::Disassembler::isToken(fmt, "xmm", length))
-        {
-          os << "xmm" << (unsigned) modrm_reg;
+        else if (comm::Disassembler::isToken(fmt, "st0", length)) {
+            os << "st";
+        }
+        else if (comm::Disassembler::isToken(fmt, "sti", length)) {
+            os << misc::fmt("st(%d)", opindex);
+        }
+        else if (comm::Disassembler::isToken(fmt, "ir8", length)) {
+            os << reg_map.MapValue(opindex + RegAl);
+        }
+        else if (comm::Disassembler::isToken(fmt, "ir16", length)) {
+            os << reg_map.MapValue(opindex + RegAx);
+        }
+        else if (comm::Disassembler::isToken(fmt, "ir32", length)) {
+            os << reg_map.MapValue(opindex + RegEax);
+        }
+        else if (comm::Disassembler::isToken(fmt, "sreg", length)) {
+            os << reg_map.MapValue(reg + RegEs);
+        }
+        else if (comm::Disassembler::isToken(fmt, "xmmm32", length)) {
+            if (modrm_mod == 3)
+                os << "xmm" << (unsigned) modrm_rm;
+            else {
+                os << "DWORD PTR ";
+                DumpAddr(os);
+            }
+        }
+        else if (comm::Disassembler::isToken(fmt, "xmmm64", length)) {
+            if (modrm_mod == 3)
+                os << "xmm" << (unsigned) modrm_rm;
+            else {
+                os << "QWORD PTR ";
+                DumpAddr(os);
+            }
+        }
+        else if (comm::Disassembler::isToken(fmt, "xmmm128", length)) {
+            if (modrm_mod == 3)
+                os << "xmm" << (unsigned) modrm_rm;
+            else {
+                os << "XMMWORD PTR ";
+                DumpAddr(os);
+            }
+        }
+        else if (comm::Disassembler::isToken(fmt, "xmm", length)) {
+            os << "xmm" << (unsigned) modrm_reg;
         }
 
         // Token was found, advance format string and continue
-        if (length)
-        {
-          fmt += length;
-          continue;
+        if (length) {
+            fmt += length;
+            continue;
         }
 
         // Print literal alphanumerics
         while (*fmt && isalnum(*fmt))
-          os << *fmt++;
+            os << *fmt++;
 
         // Print literal non-alphanumerics
-        while (*fmt && !isalnum(*fmt))
-        {
-          if (*fmt == '_')
-          {
-            if (name_printed)
-            {
-              os << ',';
-            }
-            else
-            {
-              name_printed = true;
-              for (int i = 0; i < 6 - name_length; i++)
-                os << ' ';
-              os << ' ';
-            }
-          }
-          else
-          {
-            os << *fmt;
-          }
-          fmt++;
-        }
-      }
-    }
-
-
-    void Instruction::Clear()
-    {
-      decoded = false;
-
-      eip = 0;
-      size = 0;
-      opcode = OpcodeInvalid;
-      format = nullptr;
-
-      prefix_size = 0;
-      opcode_size = 0;
-      modrm_size = 0;
-      sib_size = 0;
-      disp_size = 0;
-      imm_size = 0;
-
-      opindex = 0;
-      segment = RegNone;
-      prefixes = 0;
-
-      op_size = 0;
-      addr_size = 0;
-
-      modrm = 0;
-      modrm_mod = 0;
-      modrm_reg = 0;
-      modrm_rm = 0;
-
-      sib = 0;
-      sib_scale = 0;
-      sib_index = 0;
-      sib_base = 0;
-
-      disp = 0;
-      imm.d = 0;
-
-      ea_base = RegNone;
-      ea_index = RegNone;
-      ea_scale = 0;
-
-      reg = 0;
-    }
-
-
-    void Instruction::Decode(const char *buffer, unsigned eip)
-    {
-        // Initialize instruction
-        Clear();
-        std::cout << "Decoding instruction\n";
-        decoded = true;
-        this->eip = eip;
-        op_size = 8;
-        addr_size = 8;
-
-        std::cout << "Decoding buffer: ";
-        for (int i=0; i < 8; i++) {
-            std::printf("%x ", 0x0ff & buffer[i]);
-        }
-        std::cout << std::endl;
-
-        // Prefixes
-        while (disassembler->isPrefix(*buffer))
-        {
-            if (disassembler->isRexPrefix(*buffer)) {
-                unsigned char b = *buffer;
-                if (b & REX_B); // TODO: MODRM.rm extension
-                if (b & REX_X); // TODO: SIB extension
-                if (b & REX_R); // TODO: MODRM.reg extension
-                if (b & REX_W); // TODO: 64-bit operand size
-            }
-
-            else {
-                switch ((unsigned char) *buffer)
-                {
-
-                    case 0xf0:
-                        // lock prefix is ignored
-                        break;
-
-                    case 0xf2:
-                        prefixes |= PrefixRepnz;
-                        break;
-
-                    case 0xf3:
-                        prefixes |= PrefixRep;
-                        break;
-
-                    case 0x66:
-                        prefixes |= PrefixOp;
-                        op_size = 2;
-                        break;
-
-                    case 0x67:
-                        prefixes |= PrefixAddr;
-                        addr_size = 2;
-                        break;
-
-                    case 0x2e:
-                        segment = RegCs;
-                        break;
-
-                    case 0x36:
-                        segment = RegSs;
-                        break;
-
-                    case 0x3e:
-                        segment = RegDs;
-                        break;
-
-                    case 0x26:
-                        segment = RegEs;
-                        break;
-
-                    case 0x64:
-                        segment = RegFs;
-                        break;
-
-                    case 0x65:
-                        segment = RegGs;
-                        break;
-
-                    default:
-
-                        throw Disassembler::Error(misc::fmt("Invalid prefix (0x%x)",
-                                                            (unsigned char) *buffer));
-
+        while (*fmt && !isalnum(*fmt)) {
+            if (*fmt == '_') {
+                if (name_printed) {
+                    os << ',';
+                }
+                else {
+                    name_printed = true;
+                    for (int i = 0; i < 6 - name_length; i++)
+                        os << ' ';
+                    os << ' ';
                 }
             }
+            else {
+                os << *fmt;
+            }
+            fmt++;
+        }
+    }
+}
+
+
+void Instruction::Clear() {
+    decoded = false;
+
+    eip = 0;
+    size = 0;
+    opcode = OpcodeInvalid;
+    format = nullptr;
+
+    prefix_size = 0;
+    opcode_size = 0;
+    modrm_size = 0;
+    sib_size = 0;
+    disp_size = 0;
+    imm_size = 0;
+
+    opindex = 0;
+    segment = RegNone;
+    prefixes = 0;
+
+    op_size = 0;
+    addr_size = 0;
+
+    modrm = 0;
+    modrm_mod = 0;
+    modrm_reg = 0;
+    modrm_rm = 0;
+
+    sib = 0;
+    sib_scale = 0;
+    sib_index = 0;
+    sib_base = 0;
+
+    disp = 0;
+    imm.d = 0;
+
+    ea_base = RegNone;
+    ea_index = RegNone;
+    ea_scale = 0;
+
+    reg = 0;
+}
+
+
+void Instruction::Decode(const char *buffer, unsigned eip) {
+    // Initialize instruction
+    Clear();
+    std::cout << "Decoding instruction\n";
+    decoded = true;
+    this->eip = eip;
+    op_size = 4; // Default = 4 bytes, 32 bits
+    addr_size = 8;
+
+    std::cout << "Decoding buffer: ";
+    for (int i=0; i < 8; i++) {
+        std::printf("%x ", 0x0ff & buffer[i]);
+    }
+    std::cout << std::endl;
+
+    // Prefixes
+    while (disassembler->isPrefix(*buffer)) {
+
+        // REX prefix
+        // TODO: Prefix 0x67 overrides address size to 32-bit: 4byte
+        //       otherwise it should be 64 bit: 8 byte
+        if (disassembler->isRexPrefix(*buffer)) {
+            unsigned char b = *buffer;
+            if (b & REX_B) {
+                modrm_rm |= 0x08; // Use 4th bit for rm extension
+            }
+            if (b & REX_X) {
+                sib_index |= 0x08; // Use 4th bit for rm extension
+            }
+            if (b & REX_R) {
+                modrm_reg |= 0x08; // Use 4th bit in reg extension
+            }
+            if (b & REX_W) {
+                // long mode
+                op_size = 8; // 8 bytes = 64 bits
+            }
+        }
+
+        // other prefixes
+        else {
+            switch ((unsigned char) *buffer) {
+
+                case 0xf0:
+                    // lock prefix is ignored
+                    break;
+
+                case 0xf2:
+                    prefixes |= PrefixRepnz;
+                    break;
+
+                case 0xf3:
+                    prefixes |= PrefixRep;
+                    break;
+
+                case 0x66:
+                    prefixes |= PrefixOp;
+                    op_size = 2;
+                    break;
+
+                case 0x67:
+                    prefixes |= PrefixAddr;
+                    addr_size = 2;
+                    break;
+
+                case 0x2e:
+                    segment = RegCs;
+                    break;
+
+                case 0x36:
+                    segment = RegSs;
+                    break;
+
+                case 0x3e:
+                    segment = RegDs;
+                    break;
+
+                case 0x26:
+                    segment = RegEs;
+                    break;
+
+                case 0x64:
+                    segment = RegFs;
+                    break;
+
+                case 0x65:
+                    segment = RegGs;
+                    break;
+
+                default:
+
+                    throw Disassembler::Error(misc::fmt("Invalid prefix (0x%x)",
+                                                        (unsigned char) *buffer));
+
+            }
+        }
 
         // One more prefix
         buffer++;
         prefix_size++;
-      }
+    }
 
-      // Obtain lookup table and index
-      unsigned char buf8 = *buffer;
-      unsigned buf32 = * (unsigned *) buffer;
-      const DecodeInfo * const *table;
-        int index;
-        if (buf8 == 0x0f)
-        {
-            table = (const DecodeInfo *const *) disassembler->getDecTable0f();
-            index = * (unsigned char *) (buffer + 1);
-        }
-        else
-        {
-            table = (const DecodeInfo *const *) disassembler->getDecTable();
-            index = buf8;
-        }
+    // Obtain lookup table and index
+    unsigned char buf8 = *buffer;
+    unsigned buf32 = * (unsigned *) buffer;
+    const DecodeInfo * const *table;
+    int index;
+    if (buf8 == 0x0f) {
+        table = (const DecodeInfo *const *) disassembler->getDecTable0f();
+        index = * (unsigned char *) (buffer + 1);
+    }
+    else {
+        table = (const DecodeInfo *const *) disassembler->getDecTable();
+        index = buf8;
+    }
 
-      // Find instruction
-      const DecodeInfo *elem = nullptr;
-      const Info *info = nullptr;
-      for (elem = table[index]; elem; elem = elem->next)
-      {
+    // Find instruction
+    const DecodeInfo *elem = nullptr;
+    const Info *info = nullptr;
+    for (elem = table[index]; elem; elem = elem->next) {
         info = elem->info;
         if (info->nomatch_mask && (buf32 & info->nomatch_mask) ==
                                   info->nomatch_result)
-          continue;
+            continue;
         if ((buf32 & info->match_mask) == info->match_result
             && info->prefix == prefixes)
-          break;
-      }
+            break;
+    }
 
-      // Instruction not implemented
-      if (!elem) {
-          std::cout << "Instruction not implemented\n";
-          return;
-      }
+    // Instruction not implemented
+    if (!elem) {
+        std::cout << "Instruction not implemented\n";
+        return;
+    }
 
-      // Instruction found
-        std::cout << "Instruction found\n";
-      format = info->fmt;
-      opcode = info->opcode;
-      opcode_size = info->opcode_size;
-      modrm_size = info->modrm_size;
-      opindex = (buf32 >> info->opindex_shift) & 0x7;
-      buffer += opcode_size;  // Skip opcode
+    // Instruction found
+    std::cout << "Instruction found\n";
+    format = info->fmt;
+    opcode = info->opcode;
+    opcode_size = info->opcode_size;
+    modrm_size = info->modrm_size;
+    opindex = (buf32 >> info->opindex_shift) & 0x7;
+    buffer += opcode_size;  // Skip opcode
 
-      // Decode the ModR/M field
-      if (modrm_size)
-      {
+    // Decode the ModR/M field
+    if (modrm_size) {
         // Split modrm into fields
         modrm = * (unsigned char *) buffer;
         modrm_mod = (modrm & 0xc0) >> 6;
@@ -633,62 +571,59 @@ namespace x86_64 {
         buffer += modrm_size;  // Skip modrm
 
         // Decode SIB
-        if (sib_size)
-        {
-          sib = * (unsigned char *) buffer;
-          sib_scale = (sib & 0xc0) >> 6;
-          sib_index = (sib & 0x38) >> 3;
-          sib_base = sib & 0x07;
-          ea_scale = ea_scale_table[sib_scale];
-          ea_index = sib_index == 0x04 ? RegNone :
-                     (Reg) (RegEax + sib_index);
-          ea_base = (Reg) (sib_base + RegEax);
-          if (sib_base == 0x05 && modrm_mod == 0x00)
-          {
-            ea_base = RegNone;
-            disp_size = 4;
-          }
-          buffer += sib_size;  // Skip SIB
+        if (sib_size) {
+            sib = * (unsigned char *) buffer;
+            sib_scale = (sib & 0xc0) >> 6;
+            sib_index = (sib & 0x38) >> 3;
+            sib_base = sib & 0x07;
+            ea_scale = ea_scale_table[sib_scale];
+            ea_index = sib_index == 0x04 ? RegNone :
+                       (Reg) (RegEax + sib_index);
+            ea_base = (Reg) (sib_base + RegEax);
+            if (sib_base == 0x05 && modrm_mod == 0x00) {
+                ea_base = RegNone;
+                disp_size = 4;
+            }
+            buffer += sib_size;  // Skip SIB
         }
 
         // Decode Displacement
-        switch (disp_size)
-        {
-          case 1:
-            disp = *buffer;
+        switch (disp_size) {
+            case 1:
+                disp = *buffer;
                 break;
 
-          case 2:
-            disp = * (short *) buffer;
+            case 2:
+                disp = * (short *) buffer;
                 break;
 
-          case 4:
-            disp = * (int *) buffer;
+            case 4:
+                disp = * (int *) buffer;
                 break;
         }
         buffer += disp_size;  // Skip disp
-      }
+    }
 
-      // Decode Immediate
-      imm_size = info->imm_size;
-      switch (imm_size)
-      {
+    // Decode Immediate
+    imm_size = info->imm_size;
+    switch (imm_size) {
         case 1:
-          imm.b = * (unsigned char *) buffer;
-              break;
+            imm.b = * (unsigned char *) buffer;
+            break;
 
         case 2:
-          imm.w = * (unsigned short *) buffer;
-              break;
+            imm.w = * (unsigned short *) buffer;
+            break;
 
         case 4:
-          imm.d = * (unsigned int *) buffer;
-              break;
-      }
-      buffer += imm_size;  // Skip imm
-
-      // Calculate total size
-      size = prefix_size + opcode_size + modrm_size +
-             sib_size + disp_size + imm_size;
+            imm.d = * (unsigned int *) buffer;
+            break;
     }
+    buffer += imm_size;  // Skip imm
+
+    // Calculate total size
+    size = prefix_size + opcode_size + modrm_size +
+           sib_size + disp_size + imm_size;
 }
+
+} // namespace

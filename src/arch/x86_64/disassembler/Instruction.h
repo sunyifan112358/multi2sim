@@ -173,7 +173,10 @@ namespace x86_64 {
 			int opindex_shift;  // Pos to shift inst to obtain index of op1/op2 if any
 			int impl_reg;  // Implied register in op1 (0-7)
 			int opcode_size;  // Size of opcode (1 or 2), not counting the modrm part.
+
+            // Modrm
 			int modrm_size;  // Size of modrm field (0 or 1)
+
 			int imm_size;  // Immediate size (0, 1, 2, or 4)
 		};
 

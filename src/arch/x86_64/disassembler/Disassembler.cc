@@ -161,8 +161,8 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
     info->op2 = __op2; \
     info->op3 = __op3; \
     info->op4 = __op4; \
-    info->prefix = __prefix; \
-    info->prefix0f = __prefix0f; \
+    info->prefix = 0; \
+    info->prefix0f = 0; \
     info->fmt = #__name;
 #include "Instruction.def"
 #undef DEFINST
@@ -185,26 +185,28 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
 
         // Compute 'match_mask' and 'mach_result' fields. Start with
         // the 'modrm' field in the instruction format definition.
-        // If not SKIP
+        // A 3-bit opcode extension might be present, such as for sub_rm_imm8
+        //  in which case the opx is 5: 101b, present in modrm byte
+
+        // If instruction doesn't SKIP opx
         if (!(info->opcode_ext & SKIP))
         {
+            // The instruction will have a modrm byte
             info->modrm_size = 1;
 
             // If part of the offset is in the 'reg' field of the ModR/M byte,
             // it must be matched.
-            if (!(info->opcode_ext & REG))
-            {
-                info->match_mask = 0x38;
-                info->match_result = (info->opcode_ext & 0x7) << 3;
-            }
+            info->match_mask = 0x38;
+            info->match_result = (info->opcode_ext & 0x7) << 3;
 
             // If instruction expects a memory operand, the 'mod' field of
             // the ModR/M byte cannot be 11.
-            if (info->opcode_ext & MEM)
-            {
-                info->nomatch_mask = 0xc0;
-                info->nomatch_result = 0xc0;
-            }
+            // TODO: Uncomment when you figure out why this is here
+//            if (info->opcode_ext & MEM)
+//            {
+//                info->nomatch_mask = 0xc0;
+//                info->nomatch_result = 0xc0;
+//            }
         }
 
         // Third opcode byte ? I'm not sure if this is right, op3 is an operand in my model
@@ -229,7 +231,7 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
             info->nomatch_mask <<= 8;
             info->nomatch_result <<= 8;
             info->match_mask |= 0xff;
-            info->match_result |= info->op2 & 0xff;
+            info->match_result |= info->sopcode & 0xff;
 
 //            // The opcode has an index
 //            if (info->op2 & INDEX)
@@ -257,7 +259,7 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
         info->nomatch_mask <<= 8;
         info->nomatch_result <<= 8;
         info->match_mask |= 0xff;
-        info->match_result |= info->op1 & 0xff;
+        info->match_result |= info->popcode & 0xff;
         if (info->popcode & INDEX)
         {
             info->match_mask &= 0xfffffff8;

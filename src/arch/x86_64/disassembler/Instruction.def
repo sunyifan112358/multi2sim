@@ -14,14 +14,14 @@ DEFINST(xor_rm_r,   SKIP,   SKIP,   SKIP,   0x31,   SKIP,   rm,     r,      SKIP
 
 DEFINST(add_rm8_r8, SKIP,   SKIP,   SKIP,   0x00,   SKIP,   rm8,    r8,     SKIP,   SKIP)
 
-DEFINST(add_rm_imm8, Instruction::Prefix64,  SKIP,   0,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
-DEFINST(or_rm_1mm8,  Instruction::Prefix64,  SKIP,   1,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
-DEFINST(adc_rm_imm8, Instruction::Prefix64,  SKIP,   2,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
-DEFINST(sbb_rm_imm8, Instruction::Prefix64,  SKIP,   3,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
-DEFINST(and_rm_imm8, Instruction::Prefix64,  SKIP,   4,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
-DEFINST(sub_rm_imm8, Instruction::Prefix64,  SKIP,   5,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
-DEFINST(xor_rm_imm8, Instruction::Prefix64,  SKIP,   6,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
-DEFINST(cmp_rm_imm8, Instruction::Prefix64,  SKIP,   7,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(add_rm_imm8, SKIP,  SKIP,   0,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(or_rm_1mm8,  SKIP,  SKIP,   1,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(adc_rm_imm8, SKIP,  SKIP,   2,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(sbb_rm_imm8, SKIP,  SKIP,   3,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(and_rm_imm8, SKIP,  SKIP,   4,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(sub_rm_imm8, SKIP,  SKIP,   5,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(xor_rm_imm8, SKIP,  SKIP,   6,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(cmp_rm_imm8, SKIP,  SKIP,   7,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
 
 DEFINST(test_r_rm, SKIP, SKIP, SKIP, 0x85, SKIP, r, rm, SKIP, SKIP)
 
