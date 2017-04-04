@@ -541,7 +541,7 @@ void Instruction::Decode(const char *buffer, unsigned eip)
 		// One more prefix
 		buffer++;
 		prefix_size++;
-	}
+	} // end while
 
 	// Obtain lookup table and index
 	unsigned char buf8 = *buffer;

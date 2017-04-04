@@ -51,6 +51,7 @@ namespace x86_64 {
 
         // Immidiate
         static const int IMM = 0x0800;
+        static const int REL = 0x1000;
 
         // Field size
         static const int SIZE_8 = 0X1;
@@ -59,13 +60,15 @@ namespace x86_64 {
         static const int SIZE_64 = 0x8;
 
         // actual fields
-        static const int r    = REG | MEM | SIZE_16 | SIZE_32 | SIZE_64;
+        static const int r    = REG;
         static const int r8   = REG | SIZE_8;
-        static const int rm   = REG | MEM | SIZE_16 | SIZE_32 | SIZE_64;
+        static const int rm   = REG | MEM;
         static const int rm8  = REG | MEM | SIZE_8;
         static const int rm16 = REG | MEM | SIZE_16;
         static const int rm32 = REG | MEM | SIZE_32;
+
         static const int imm8 = IMM | SIZE_8;
+        static const int rel  = REL;
 
         // For fields 'op1', 'op2'
         static const int INDEX = 0x1000;

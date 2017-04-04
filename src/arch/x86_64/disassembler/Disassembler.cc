@@ -114,8 +114,8 @@ void Disassembler::InsertInstInfo(Instruction::Info *info)
     if ((info->prefix0f & 0xff) == 0x0f)
     {
         table = dec_table_0f;
-        index = info->op2 & 0xff;
-        count = info->op2 & INDEX ? 8 : 1;
+        index = info->sopcode & 0xff;
+        count = info->sopcode & INDEX ? 8 : 1;
     }
     else
     {
@@ -161,8 +161,8 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
     info->op2 = __op2; \
     info->op3 = __op3; \
     info->op4 = __op4; \
-    info->prefix = 0; \
-    info->prefix0f = 0; \
+    info->prefix = __prefix; \
+    info->prefix0f = __prefix0f; \
     info->fmt = #__name;
 #include "Instruction.def"
 #undef DEFINST
@@ -209,19 +209,6 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
 //            }
         }
 
-        // Third opcode byte ? I'm not sure if this is right, op3 is an operand in my model
-//        if (!(info->op3 & SKIP))
-//        {
-//            info->opcode_size++;
-//            info->match_mask <<= 8;
-//            info->match_result <<= 8;
-//            info->nomatch_mask <<= 8;
-//            info->nomatch_result <<= 8;
-//            info->match_mask |= 0xff;
-//            info->match_result |= info->op3 & 0xff;
-//            assert(!(info->op3 & INDEX));
-//        }
-
         // Second opcode
         if (!(info->sopcode & SKIP))
         {
@@ -233,23 +220,6 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
             info->match_mask |= 0xff;
             info->match_result |= info->sopcode & 0xff;
 
-//            // The opcode has an index
-//            if (info->op2 & INDEX)
-//            {
-//                info->match_mask &= 0xfffffff8;
-//                info->opindex_shift = 8;
-//            }
-//
-//            if (info->op2 & IMM)
-//            {
-//                // Immediate size
-//                if (info->op2 & SIZE_8)
-//                    info->imm_size = 1;
-//                if (info->op2 & SIZE_16)
-//                    info->imm_size = 2;
-//                if (info->op2 & SIZE_32)
-//                    info->imm_size = 4;
-//            }
         }
 
         // First opcode byte (always there)
@@ -265,6 +235,22 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
             info->match_mask &= 0xfffffff8;
             info->opindex_shift = 0;
         }
+
+        // Decode immediate fields
+        if (info->op1 & IMM) {
+            // last 4 bits indicate number of imm bytes
+            info->imm_size += (info->op1 & 0x0F);
+        }
+
+        if (info->op2 & IMM) {
+            // last 4 bits indicate number of imm bytes
+            info->imm_size += (info->op2 & 0x0F);
+        }
+
+        if (info->op1 & REL) {
+            info->imm_size += 4; // TODO: figure out how to express more neatly
+        }
+
     } // for op in instruction::opcount
 }
 
@@ -285,8 +271,6 @@ Disassembler *Disassembler::getInstance()
     // Instance already exists
     if (instance.get())
         return instance.get();
-
-    std::cout << "Got instance of Dissasm" << std::endl;
 
     // Create instance
     instance.reset(new Disassembler());

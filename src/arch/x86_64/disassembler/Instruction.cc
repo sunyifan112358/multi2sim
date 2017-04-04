@@ -413,13 +413,12 @@ void Instruction::Clear() {
 void Instruction::Decode(const char *buffer, unsigned eip) {
     // Initialize instruction
     Clear();
-    std::cout << "Decoding instruction\n";
     decoded = true;
     this->eip = eip;
     op_size = 4; // Default = 4 bytes, 32 bits
     addr_size = 8;
 
-    std::cout << "Decoding buffer: ";
+    std::cout << "\nDecoding buffer: ";
     for (int i=0; i < 8; i++) {
         std::printf("%x ", 0x0ff & buffer[i]);
     }
@@ -624,6 +623,13 @@ void Instruction::Decode(const char *buffer, unsigned eip) {
     // Calculate total size
     size = prefix_size + opcode_size + modrm_size +
            sib_size + disp_size + imm_size;
+    std::cout << "Instruction Size: " << size << " = prefix: " << prefix_size
+              << " + opcode: " << opcode_size
+              << " + modrm: " << modrm_size
+              << " + sib: " << sib_size
+              << " + displacement: " << disp_size
+              << " + immediate: " << imm_size
+              << std::endl;
 }
 
 } // namespace

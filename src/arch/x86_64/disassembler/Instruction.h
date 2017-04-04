@@ -130,7 +130,7 @@ namespace x86_64 {
         static const int REX_R = 0x04;
         static const int REX_W = 0x08;
 
-		/// x86 flags in register \c eflags
+		/// x86_64 flags in register \c eflags
 		enum Flag
 		{
 			FlagCF = 0,
@@ -142,7 +142,7 @@ namespace x86_64 {
 			FlagOF = 11
 		};
 
-		/// This structure represents information for one x86 instruction
+		/// This structure represents information for one x86_64 instruction
 		struct Info
 		{
 			Opcode opcode;
