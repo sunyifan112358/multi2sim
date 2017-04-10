@@ -665,4 +665,3 @@ void Instruction::Decode(const char *buffer, unsigned eip)
 
 
 } // namespace x86
-

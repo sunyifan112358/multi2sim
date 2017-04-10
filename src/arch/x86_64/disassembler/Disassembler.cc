@@ -114,8 +114,8 @@ void Disassembler::InsertInstInfo(Instruction::Info *info)
     if ((info->prefix0f & 0xff) == 0x0f)
     {
         table = dec_table_0f;
-        index = info->sopcode & 0xff;
-        count = info->sopcode & INDEX ? 8 : 1;
+        index = info->popcode & 0xff;
+        count = 1;//info->sopcode & INDEX ? 8 : 1;
     }
     else
     {

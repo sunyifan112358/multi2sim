@@ -532,8 +532,8 @@ void Instruction::Decode(const char *buffer, unsigned eip) {
         if (info->nomatch_mask && (buf32 & info->nomatch_mask) ==
                                   info->nomatch_result)
             continue;
-        if ((buf32 & info->match_mask) == info->match_result
-            && info->prefix == prefixes)
+        if ((buf32 & info->match_mask) == info->match_result)
+            //&& info->prefix == prefixes)
             break;
     }
 
