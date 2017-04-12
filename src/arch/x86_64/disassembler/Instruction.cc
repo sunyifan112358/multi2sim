@@ -70,6 +70,7 @@ const misc::StringMap Instruction::reg_map = {
 };
 
 const Instruction::ModRMTableEntry Instruction::modrm_table[32] = {
+        // MOD == 00
         { RegEax, 0, 0 },
         { RegEcx, 0, 0 },
         { RegEdx, 0, 0 },
@@ -78,7 +79,7 @@ const Instruction::ModRMTableEntry Instruction::modrm_table[32] = {
         { RegNone, 4, 0 },
         { RegEsi, 0, 0 },
         { RegEdi, 0, 0 },
-
+        // MOD == 01
         { RegEax, 1, 0 },
         { RegEcx, 1, 0 },
         { RegEdx, 1, 0 },
@@ -87,7 +88,7 @@ const Instruction::ModRMTableEntry Instruction::modrm_table[32] = {
         { RegEbp, 1, 0 },
         { RegEsi, 1, 0 },
         { RegEdi, 1, 0 },
-
+        // MOD == 10
         { RegEax, 4, 0 },
         { RegEcx, 4, 0 },
         { RegEdx, 4, 0 },
@@ -96,7 +97,7 @@ const Instruction::ModRMTableEntry Instruction::modrm_table[32] = {
         { RegEbp, 4, 0 },
         { RegEsi, 4, 0 },
         { RegEdi, 4, 0 },
-
+        // MOD == 11
         { RegNone, 0, 0 },
         { RegNone, 0, 0 },
         { RegNone, 0, 0 },
@@ -433,7 +434,7 @@ void Instruction::Decode(const char *buffer, unsigned eip) {
         if (disassembler->isRexPrefix(*buffer)) {
             unsigned char b = *buffer;
             if (b & REX_B) {
-                modrm_rm |= 0x08; // Use 4th bit for rm extension
+                modrm_rm |= 0x08; // Use 4th bit for rm extension // TODO: fix which bit is turned on
             }
             if (b & REX_X) {
                 sib_index |= 0x08; // Use 4th bit for rm extension
@@ -508,6 +509,12 @@ void Instruction::Decode(const char *buffer, unsigned eip) {
         // One more prefix
         buffer++;
         prefix_size++;
+    }
+
+    // Prefix 0f
+    if ((buffer[0] & 0xff) == 0x0f) {
+        prefix_size++;
+
     }
 
     // Obtain lookup table and index

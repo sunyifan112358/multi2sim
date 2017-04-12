@@ -236,10 +236,27 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
             info->opindex_shift = 0;
         }
 
+        // Prefix 0f
+        if (!(info->prefix0f & SKIP)) {
+            info->match_mask <<= 8;
+            info->match_result <<= 8;
+            info->match_mask |= 0xFF;
+            info->match_result |= (info->prefix0f & 0xFF);
+
+            info->modrm_size = 1; // I guess this should be here?
+        }
+
         // Decode immediate fields
-        if (info->op1 & IMM) {
-            // last 4 bits indicate number of imm bytes
-            info->imm_size += (info->op1 & 0x0F);
+        if (!(info->op1 & SKIP)) {
+            if (info->op1 & IMM) {
+                // last 4 bits indicate number of imm bytes
+                info->imm_size += (info->op1 & 0x0F);
+            }
+            else if (info->op1 & REG) {
+                if (info->op1 & REG & 0xFF) {
+
+                }
+            }
         }
 
         if (info->op2 & IMM) {
