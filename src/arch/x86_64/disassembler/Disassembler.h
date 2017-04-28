@@ -68,6 +68,8 @@ namespace x86_64 {
         static const int rm32 = REG | MEM | SIZE_32;
 
         static const int imm8 = IMM | SIZE_8;
+        static const int imm16 = IMM | SIZE_16;
+        static const int imm32 = IMM | SIZE_32;
         static const int rel  = REL;
 
         // For fields 'op1', 'op2'

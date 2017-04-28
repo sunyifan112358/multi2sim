@@ -253,8 +253,15 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
                 info->imm_size += (info->op1 & 0x0F);
             }
             else if (info->op1 & REG) {
-                if (info->op1 & REG & 0xFF) {
+                // If there is a size
+                if (info->op1 & 0xFF) {
+                    info->imm_size += (info->op1 & 0xFF);
+                }
+                else {
+                    std::cout << "I don't know, the default I guess" << std::endl;
+                    info->imm_size += 0; // ? placeholder
 
+                    // depends on modrm :(
                 }
             }
         }

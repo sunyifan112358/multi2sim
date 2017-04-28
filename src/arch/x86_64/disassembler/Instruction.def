@@ -5,14 +5,17 @@
 
 //      NAME        PREFIX  0F      OPX     POP     SOP     OP1     OP2     OP3     OP4
 
-DEFINST(nop_rm16,   SKIP,   0x0F,   SKIP,   0x1F,   SKIP,   rm16,   SKIP,   SKIP,   SKIP)
-DEFINST(nop_rm32,   SKIP,   0x0F,   SKIP,   0x1F,   SKIP,   rm32,   SKIP,   SKIP,   SKIP)
+DEFINST(nop_rm8,   SKIP,   0x0F,   SKIP,   0x1F,   SKIP,   rm8,   SKIP,   SKIP,   SKIP)
+
+//TSNIFED(nop_rm32,   SKIP,   0x0F,   SKIP,   0x1F,   SKIP,   rm32,   SKIP,   SKIP,   SKIP)
 
 DEFINST(je_rel8,    SKIP,   SKIP,   SKIP,   0x74,   SKIP,   imm8,   SKIP,   SKIP,   SKIP)
 
 DEFINST(xor_rm_r,   SKIP,   SKIP,   SKIP,   0x31,   SKIP,   rm,     r,      SKIP,   SKIP)
 
 DEFINST(add_rm8_r8, SKIP,   SKIP,   SKIP,   0x00,   SKIP,   rm8,    r8,     SKIP,   SKIP)
+
+DEFINST(pushq,      SKIP,  SKIP,   0,       0x68,   SKIP,   imm32,  SKIP,   SKIP,   SKIP)
 
 DEFINST(add_rm_imm8, SKIP,  SKIP,   0,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
 DEFINST(or_rm_1mm8,  SKIP,  SKIP,   1,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)

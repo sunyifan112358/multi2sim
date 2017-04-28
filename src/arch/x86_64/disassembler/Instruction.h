@@ -78,6 +78,14 @@ namespace x86_64 {
 			RegRbp,
 			RegRsi,
 			RegRdi,
+            RegR8,
+            RegR9,
+            RegR10,
+            RegR11,
+            RegR12,
+            RegR13,
+            RegR14,
+            RegR15,
 
 			// Lower 32
 			RegEax,
