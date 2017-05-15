@@ -48,6 +48,7 @@ namespace x86_64 {
         // For field 'modrm'
         static const int REG = 0x0200;
         static const int MEM = 0x0400;
+        static const int MODRM = 0x0800;
 
         // Immidiate
         static const int IMM = 0x0800;

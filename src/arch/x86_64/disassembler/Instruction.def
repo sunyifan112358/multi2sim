@@ -5,20 +5,20 @@
 
 //      NAME        PREFIX  0F      OPX     POP     SOP     OP1     OP2     OP3     OP4
 
-DEFINST(nop_rm8,   SKIP,   0x0F,   SKIP,   0x1F,   SKIP,   rm8,   SKIP,   SKIP,   SKIP)
+DEFINST(nop,        SKIP,   0x0F,   MODRM,  0x1F,   SKIP,   rm8,    SKIP,   SKIP,   SKIP)
 
-//TSNIFED(nop_rm32,   SKIP,   0x0F,   SKIP,   0x1F,   SKIP,   rm32,   SKIP,   SKIP,   SKIP)
+//TSNIFED(nop_rm32,  SKIP,  0x0F,   SKIP,   0x1F,   SKIP,   rm32,   SKIP,   SKIP,   SKIP)
 
 DEFINST(je_rel8,    SKIP,   SKIP,   SKIP,   0x74,   SKIP,   imm8,   SKIP,   SKIP,   SKIP)
 
-DEFINST(xor_rm_r,   SKIP,   SKIP,   SKIP,   0x31,   SKIP,   rm,     r,      SKIP,   SKIP)
+DEFINST(xor_rm_r,   SKIP,   SKIP,   MODRM,  0x31,   SKIP,   rm,     r,      SKIP,   SKIP)
 
-DEFINST(add_rm8_r8, SKIP,   SKIP,   SKIP,   0x00,   SKIP,   rm8,    r8,     SKIP,   SKIP)
+DEFINST(add_rm8_r8, SKIP,   SKIP,   MODRM,  0x00,   SKIP,   rm8,    r8,     SKIP,   SKIP)
 
-DEFINST(pushq,      SKIP,  SKIP,   0,       0x68,   SKIP,   imm32,  SKIP,   SKIP,   SKIP)
+DEFINST(pushq,      SKIP,   SKIP,   SKIP,   0x68,   SKIP,   imm32,  SKIP,   SKIP,   SKIP)
 
 DEFINST(add_rm_imm8, SKIP,  SKIP,   0,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
-DEFINST(or_rm_1mm8,  SKIP,  SKIP,   1,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
+DEFINST(or_rm_imm8,  SKIP,  SKIP,   1,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
 DEFINST(adc_rm_imm8, SKIP,  SKIP,   2,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
 DEFINST(sbb_rm_imm8, SKIP,  SKIP,   3,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
 DEFINST(and_rm_imm8, SKIP,  SKIP,   4,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
@@ -26,9 +26,9 @@ DEFINST(sub_rm_imm8, SKIP,  SKIP,   5,      0x83,   SKIP,   rm,     imm8,   SKIP
 DEFINST(xor_rm_imm8, SKIP,  SKIP,   6,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
 DEFINST(cmp_rm_imm8, SKIP,  SKIP,   7,      0x83,   SKIP,   rm,     imm8,   SKIP,   SKIP)
 
-DEFINST(test_r_rm,  SKIP,   SKIP,   r,      0x85,   SKIP,   r,      rm,     SKIP,   SKIP)
+DEFINST(test_r_rm,  SKIP,   SKIP,   MODRM,  0x85,   SKIP,   r,      rm,     SKIP,   SKIP)
 
-DEFINST(mov_r_rm,   SKIP,   SKIP,   r,      0x8b,   SKIP,   r,      rm,     SKIP,   SKIP)
+DEFINST(mov_r_rm,   SKIP,   SKIP,   MODRM,  0x8b,   SKIP,   r,      rm,     SKIP,   SKIP)
 
 // This one is weird it takes no other comands but the op_code dictates which reg swtiches
 // with rAX
@@ -36,8 +36,9 @@ DEFINST(xchg_r_ax,  SKIP,   SKIP,   SKIP,   0x90|INDEX, SKIP, SKIP, SKIP,   SKIP
 
 DEFINST(ret, SKIP, SKIP, SKIP, 0xC3, SKIP, SKIP, SKIP, SKIP, SKIP)
 
-DEFINST(callq,      SKIP,  SKIP,    SKIP,   0xE8,   SKIP,   rel,      SKIP,   SKIP,   SKIP    )
+DEFINST(callq,      SKIP,   SKIP,    SKIP,   0xE8,   SKIP,  rel,    SKIP,   SKIP,   SKIP    )
 
-DEFINST(jmp_rm,  SKIP, SKIP, 4, 0xFF, SKIP, rm, SKIP, SKIP, SKIP)
+DEFINST(jmp_rm,     SKIP,   SKIP,   4,      0xFF,   SKIP,   rm,     SKIP,   SKIP,   SKIP)
+DEFINST(jmp,        SKIP,   SKIP,   SKIP,   0XE9,   SKIP,   rel,    SKIP,   SKIP,   SKIP)
 DEFINST(push_rm, SKIP, SKIP, 6, 0xFF, SKIP, rm, SKIP, SKIP, SKIP)
 
