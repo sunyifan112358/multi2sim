@@ -547,6 +547,7 @@ void Instruction::Decode(const char *buffer, unsigned eip) {
         if (info->nomatch_mask && (buf32 & info->nomatch_mask) ==
                                   info->nomatch_result)
             continue;
+        // this if statement clearly is incorrect logically
         if ((buf32 & info->match_mask) == info->match_result)
             //&& info->prefix == prefixes)
             break;
@@ -559,7 +560,6 @@ void Instruction::Decode(const char *buffer, unsigned eip) {
     }
 
     // Instruction found
-    std::cout << "Instruction found\n";
     format = info->fmt;
     opcode = info->opcode;
     opcode_size = info->opcode_size;

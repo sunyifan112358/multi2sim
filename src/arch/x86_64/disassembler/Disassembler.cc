@@ -196,13 +196,18 @@ Disassembler::Disassembler() : comm::Disassembler("x86_64")
 
             // If part of the offset is in the 'reg' field of the ModR/M byte,
             // it must be matched.
-            info->match_mask = 0x38;
-            info->match_result = (info->opcode_ext & 0x7) << 3;
+            if (!(info->opcode_ext & MODRM)) {
+                info->match_mask = 0x38;
+                info->match_result = (info->opcode_ext & 0x7) << 3;
+            }
+            else {
+                info->match_mask = 0x00;
+            }
 
             // If instruction expects a memory operand, the 'mod' field of
             // the ModR/M byte cannot be 11.
             // TODO: Uncomment when you figure out why this is here
-//            if (info->opcode_ext & MEM)
+//            if (info->opcode_ext & MODRM)
 //            {
 //                info->nomatch_mask = 0xc0;
 //                info->nomatch_result = 0xc0;
